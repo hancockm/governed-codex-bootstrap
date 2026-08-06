@@ -12,7 +12,7 @@ Start reading in the vault at `Project_Obsidian_Vault/00_Home/Project MOC.md`, t
 | `tools/agent_work_selection_audit.py`, `agent_to_agent_plan_handoff.py` | Create frozen-baseline advisory selection and critique records. |
 | `tools/owner_scoped_orchestration.py`, `work_packet.py` | Classify/bind/validate packet work without model invocation. |
 | `tools/test_runner.py`, `source_doc_audit.py`, `vault_maintainer.py` | Execute lifecycle tests, audit public source, and maintain safe navigation. |
-| `tools/origin_reconciler.py`, `capability_status.py`, `export_continuity.py` | Report delivery facts, maturity evidence, and bounded continuity. |
+| `tools/origin_reconciler.py`, `capability_status.py`, `export_agent_thread_continuity.py` | Report delivery facts, maturity evidence, and complete bounded continuity archives. |
 | `configs/` and `docs/` | Machine policy plus operational runbooks. |
 
 The cold start is research intake and organization; Core canonicalization; advisory selection audit and plan handoff; user approval; Sol packet classification; Terra candidate; one reused saved-project Luna task through corrections; authorized integration; Core synchronization; continuity export; then Sol finalization/archive acknowledgment.
@@ -99,7 +99,7 @@ Branch dispositions are `landed`, `superseded`, or `awaiting_named_integrator`; 
 
 ## Continuity and owner activation
 
-One thread belongs to one owning continuity pack. Core exports a bounded source prefix of user-visible user/assistant response records, records the prefix count and selected-record hash, and links the export from its continuity index. It never reconstructs unavailable source history from summaries. Terra and Luna emit bounded receipts into Core's pack; they do not become separate continuity owners.
+One thread belongs to one owning continuity pack. Core uses `tools/export_agent_thread_continuity.py` to retain a stable full-line source prefix, exact safe user/assistant records, credential-redacted exceptions, display-safe Markdown parts, chronological MOCs, source and selected-record hashes, and a post-navigation output inventory. It never reconstructs unavailable source history from summaries. Terra and Luna emit bounded receipts into Core's pack; they do not become separate continuity owners. Follow `docs/AGENT_CONTINUITY_EXPORT.md` for the dry-run, apply, navigation, manifest-refresh, and idempotence sequence.
 
 To create a future owner, Core must accept the boundary, add a role and bootstrap document, create its continuity root, assign scoped registry authority, add packet/check policy, and update tests. An inactive template is not permission to edit or decide.
 

@@ -1,6 +1,6 @@
 # Repository governance
 
-Detailed procedures are in `docs/CORE_AGENT_WORKFLOW.md`, `docs/OWNER_SCOPED_ORCHESTRATION.md`, `docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md`, `docs/GIT_RECONCILIATION.md`, `docs/POWERSHELL_AGENT_INSTRUCTIONS.md`, `docs/SOURCE_DOCUMENTATION_STYLE.md`, `docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md`, `docs/VAULT_INFORMATION_ARCHITECTURE_STANDARD.md`, and `docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md`. The maintained reading surface starts at `Project_Obsidian_Vault/00_Home/Project MOC.md`.
+Detailed procedures are in `docs/CORE_AGENT_WORKFLOW.md`, `docs/OWNER_SCOPED_ORCHESTRATION.md`, `docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md`, `docs/GIT_RECONCILIATION.md`, `docs/AGENT_CONTINUITY_EXPORT.md`, `docs/POWERSHELL_AGENT_INSTRUCTIONS.md`, `docs/SOURCE_DOCUMENTATION_STYLE.md`, `docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md`, `docs/VAULT_INFORMATION_ARCHITECTURE_STANDARD.md`, and `docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md`. The maintained reading surface starts at `Project_Obsidian_Vault/00_Home/Project MOC.md`.
 
 ## Role startup
 
@@ -14,7 +14,7 @@ An owner may change only its active, registered scope. Exploration, a critique, 
 
 ## Mandatory continuity and collaboration semantics
 
-Every substantial owner task exports its bounded user-visible transcript into its registered continuity pack before it is reported complete. The export boundary is a stable full-line source prefix with source and selected-record hashes. If the exact source is unavailable, state that closeout is incomplete rather than reconstructing it from memory. User questions, exploratory discussion, and attached material are context, not authorization; accepted plans authorize only their stated scope.
+Every substantial owner task exports its bounded user-visible transcript into its registered continuity pack before it is reported complete. Use `tools/export_agent_thread_continuity.py` with the exact session source, thread ID, registered output directory, vault target, owner label, and owner schema versions. Dry-run the export, apply it, synchronize maintained vault navigation, refresh the manifest against the post-navigation bytes, and require a second dry manifest refresh with `changed: false`. The export boundary is a stable full-line source prefix with source and selected-record hashes. If the exact source is unavailable, state that closeout is incomplete rather than reconstructing it from memory. User questions, exploratory discussion, and attached material are context, not authorization; accepted plans authorize only their stated scope.
 
 ## Mathematical and executable evidence
 
@@ -52,7 +52,7 @@ Before a remote exists, affected comparison and primary synchronization fail clo
 
 ## Continuity
 
-One source thread belongs to one continuity owner. Export only a stable full-line source prefix containing user/assistant response records; exclude private records, tools, and credential-shaped content. Store source-prefix and selected-record hashes, make exports idempotent, and never reconstruct unavailable source history from summaries. Terra and Luna provide receipts in Core's pack and do not become separate continuity owners.
+One source thread belongs to one continuity owner. Preserve exact safe user/assistant response-item lines; exclude hidden instructions, reasoning, tool calls and outputs, duplicate event projections, runtime state, and encrypted content. Redact detected credentials deterministically while retaining each source-record hash. Build HTML-safe Markdown projections, chronological MOCs, a selected-record JSONL archive, and a manifest that records roles, phases, redactions, source-prefix identity, and output hashes. The output transaction must be retry-safe, rollback-safe, and byte-idempotent. Never copy one thread into another owner pack or reconstruct unavailable source history from summaries. Terra and Luna provide receipts in the owning pack and do not become separate continuity owners.
 
 ## Vault information architecture and UX gate
 

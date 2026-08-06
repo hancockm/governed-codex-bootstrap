@@ -4,4 +4,4 @@
 
 # Core Continuity MOC
 
-Link bounded transcript exports and compact continuity records here. This is non-canonical history and does not replace research records or current canonical documents.
+Link Core-owned bounded transcript exports and compact subordinate receipts here. Every thread has one continuity owner. Generated archives preserve sanitized selected JSONL records, display-safe Markdown, chronological navigation, stable source-prefix evidence, and post-navigation output hashes. They are non-canonical history and do not replace research records or current canonical documents.
