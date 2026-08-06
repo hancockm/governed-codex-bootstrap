@@ -6,6 +6,7 @@
     {"source_globs": ["governance_bootstrap/packets.py", "coordination/**", "configs/owner_scoped_orchestration_v1.json"], "focused": ["tests/test_packets.py"], "broad": ["tests"]},
     {"source_globs": ["governance_bootstrap/continuity.py", "continuity/**"], "focused": ["tests/test_continuity.py"], "broad": ["tests"]},
     {"source_globs": ["governance_bootstrap/vault.py", "governance_bootstrap/source_docs.py", "docs/**"], "focused": ["tests/test_vault.py"], "broad": ["tests"]},
+    {"source_globs": ["governance_bootstrap/coordination.py", "tools/agent_*", "tools/owner_scoped_orchestration.py", "tools/capability_status.py", "configs/work_selection_audit_v1.json", "configs/risk_classification_v1.json"], "focused": ["tests/test_workflow_tools.py"], "broad": ["tests"]},
     {"source_globs": ["governance_bootstrap/git_safety.py", "configs/git_reconciliation_v1.json"], "focused": ["tests/test_git_safety.py"], "broad": ["tests"]}
   ],
   "unknown_runtime_boundary": ["tests"]

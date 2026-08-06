@@ -49,6 +49,10 @@ def check_repository(root: Path) -> list[str]:
     source_findings = audit_package(root / "governance_bootstrap")
     if source_findings:
         failures.extend(f"source-doc: {finding}" for finding in source_findings)
+    capability = _load(root, "configs/capability_registry_v1.json")
+    allowed_states = {"proposed", "active", "verified", "deferred", "superseded", "retired"}
+    if any(item.get("state") not in allowed_states or not item.get("evidence") or not item.get("verification") for item in capability.get("capabilities", [])):
+        failures.append("capability: maturity evidence is incomplete")
     research_policy = config["research_first"]
     research = root / research_policy["research_dir"]
     records = research / "records"

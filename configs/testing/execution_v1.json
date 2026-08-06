@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "parallel_safe": ["tests/test_conformance.py", "tests/test_research.py", "tests/test_packets.py", "tests/test_continuity.py", "tests/test_git_safety.py", "tests/test_vault.py"],
+  "parallel_safe": ["tests/test_conformance.py", "tests/test_research.py", "tests/test_packets.py", "tests/test_continuity.py", "tests/test_git_safety.py", "tests/test_vault.py", "tests/test_workflow_tools.py"],
   "serial": ["tests/test_runner.py"],
   "full": {"workers": 4, "distribution": "loadfile", "max_worker_restart": 0},
   "broad": ["tests"]

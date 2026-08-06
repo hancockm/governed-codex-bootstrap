@@ -1,0 +1,7 @@
+# Git Reconciliation
+
+Use reconciliation to report branch facts, not to infer whether an owner intends integration. `origin_reconciler.py inspect` reports repository, branch, cleanliness, and active operations. `closeout --agent --branch --disposition` emits the evidence required for `landed`, `superseded`, or `awaiting_named_integrator`; the last is deliberately routed and exits 2. `inbox` lists remote branches requiring owner review and exits 2 when nonempty. Inspection or safety failure exits 3; clear results exit 0.
+
+Only Core may call `sync-main --agent core`. It requires the primary branch, no active operation, tracked and untracked cleanliness, no local-only commits, and a resolvable remote primary branch. It fetches unless `--no-fetch`, performs only `git merge --ff-only origin/master`, then verifies equality. It never chooses a branch, resets, rebases, discards, deletes, or treats a remote branch as merge authorization. Before a remote exists, affected comparison and reconciliation fail closed.
+
+Before any commit, inspect status, identify current-task ownership, stage only those files, inspect staged name-status and whitespace, commit intentionally, and preserve unrelated worktree state. Worktrees are evidence: cleanup follows terminal reconciliation rather than replacing it.

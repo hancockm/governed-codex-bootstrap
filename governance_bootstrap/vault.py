@@ -43,9 +43,13 @@ def check(root: Path) -> list[str]:
     errors: list[str] = []
     if not vault_root.is_dir():
         return ["vault root is missing"]
+    dynamic_scopes = registry.get("dynamic_scopes", {})
+    def dynamic(path: str) -> bool:
+        return any(path == scope or path.startswith(f"{scope}/") for scope in dynamic_scopes)
     all_paths = {_relative(note, vault_root) for note in _notes(vault_root)}
+    static_paths = {path for path in all_paths if not dynamic(path)} | {"40_Coordination/Generated/Active Records.md"}
     expected = set(registry["parentage"]) | {registry["root_moc"]}
-    if all_paths != expected:
+    if static_paths != expected:
         errors.append("registry parentage must enumerate every Markdown note exactly once")
     if registry["root_moc"] in registry["parentage"]:
         errors.append("root MOC may not have a parent")
@@ -64,7 +68,7 @@ def check(root: Path) -> list[str]:
         for target in LINK_PATTERN.findall(text):
             if "/" not in target:
                 errors.append(f"link is not path-qualified: {relative} -> {target}")
-            elif target not in all_paths:
+            elif target not in all_paths and not dynamic(target):
                 errors.append(f"link target is missing: {relative} -> {target}")
         if relative in registry["parentage"]:
             expected_breadcrumb = _breadcrumb(registry["parentage"][relative])

@@ -3,6 +3,7 @@
   "vault_root": "Project_Obsidian_Vault",
   "root_moc": "00_Home/Project MOC.md",
   "max_note_bytes": 120000,
+  "dynamic_scopes": {"40_Coordination/Generated": "40_Coordination/Agent-to-Agent Discussions MOC.md"},
   "canonical_paths": ["00_Canonical/Core Thesis.md", "00_Canonical/ARCHITECTURE.md", "00_Canonical/SPEC.md", "00_Canonical/ROADMAP.md"],
   "parentage": {
     "00_Canonical/Canonical MOC.md": "00_Home/Project MOC.md",
@@ -18,8 +19,10 @@
     "30_Core/Core MOC.md": "00_Home/Project MOC.md",
     "30_Core/Core Bootstrap.md": "30_Core/Core MOC.md",
     "30_Core/Core Protocols.md": "30_Core/Core MOC.md",
+    "30_Core/Core Vault Maintenance Protocol.md": "30_Core/Core MOC.md",
     "30_Core/Continuity/Core Continuity MOC.md": "30_Core/Core MOC.md",
     "40_Coordination/Agent-to-Agent Discussions MOC.md": "00_Home/Project MOC.md",
+    "40_Coordination/Generated/Active Records.md": "40_Coordination/Agent-to-Agent Discussions MOC.md",
     "90_Archive/Archive MOC.md": "00_Home/Project MOC.md"
   },
   "mocs": {
@@ -27,6 +30,7 @@
     "00_Canonical/Canonical MOC.md": ["00_Canonical/Core Thesis.md", "00_Canonical/ARCHITECTURE.md", "00_Canonical/SPEC.md", "00_Canonical/ROADMAP.md", "00_Canonical/Capability Registry.md"],
     "10_Research/Research Sources MOC.md": ["10_Research/Research Source Map.md"],
     "20_Features/Features MOC.md": ["20_Features/Feature Template.md"],
-    "30_Core/Core MOC.md": ["30_Core/Core Bootstrap.md", "30_Core/Core Protocols.md", "30_Core/Continuity/Core Continuity MOC.md"]
+    "30_Core/Core MOC.md": ["30_Core/Core Bootstrap.md", "30_Core/Core Protocols.md", "30_Core/Core Vault Maintenance Protocol.md", "30_Core/Continuity/Core Continuity MOC.md"],
+    "40_Coordination/Agent-to-Agent Discussions MOC.md": ["40_Coordination/Generated/Active Records.md"]
   }
 }

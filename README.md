@@ -2,6 +2,21 @@
 
 This repository is a clean-room starting point for a project that must retain evidence, make decisions explicitly, and deliver changes through reproducible controls. It is intentionally domain-neutral: replace the sample research with your own material before treating any canonical document as true.
 
+Start reading in the vault at `Project_Obsidian_Vault/00_Home/Project MOC.md`, then follow its research-first links. Core vault cleanup follows `docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md`.
+
+## Workflow substrate inventory
+
+| Surface | Role |
+| --- | --- |
+| `tools/research_intake.py`, `research_organizer.py` | Preserve and map source evidence without promotion. |
+| `tools/agent_work_selection_audit.py`, `agent_to_agent_plan_handoff.py` | Create frozen-baseline advisory selection and critique records. |
+| `tools/owner_scoped_orchestration.py`, `work_packet.py` | Classify/bind/validate packet work without model invocation. |
+| `tools/test_runner.py`, `source_doc_audit.py`, `vault_maintainer.py` | Execute lifecycle tests, audit public source, and maintain safe navigation. |
+| `tools/origin_reconciler.py`, `capability_status.py`, `export_continuity.py` | Report delivery facts, maturity evidence, and bounded continuity. |
+| `configs/` and `docs/` | Machine policy plus operational runbooks. |
+
+The cold start is research intake and organization; Core canonicalization; advisory selection audit and plan handoff; user approval; Sol packet classification; Terra candidate; one reused saved-project Luna task through corrections; authorized integration; Core synchronization; continuity export; then Sol finalization/archive acknowledgment.
+
 ## The six planes
 
 | Plane | Purpose | Primary assets |

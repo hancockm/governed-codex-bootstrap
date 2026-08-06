@@ -6,4 +6,5 @@
 
 - [[30_Core/Core Bootstrap.md]]
 - [[30_Core/Core Protocols.md]]
+- [[30_Core/Core Vault Maintenance Protocol.md]]
 - [[30_Core/Continuity/Core Continuity MOC.md]]

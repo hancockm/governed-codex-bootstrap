@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "tiers": {"low": [], "standard": ["runtime", "public_contract", "persistence", "adapter", "user_facing"], "high": ["security_privacy", "migration", "mathematics", "legal_release", "cross_owner", "full_suite"]},
+  "escalation_only": true
+}

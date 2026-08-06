@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "record_scope": "40_Coordination/Generated/Work Selection Audits",
+  "status": "advisory",
+  "required_fields": ["baseline", "candidates", "prerequisites", "owner_dispositions", "assumptions"],
+  "authority": "none"
+}
