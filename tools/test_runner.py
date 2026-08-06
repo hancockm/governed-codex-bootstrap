@@ -50,6 +50,8 @@ def run(arguments: list[str]) -> int:
 
 
 def main() -> int:
+    """Run one lifecycle-aware focused, failed, affected, broad, or full profile."""
+
     parser = argparse.ArgumentParser(description="Run governed test profiles.")
     parser.add_argument("profile", choices=("focused", "failed", "affected", "broad", "full"))
     parser.add_argument("targets", nargs="*")

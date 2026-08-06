@@ -83,7 +83,7 @@ def test_export_preserves_visible_records_and_excludes_private_runtime_records(t
             "type": "message",
             "role": "assistant",
             "phase": "final_answer",
-            "content": [{"type": "output_text", "text": "Answer with <!-- PROJECT_MOC_CHILDREN_V1:START -->."}],
+            "content": [{"type": "output_text", "text": "Answer with <!-- managed:moc-children:start -->."}],
         },
     )
     source.write_bytes(session + user + reasoning + duplicate_event + assistant)
@@ -101,8 +101,8 @@ def test_export_preserves_visible_records_and_excludes_private_runtime_records(t
     assert b"private instruction" not in files["visible_messages.jsonl"]
     assert b"private reasoning" not in files["visible_messages.jsonl"]
     transcript = next(payload for path, payload in files.items() if path.endswith(".md") and "part-" in path)
-    assert b"&lt;!-- PROJECT_MOC_CHILDREN_V1:START --&gt;" in transcript
-    assert b"<!-- PROJECT_MOC_CHILDREN_V1:START -->" not in transcript
+    assert b"&lt;!-- managed:moc-children:start --&gt;" in transcript
+    assert b"<!-- managed:moc-children:start -->" not in transcript
     assert all(line.rstrip() == line for line in transcript.decode("utf-8").splitlines())
 
     manifest = json.loads(files["manifest.json"])
@@ -186,7 +186,7 @@ def test_unique_thread_archive_allows_reexport_by_owning_agent(tmp_path):
 
 
 def test_unique_thread_archive_rejects_cross_agent_copy(tmp_path):
-    existing = tmp_path / "90_Sources/Biology Agent Continuity/Transcripts/thread-1"
+    existing = tmp_path / "30_Core/Continuity/Transcripts/thread-1"
     existing.mkdir(parents=True)
     existing.joinpath("manifest.json").write_text(json.dumps({"thread_id": "thread-1"}), encoding="utf-8")
     proposed = tmp_path / "90_Sources/Audit Agent Continuity/Transcripts/thread-1"
@@ -196,7 +196,7 @@ def test_unique_thread_archive_rejects_cross_agent_copy(tmp_path):
 
 
 def test_unique_thread_archive_rejects_unfinished_cross_agent_copy(tmp_path):
-    existing = tmp_path / "90_Sources/Biology Agent Continuity/Transcripts/thread-1"
+    existing = tmp_path / "30_Core/Continuity/Transcripts/thread-1"
     existing.mkdir(parents=True)
     proposed = tmp_path / "90_Sources/Audit Agent Continuity/Transcripts/thread-1"
 

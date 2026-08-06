@@ -7,8 +7,10 @@ import tomllib
 from pathlib import Path
 from typing import Any
 
-from .source_docs import audit_package
-from .vault import check as check_vault
+from tools.capability_status import CapabilityStatusError, validate_registry
+from tools.source_doc_audit import find_missing_docstrings
+from tools.tool_parity import validate_manifest
+from tools.vault_maintainer import collect_diagnostics, load_registry
 
 
 def _load(root: Path, relative: str) -> Any:
@@ -39,20 +41,25 @@ def check_repository(root: Path) -> list[str]:
     old_canonical = root / "canonical"
     if old_canonical.exists() and any(old_canonical.rglob("*")):
         failures.append("canonical: narrative canonical files must exist only in the vault")
-    registry = _load(root, "configs/vault_maintenance_registry_v1.json")
-    vault_root = root / registry["vault_root"]
-    if not vault_root.is_dir() or any(not (vault_root / path).is_file() for path in registry["canonical_paths"]):
+    registry = load_registry(root / "configs/vault_maintenance_registry_v1.json")
+    vault_root = registry.vault_root
+    canonical_paths = ("00_Canonical/Core Thesis.md", "00_Canonical/ARCHITECTURE.md", "00_Canonical/SPEC.md", "00_Canonical/ROADMAP.md")
+    if not vault_root.is_dir() or any(not (vault_root / path).is_file() for path in canonical_paths):
         failures.append("canonical: vault canonical single source is incomplete")
-    vault_errors = check_vault(root)
-    if vault_errors:
-        failures.extend(f"vault: {error}" for error in vault_errors)
-    source_findings = audit_package(root / "governance_bootstrap")
+    vault_diagnostics = collect_diagnostics(registry, registry.scopes, require_navigation=True)
+    failures.extend(
+        f"vault: {item.code}: {item.path}: {item.message}"
+        for item in vault_diagnostics
+        if item.severity == "error"
+    )
+    source_findings = find_missing_docstrings((root / "governance_bootstrap", root / "tools"))
     if source_findings:
-        failures.extend(f"source-doc: {finding}" for finding in source_findings)
+        failures.extend(f"source-doc: {finding.format()}" for finding in source_findings)
     capability = _load(root, "configs/capability_registry_v1.json")
-    allowed_states = {"proposed", "active", "verified", "deferred", "superseded", "retired"}
-    if any(item.get("state") not in allowed_states or not item.get("evidence") or not item.get("verification") for item in capability.get("capabilities", [])):
-        failures.append("capability: maturity evidence is incomplete")
+    try:
+        validate_registry(capability, root=root)
+    except CapabilityStatusError as error:
+        failures.append(f"capability: {error}")
     research_policy = config["research_first"]
     research = root / research_policy["research_dir"]
     records = research / "records"
@@ -98,18 +105,19 @@ def check_repository(root: Path) -> list[str]:
     if template.get("active") or any(not (root / template.get(key, "")).exists() for key in ("role", "bootstrap", "continuity", "profile")):
         failures.append("future-owner: inactive template prerequisites are incomplete")
     orchestration = _load(root, "configs/owner_scoped_orchestration_v1.json")
-    expected_bindings = {"sol": ("gpt-5.6-sol", "xhigh"), "terra": ("gpt-5.6-terra", "high"), "luna": ("gpt-5.6-luna", "max")}
+    expected_bindings = {"owner_orchestrator": ("gpt-5.6-sol", "xhigh"), "implementer": ("gpt-5.6-terra", "high"), "runner": ("gpt-5.6-luna", "max")}
     for lane, (model, reasoning) in expected_bindings.items():
-        binding = orchestration.get("lanes", {}).get(lane, {})
+        binding = orchestration.get("model_binding", {}).get(lane, {})
         if binding.get("model") != model or binding.get("reasoning_effort") != reasoning:
             failures.append(f"orchestration: exact {lane} model binding is missing")
-    luna = orchestration.get("lanes", {}).get("luna", {})
-    if not luna.get("must_run_in_saved_project") or not luna.get("must_reuse_project_bound_thread") or not orchestration.get("saved_project_id") or not orchestration.get("project_bound_luna_thread"):
+    subordinate = orchestration.get("subordinate_task_lifecycle", {})
+    if not subordinate.get("saved_project_required") or not subordinate.get("reuse_runner_thread_per_cycle"):
         failures.append("orchestration: saved-project Luna reuse is incomplete")
-    finalization = orchestration.get("sol_finalization", {})
     required_finalization = {"accepted_exact_candidate_receipt", "no_correction_pending", "commit_push_integration", "primary_branch_sync", "terminal_reconciliation", "worktree_cleanup"}
-    if finalization.get("owner") != "sol" or finalization.get("acknowledgment") != "subordinate_archive" or set(finalization.get("requires", [])) != required_finalization:
+    if subordinate.get("archive_owner") != "owner_orchestrator" or set(subordinate.get("archive_after", [])) != required_finalization:
         failures.append("orchestration: separate Sol finalization is incomplete")
+    parity = validate_manifest(_load(root, "configs/tool_parity_v1.json"), root=root)
+    failures.extend(f"tool-parity: {item}" for item in parity["errors"])
     testing = _load(root, "configs/testing/execution_v1.json")
     if testing.get("full", {}).get("workers") != 4 or set(testing.get("parallel_safe", [])) & set(testing.get("serial", [])):
         failures.append("testing: xdist cap or serial isolation is invalid")
@@ -124,7 +132,9 @@ def check_repository(root: Path) -> list[str]:
     _require_artifact(failures, root, "execnet", "2.1.2")
     for marker in config["forbidden_project_markers"]:
         for path in root.rglob("*"):
-            if path.is_file() and path.relative_to(root).as_posix() != "configs/conformance_v1.json" and ".git" not in path.parts and path.suffix in {".md", ".json", ".py", ".toml"}:
+            relative = path.relative_to(root).as_posix() if path.is_file() else ""
+            allowed = {"configs/conformance_v1.json", *config.get("reference_marker_allowlist", [])}
+            if path.is_file() and relative not in allowed and ".git" not in path.parts and path.suffix in {".md", ".json", ".py", ".toml"}:
                 if marker in path.read_text(encoding="utf-8", errors="ignore"):
                     failures.append(f"neutrality: forbidden marker {marker!r} in {path.relative_to(root)}")
     return failures

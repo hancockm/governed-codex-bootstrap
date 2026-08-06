@@ -1,0 +1,14 @@
+{
+  "schema_version": "owner_scoped_orchestration_owner_profile_v1",
+  "owner": "owner_template",
+  "role_instruction_path": "future_owners/owner-template/ROLE.md",
+  "bootstrap_prompt_path": "future_owners/owner-template/BOOTSTRAP.md",
+  "continuity_moc_path": "future_owners/owner-template/continuity/MOC.md",
+  "continuity_receipts_root": "future_owners/owner-template/continuity/Orchestration Receipts",
+  "branch_prefix": "replace-owner/",
+  "verification_profiles": {
+    "focused": ["replace-with-owner-focused-check"],
+    "broad": ["python tools/test_runner.py full"]
+  },
+  "ownership_notice": "Non-authorizing skeleton; replace every placeholder before Core activation."
+}

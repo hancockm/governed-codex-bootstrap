@@ -26,8 +26,8 @@ from typing import Iterable, Mapping, Sequence
 
 SCHEMA_VERSION = "agent_thread_continuity_manifest_v1"
 TRANSCRIPT_SCHEMA_VERSION = "agent_visible_chat_transcript_v1"
-MOC_START = "<!-- PROJECT_MOC_CHILDREN_V1:START -->"
-MOC_END = "<!-- PROJECT_MOC_CHILDREN_V1:END -->"
+MOC_START = "<!-- managed:moc-children:start -->"
+MOC_END = "<!-- managed:moc-children:end -->"
 VISIBLE_ROLES = frozenset({"user", "assistant"})
 TEXT_CONTENT_TYPES = frozenset({"input_text", "output_text"})
 SECRET_PATTERNS = (
@@ -145,20 +145,26 @@ def _record_type(record: Mapping[str, object]) -> str:
 
 
 def _continuity_source_root(output_dir: Path) -> Path | None:
-    transcripts_dir = output_dir.parent
-    owner_dir = transcripts_dir.parent
-    if transcripts_dir.name != "Transcripts" or not owner_dir.name.endswith(" Agent Continuity"):
+    """Return the containing vault/test root for an owner transcript path."""
+
+    if output_dir.parent.name != "Transcripts":
         return None
-    return owner_dir.parent
+    for ancestor in output_dir.parents:
+        if ancestor.name == "Project_Obsidian_Vault":
+            return ancestor
+    for ancestor in output_dir.parents:
+        if re.fullmatch(r"\d{2}_.+", ancestor.name):
+            return ancestor.parent
+    return None
 
 
 def ensure_unique_thread_archive(output_dir: Path, thread_id: str) -> None:
     """Reject a thread already assigned to another agent continuity pack.
 
-    The check is automatically scoped when the output follows the repository
-    convention ``90_Sources/<Owner> Agent Continuity/Transcripts/<thread>``.
-    Re-exporting the owning archive is allowed; mirroring the same thread into
-    a second owner pack is not.
+    The check is automatically scoped to the containing project vault. Owner
+    packs may use any registered vault location, but their archive directory
+    must be named ``Transcripts``. Re-exporting the owning archive is allowed;
+    mirroring the same thread into a second owner pack is not.
 
     Args:
         output_dir: Proposed transcript archive directory.
@@ -174,7 +180,7 @@ def ensure_unique_thread_archive(output_dir: Path, thread_id: str) -> None:
         return
 
     proposed = os.path.normcase(str(output_dir.resolve()))
-    for transcripts_dir in continuity_root.glob("* Agent Continuity/Transcripts"):
+    for transcripts_dir in continuity_root.rglob("Transcripts"):
         if not transcripts_dir.is_dir():
             continue
         for candidate in transcripts_dir.iterdir():

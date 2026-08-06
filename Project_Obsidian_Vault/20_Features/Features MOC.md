@@ -1,8 +1,8 @@
-<!-- generated:breadcrumbs:start -->
-> Previous: [[10_Research/Research Sources MOC.md]] | Up: [[00_Home/Project MOC.md]] | Next: [[30_Core/Core MOC.md]]
-<!-- generated:breadcrumbs:end -->
-
 # Features MOC
+
+<!-- generated:breadcrumbs:start -->
+<< Previous: [[10_Research/Research Sources MOC]] | Up: [[00_Home/Project MOC]] | Next: [[30_Core/Core MOC]] >>
+<!-- generated:breadcrumbs:end -->
 
 Features are inactive until a capability and owner scope are accepted.
 

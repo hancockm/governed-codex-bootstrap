@@ -1,13 +1,18 @@
 {
   "schema_version": 1,
   "mappings": [
-    {"source_globs": ["governance_bootstrap/conformance.py", "configs/conformance_v1.json", "configs/vault_maintenance_registry_v1.json", "Project_Obsidian_Vault/**"], "focused": ["tests/test_conformance.py", "tests/test_vault.py"], "broad": ["tests"]},
-    {"source_globs": ["governance_bootstrap/research.py", "research/**"], "focused": ["tests/test_research.py"], "broad": ["tests"]},
-    {"source_globs": ["governance_bootstrap/packets.py", "coordination/**", "configs/owner_scoped_orchestration_v1.json"], "focused": ["tests/test_packets.py"], "broad": ["tests"]},
+    {"source_globs": ["governance_bootstrap/conformance.py", "configs/conformance_v1.json", "Project_Obsidian_Vault/**"], "focused": ["tests/test_conformance.py", "tests/tools/test_vault_maintainer.py"], "broad": ["tests"]},
+    {"source_globs": ["governance_bootstrap/research.py", "governance_bootstrap/research_organizer.py", "tools/research_*.py", "research/**"], "focused": ["tests/test_research.py"], "broad": ["tests"]},
     {"source_globs": ["tools/export_agent_thread_continuity.py", "continuity/**", "docs/AGENT_CONTINUITY_EXPORT.md"], "focused": ["tests/tools/test_export_agent_thread_continuity.py"], "broad": ["tests"]},
-    {"source_globs": ["governance_bootstrap/vault.py", "governance_bootstrap/source_docs.py", "docs/**"], "focused": ["tests/test_vault.py"], "broad": ["tests"]},
-    {"source_globs": ["governance_bootstrap/coordination.py", "tools/agent_*", "tools/owner_scoped_orchestration.py", "tools/capability_status.py", "configs/work_selection_audit_v1.json", "configs/risk_classification_v1.json"], "focused": ["tests/test_workflow_tools.py"], "broad": ["tests"]},
-    {"source_globs": ["governance_bootstrap/git_safety.py", "configs/git_reconciliation_v1.json"], "focused": ["tests/test_git_safety.py"], "broad": ["tests"]}
+    {"source_globs": ["tools/owner_scoped_orchestration.py", "configs/owner_scoped_orchestration_v1.json", "roles/**", "future_owners/**"], "focused": ["tests/tools/test_owner_scoped_orchestration.py"], "broad": ["tests"]},
+    {"source_globs": ["tools/agent_to_agent*.py", "tools/check_agent_discussion_updates.py", "coordination/**"], "focused": ["tests/test_workflow_tools.py"], "broad": ["tests"]},
+    {"source_globs": ["tools/agent_work_selection_audit.py", "configs/work_selection_audit_v1.json"], "focused": ["tests/tools/test_agent_work_selection_audit.py"], "broad": ["tests"]},
+    {"source_globs": ["tools/origin_reconciler.py", "configs/git_reconciliation_v1.json"], "focused": ["tests/tools/test_origin_reconciler.py"], "broad": ["tests"]},
+    {"source_globs": ["tools/capability_status.py", "configs/capability_registry_v1.json"], "focused": ["tests/tools/test_capability_status.py"], "broad": ["tests"]},
+    {"source_globs": ["tools/vault_maintainer.py", "configs/vault_maintenance_registry_v1.json", "configs/core_moc_v1.json"], "focused": ["tests/tools/test_vault_maintainer.py"], "broad": ["tests"]},
+    {"source_globs": ["tools/tool_parity.py", "configs/tool_parity_v1.json"], "focused": ["tests/tools/test_tool_parity.py"], "broad": ["tests"]},
+    {"source_globs": ["tools/source_doc_audit.py", "docs/**"], "focused": ["tests/test_conformance.py"], "broad": ["tests"]},
+    {"source_globs": ["tools/test_runner.py", "configs/testing/**"], "focused": ["tests/test_runner.py"], "broad": ["tests"]}
   ],
   "unknown_runtime_boundary": ["tests"]
 }

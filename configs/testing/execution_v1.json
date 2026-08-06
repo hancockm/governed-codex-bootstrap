@@ -1,7 +1,20 @@
 {
   "schema_version": 1,
-  "parallel_safe": ["tests/test_conformance.py", "tests/test_research.py", "tests/test_packets.py", "tests/tools/test_export_agent_thread_continuity.py", "tests/test_git_safety.py", "tests/test_git_evidence.py", "tests/test_vault.py", "tests/test_workflow_tools.py"],
-  "serial": ["tests/test_runner.py"],
+  "parallel_safe": [
+    "tests/test_conformance.py",
+    "tests/test_research.py",
+    "tests/test_workflow_tools.py",
+    "tests/tools/test_agent_work_selection_audit.py",
+    "tests/tools/test_capability_status.py",
+    "tests/tools/test_export_agent_thread_continuity.py",
+    "tests/tools/test_owner_scoped_orchestration.py",
+    "tests/tools/test_tool_parity.py",
+    "tests/tools/test_vault_maintainer.py"
+  ],
+  "serial": [
+    "tests/test_runner.py",
+    "tests/tools/test_origin_reconciler.py"
+  ],
   "full": {"workers": 4, "distribution": "loadfile", "max_worker_restart": 0},
   "broad": ["tests"]
 }

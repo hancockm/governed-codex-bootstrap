@@ -24,14 +24,12 @@ def test_research_is_the_first_cold_start_evidence_lane() -> None:
 
 def test_orchestration_has_exact_model_bindings_and_separate_sol_finalization() -> None:
     orchestration = json.loads((ROOT / "configs/owner_scoped_orchestration_v1.json").read_text(encoding="utf-8"))
-    assert orchestration["lanes"]["sol"]["model"] == "gpt-5.6-sol"
-    assert orchestration["lanes"]["sol"]["reasoning_effort"] == "xhigh"
-    assert orchestration["lanes"]["terra"]["model"] == "gpt-5.6-terra"
-    assert orchestration["lanes"]["terra"]["reasoning_effort"] == "high"
-    assert orchestration["lanes"]["luna"]["model"] == "gpt-5.6-luna"
-    assert orchestration["lanes"]["luna"]["reasoning_effort"] == "max"
-    assert orchestration["sol_finalization"]["owner"] == "sol"
-    assert not orchestration["lanes"]["luna"].get("must_acknowledge_archive", False)
+    bindings = orchestration["model_binding"]
+    assert bindings["owner_orchestrator"] == {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"}
+    assert bindings["implementer"] == {"model": "gpt-5.6-terra", "reasoning_effort": "high"}
+    assert bindings["runner"] == {"model": "gpt-5.6-luna", "reasoning_effort": "max"}
+    assert orchestration["subordinate_task_lifecycle"]["archive_owner"] == "owner_orchestrator"
+    assert orchestration["subordinate_task_lifecycle"]["reuse_runner_thread_per_cycle"] is True
 
 
 def test_owner_dependency_profiles_keep_examples_inactive_and_non_authorizing() -> None:

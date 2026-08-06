@@ -1,0 +1,10 @@
+{
+  "schema_version": "core_moc_layout_v1",
+  "documents": [
+    {"source_name": "Core Thesis.md", "child_dir": "Core", "groups": []},
+    {"source_name": "ARCHITECTURE.md", "child_dir": "Architecture", "groups": []},
+    {"source_name": "SPEC.md", "child_dir": "Spec", "groups": []},
+    {"source_name": "ROADMAP.md", "child_dir": "Roadmap", "groups": []}
+  ],
+  "nested_maps": []
+}

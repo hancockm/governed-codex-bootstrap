@@ -1,3 +1,5 @@
+"""Run the repository's complete bootstrap architecture conformance check."""
+
 from __future__ import annotations
 
 import json
@@ -10,6 +12,8 @@ from governance_bootstrap.conformance import check_repository
 
 
 def main() -> int:
+    """Print all architecture failures and return nonzero when any exist."""
+
     root = Path(__file__).resolve().parents[1]
     failures = check_repository(root)
     print(json.dumps({"ok": not failures, "failures": failures}, indent=2))

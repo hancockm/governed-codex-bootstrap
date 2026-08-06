@@ -1,16 +1,53 @@
 {
-  "schema_version": 1,
-  "saved_project_id": "replace-on-project-activation",
-  "project_bound_luna_thread": "replace-on-project-activation",
-  "lanes": {
-    "sol": {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh", "purpose": "deterministic risk classification, packet publication, and subordinate finalization", "may_commit": false},
-    "terra": {"model": "gpt-5.6-terra", "reasoning_effort": "high", "purpose": "bounded tracked work and local candidate commit", "may_commit": true},
-    "luna": {"model": "gpt-5.6-luna", "reasoning_effort": "max", "purpose": "single SHA-pinned verification reused for all corrections in one implementation cycle", "may_commit": false, "must_run_in_saved_project": true, "must_reuse_project_bound_thread": true}
+  "schema_version": "owner_scoped_orchestration_v1",
+  "authority": "development_orchestration",
+  "topology": "hybrid",
+  "model_binding": {
+    "enforcement": "fail_closed",
+    "owner_orchestrator": {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"},
+    "implementer": {"model": "gpt-5.6-terra", "reasoning_effort": "high"},
+    "runner": {"model": "gpt-5.6-luna", "reasoning_effort": "max"}
   },
-  "sol_finalization": {
-    "owner": "sol",
-    "acknowledgment": "subordinate_archive",
-    "requires": ["accepted_exact_candidate_receipt", "no_correction_pending", "commit_push_integration", "primary_branch_sync", "terminal_reconciliation", "worktree_cleanup"],
+  "git": {
+    "canonical_remote": "origin",
+    "canonical_branch": "master",
+    "master_integration_owner": "core"
+  },
+  "subordinate_task_lifecycle": {
+    "saved_project_required": true,
+    "reuse_runner_thread_per_cycle": true,
+    "archive_owner": "owner_orchestrator",
+    "archive_after": [
+      "accepted_exact_candidate_receipt",
+      "no_correction_pending",
+      "commit_push_integration",
+      "primary_branch_sync",
+      "terminal_reconciliation",
+      "worktree_cleanup"
+    ],
     "visible_nonterminal_statuses": ["failed", "blocked", "user_input_needed"]
-  }
+  },
+  "owners": {
+    "core": {
+      "status": "active",
+      "git_owner": "core",
+      "branch_prefix": "core/",
+      "profile_path": "roles/core/orchestration_profile.json",
+      "continuity_receipts_root": "Project_Obsidian_Vault/30_Core/Continuity/Orchestration Receipts"
+    },
+    "example_feature": {
+      "status": "owner_adoption_required",
+      "git_owner": "feature_example",
+      "branch_prefix": "feature-example/",
+      "profile_path": "future_owners/example-feature-owner/orchestration_profile.json"
+    },
+    "owner_template": {
+      "status": "owner_adoption_required",
+      "git_owner": "replace_owner",
+      "branch_prefix": "replace-owner/",
+      "profile_path": "future_owners/owner-template/orchestration_profile.json"
+    }
+  },
+  "aliases": {"application": "core", "operations": "core", "runtime": "core"},
+  "support_roles": ["review", "handoff"]
 }

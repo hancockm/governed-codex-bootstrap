@@ -1,12 +1,36 @@
 {
-  "schema_version": 1,
-  "capabilities": [
+  "schema_version": "capability_status_v1",
+  "publication_status": "definitive",
+  "owner_review_ref": "Project_Obsidian_Vault/30_Core/Core Protocols.md",
+  "active_gate_id": "governance.future_owner_activation",
+  "entries": [
     {
-      "id": "governance-bootstrap",
-      "owner": "core",
-      "state": "active",
-      "evidence": ["research-bootstrap-placeholder"],
-      "verification": ["tests/test_conformance.py"]
+      "id": "governance.bootstrap_foundation",
+      "name": "Governed project bootstrap foundation",
+      "owner": "Core",
+      "delivery_scope": "tooling",
+      "status": "implemented",
+      "summary": "The repository provides research-first canonicalization, maintained knowledge navigation, owner-scoped orchestration, bounded coordination, evidence-based testing, reconciliation, and continuity tooling.",
+      "dependencies": [],
+      "canonical_evidence": ["Project_Obsidian_Vault/00_Canonical/ARCHITECTURE.md"],
+      "source_evidence": ["tools/architecture_conformance.py"],
+      "test_evidence": ["tests/test_conformance.py"],
+      "owner_disposition_ref": "",
+      "superseded_by": ""
+    },
+    {
+      "id": "governance.future_owner_activation",
+      "name": "First separate owner activation",
+      "owner": "Core",
+      "delivery_scope": "documentation",
+      "status": "specified_future",
+      "summary": "Core must recognize a demonstrated boundary and complete owner-authored adoption, dependency mapping, continuity initialization, verification, and activation before dispatching a separate role.",
+      "dependencies": ["governance.bootstrap_foundation"],
+      "canonical_evidence": ["Project_Obsidian_Vault/30_Core/Role Bootstrap and Activation.md"],
+      "source_evidence": [],
+      "test_evidence": [],
+      "owner_disposition_ref": "",
+      "superseded_by": ""
     }
   ]
 }

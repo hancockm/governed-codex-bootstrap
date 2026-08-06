@@ -1,9 +1,55 @@
 # Owner-Scoped Orchestration
 
-Sol classifies risk and publishes a packet; Terra performs bounded work and creates a local candidate; Luna validates the exact candidate in the saved project and reuses one task identifier for all corrections in that cycle. Luna never commits or integrates. Sol's separate finalization acknowledgment is allowed only after accepted receipt, no correction pending, delivery and reconciliation terminal conditions, and cleanup. Failed, blocked, and user-input-needed tasks remain visible.
+The owner-facing Sol lane selects and authorizes work, Terra implements one
+bounded candidate, and Luna independently verifies the exact candidate commit.
+These are development lanes; they do not confer runtime application authority.
 
-Risk is `low` for isolated bounded work, `standard` when runtime/public-contract/persistence/adapter/user-facing triggers occur, and `high` for security/privacy, migration, mathematics, legal/release, cross-owner, or full-suite triggers. Owners may escalate but do not downgrade a triggered tier. Packets bind packet ID, implementation-cycle ID, owner, risk, scope, checks, assumptions, and acceptance conditions. Terra receipts bind the packet; Luna receipts also bind candidate commit, saved project, reused project-bound task, and cycle identity.
+The registry binds the lanes fail-closed:
 
-Use `owner_scoped_orchestration.py check-owner`, `classify`, `prepare`, `bind-runner`, `validate`, and `record` to inspect these contracts. The tool does not invoke models or mutate Git; apply mode writes immutable bundles only beneath `tmp/`. New owners adopt the lane only after Core activates their role, bootstrap, continuity MOC, profile, scope, packet checks, and exact model binding. The correction loop returns from a failed Luna verification to Terra with the same Luna task; finalization remains a separate Sol step.
+| Lane | Model | Reasoning | Writes |
+| --- | --- | --- | --- |
+| Owner Orchestrator | `gpt-5.6-sol` | `xhigh` | owner publication and closeout only |
+| Implementer | `gpt-5.6-terra` | `high` | packet-bounded candidate and local commit |
+| Verification Runner | `gpt-5.6-luna` | `max` | none |
 
-Role recognition, dependency mapping, and activation evidence are Core-owned under `docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md`.
+The tool implements the complete reusable lifecycle:
+
+```text
+check owner/profile
+→ classify risk
+→ prepare self-hashing packet
+→ validate Terra receipt
+→ bind Luna to exact packet + candidate
+→ validate Luna receipt
+→ record Sol disposition and immutable bundle
+```
+
+Use:
+
+```text
+python tools/owner_scoped_orchestration.py check-owner --owner core --active
+python tools/owner_scoped_orchestration.py classify --owner core --description "..."
+python tools/owner_scoped_orchestration.py prepare ...
+python tools/owner_scoped_orchestration.py bind-runner ...
+python tools/owner_scoped_orchestration.py validate ...
+python tools/owner_scoped_orchestration.py record ...
+```
+
+The three deterministic tiers are `orchestrator_only`,
+`orchestrator_plus_implementer`, and `full_team`. Runtime behavior, public
+contracts, canonical doctrine, persistence, security/privacy, mathematical
+behavior, external adapters, migrations, user-facing work, legal release,
+cross-owner integration, or a required full suite trigger `full_team`. A caller
+may escalate but cannot downgrade a triggered tier.
+
+One saved-project Luna task is reused through all corrections in one cycle.
+After the accepted exact-candidate receipt, no correction pending, delivery,
+primary synchronization, terminal reconciliation, and worktree cleanup, Sol
+archives completed or superseded subordinate tasks. Failed, blocked, and
+user-input-needed tasks remain visible. Terra and Luna create compact receipts,
+not independent continuity packs; the owner-facing Sol task owns the transcript.
+
+A future owner cannot dispatch lanes merely because a skeleton exists. Core
+must recognize its boundary, assign Git identity, install role and bootstrap
+instructions, initialize continuity, create and validate an orchestration
+profile, integrate owner adoption, and activate the registry entry.

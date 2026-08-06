@@ -44,6 +44,13 @@ All scratch data, pytest cache, and temporary test output belong under `tmp/`. R
 
 Use the smallest sufficient change, define verifiable acceptance conditions, and run focused then broader checks. Business and orchestration code depends on storage-neutral ports; concrete database paths, queries, transactions, migrations, and driver settings remain in selected adapters. Preserve atomic domain operations rather than replacing them with get-then-insert choreography. Follow the source documentation standard and audit public source. Feature agents follow the feature documentation standard and request cross-owner capabilities instead of recreating core behavior.
 
+Every repository tool must be classified by
+`configs/tool_parity_v1.json`. A short substitute is not an acceptable
+counterpart to a mature governance tool. Before closing a tool change, run
+`python tools/tool_parity.py`; add either a complete generic equivalent, a
+tested generic adaptation, or a reasoned product-specific exclusion. Never
+silently omit lifecycle functions because the bootstrap is a new repository.
+
 ## Git, worktrees, and reconciliation
 
 Inspect `git status --short` before staging. Stage only current-task files, inspect staged name-status, and do not absorb concurrent or unowned changes. Core alone may run `python tools/origin_reconciler.py sync-main --agent core`; it requires a clean primary checkout, no active Git operation, no local-only commits, a resolvable remote primary branch, and uses only `fetch` plus `merge --ff-only`. It never switches branches, resets, rebases, discards, or deletes.

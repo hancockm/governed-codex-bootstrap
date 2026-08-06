@@ -1,7 +1,15 @@
 {
-  "schema_version": 1,
-  "record_scope": "40_Coordination/Generated/Work Selection Audits",
-  "status": "advisory",
-  "required_fields": ["baseline", "candidates", "prerequisites", "owner_dispositions", "assumptions"],
-  "authority": "none"
+  "schema_version": "agent_work_selection_pilot_v1",
+  "authority": "source_only",
+  "audit_directory": "Project_Obsidian_Vault/40_Coordination/Generated/Work Selection Audits",
+  "required_roles": ["Core"],
+  "bootstrap_fixtures": [
+    {
+      "fixture_id": "research_first_cold_start",
+      "audit_path": "Project_Obsidian_Vault/40_Coordination/Generated/Work Selection Audits/bootstrap-research-first-7ded3ebd43b9.md",
+      "counts_toward_role_coverage": false,
+      "expected_atom_ids": ["D1", "D2", "D3", "D4", "D5", "D6", "D7"],
+      "evidence_commits": ["ad6183453e610e187aff02c7cbaf2817a501627c"]
+    }
+  ]
 }

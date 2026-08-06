@@ -1,8 +1,8 @@
-<!-- generated:breadcrumbs:start -->
-> Previous: [[00_Canonical/Canonical MOC.md]] | Up: [[00_Home/Project MOC.md]] | Next: [[20_Features/Features MOC.md]]
-<!-- generated:breadcrumbs:end -->
-
 # Research Sources MOC
+
+<!-- generated:breadcrumbs:start -->
+<< Previous: [[00_Canonical/Canonical MOC]] | Up: [[00_Home/Project MOC]] | Next: [[20_Features/Features MOC]] >>
+<!-- generated:breadcrumbs:end -->
 
 Research is source-only. Start with immutable records in `research/records/`, then use the generated `research/derived/research_map.json` and separate `research/reviews/` decisions. No candidate is canonical without Core's explicit promotion.
 

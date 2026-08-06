@@ -10,9 +10,10 @@ Start reading in the vault at `Project_Obsidian_Vault/00_Home/Project MOC.md`, t
 | --- | --- |
 | `tools/research_intake.py`, `research_organizer.py` | Preserve and map source evidence without promotion. |
 | `tools/agent_work_selection_audit.py`, `agent_to_agent_plan_handoff.py` | Create frozen-baseline advisory selection and critique records. |
-| `tools/owner_scoped_orchestration.py`, `work_packet.py` | Classify/bind/validate packet work without model invocation. |
+| `tools/owner_scoped_orchestration.py` | Classify, bind, validate, and immutably record complete Sol/Terra/Luna packet and receipt lifecycles without model invocation. |
 | `tools/test_runner.py`, `source_doc_audit.py`, `vault_maintainer.py` | Execute lifecycle tests, audit public source, and maintain safe navigation. |
 | `tools/origin_reconciler.py`, `capability_status.py`, `export_agent_thread_continuity.py` | Report delivery facts, maturity evidence, and complete bounded continuity archives. |
+| `tools/tool_parity.py`, `configs/tool_parity_v1.json` | Require an explicit complete counterpart, generic adaptation, or product-specific exclusion for every reference tool. |
 | `configs/` and `docs/` | Machine policy plus operational runbooks. |
 
 The cold start is research intake and organization; Core canonicalization; advisory selection audit and plan handoff; user approval; Sol packet classification; Terra candidate; one reused saved-project Luna task through corrections; authorized integration; Core synchronization; continuity export; then Sol finalization/archive acknowledgment.
@@ -133,7 +134,12 @@ The state order is enforced by the repository conformance test: research must ex
 4. A failed full run returns to serial failed triage; it does not repeatedly launch the parallel suite.
 5. Sol creates the separate subordinate archive/finalization acknowledgment only after an accepted exact-candidate receipt, no correction pending, commit/push/integration, primary-branch synchronization, terminal reconciliation, and worktree cleanup. Failed, blocked, and user-input-needed tasks remain visible. Core performs the bounded integration check and exports the owning continuity transcript.
 
-`tools/work_packet.py` validates packets and receipts. `tools/origin_reconciler.py` reports bounded reconciliation facts and, for Core only, may fetch/prune and fast-forward the clean primary checkout with `merge --ff-only`; it never infers integration authority, resets, rebases, or deletes.
+`tools/owner_scoped_orchestration.py` validates packets, exact lane bindings,
+candidate receipts, runner bindings, correction cycles, and immutable receipt
+bundles. `tools/origin_reconciler.py` reports bounded reconciliation facts and,
+for Core only, may fetch/prune and fast-forward the clean primary checkout with
+`merge --ff-only`; it never infers integration authority, resets, rebases, or
+deletes.
 
 ## Test profiles
 
@@ -149,7 +155,25 @@ The impact map is fail-closed: an unknown runtime source change chooses the broa
 
 ## Clean-room build order and recovery assets
 
-Create a project in this exact order: root policy and six-plane directories; the maintained vault and its narrative MOCs; source-preserving research inbox/records/schema; research organizer and tests; empty vault canonical templates and capability registry; Core role/bootstrap/continuity roots; owner, orchestration, Git, testing, vault-maintenance, and conformance configurations; packet, reconciliation, continuity, source-documentation, vault, and test-runner tools; future-owner inactive scaffold; third-party artifact records; then the self-conformance test. Recovery is supported by immutable research records, hashed work packets and receipts, bounded transcript exports, Git inspection reports, pytest last-failure cache under `tmp/`, and the serial isolation suite. No remote is assumed by this bootstrap.
+Create a project in this exact order: root policy and six-plane directories;
+the maintained vault and its narrative MOCs; source-preserving research
+inbox/records/schema; research organizer and tests; empty vault canonical
+templates and capability registry; Core role/bootstrap/continuity roots;
+owner, orchestration, Git, testing, vault-maintenance, tool-parity, and
+conformance configurations; complete coordination, packet, reconciliation,
+continuity, source-documentation, vault, and test-runner tools; future-owner
+inactive scaffold; third-party artifact records; then the self-conformance
+test. Recovery is supported by immutable research records, hashed work packets
+and receipts, bounded transcript exports, Git inspection reports, pytest
+last-failure cache under `tmp/`, and the serial isolation suite. No remote is
+assumed by this bootstrap.
+
+## Reference-tool dispositions
+
+The bootstrap deliberately does not copy product runtime utilities. See
+`docs/TOOL_PARITY.md` for the distinction between complete generic equivalents,
+generic adaptations, explicit product-specific exclusions, and bootstrap-native
+tools. Run `python tools/tool_parity.py` whenever the tool inventory changes.
 
 Run the complete initial verification with:
 

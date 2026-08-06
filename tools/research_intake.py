@@ -1,3 +1,5 @@
+"""Create content-addressed immutable records from supplied research files."""
+
 from __future__ import annotations
 
 import argparse
@@ -11,6 +13,8 @@ from governance_bootstrap.research import intake
 
 
 def main() -> int:
+    """Parse one research source and print its immutable intake record."""
+
     parser = argparse.ArgumentParser(description="Create an immutable research record.")
     parser.add_argument("source", type=Path)
     parser.add_argument("--title", required=True)

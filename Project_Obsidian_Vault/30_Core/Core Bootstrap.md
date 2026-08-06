@@ -1,8 +1,8 @@
-<!-- generated:breadcrumbs:start -->
-> Previous: none | Up: [[30_Core/Core MOC.md]] | Next: [[30_Core/Core Protocols.md]]
-<!-- generated:breadcrumbs:end -->
-
 # Core Bootstrap
+
+<!-- generated:breadcrumbs:start -->
+<< Previous: none | Up: [[30_Core/Core MOC]] | Next: [[30_Core/Core Protocols]] >>
+<!-- generated:breadcrumbs:end -->
 
 Validate the vault and repository; intake and organize research; compare evidence; write only supported canonical decisions; register capabilities; configure verification; and activate future owners only after accepted boundaries.
 

@@ -1,0 +1,14 @@
+{
+  "schema_version": "owner_scoped_orchestration_owner_profile_v1",
+  "owner": "core",
+  "role_instruction_path": "roles/core/ROLE.md",
+  "bootstrap_prompt_path": "roles/core/BOOTSTRAP.md",
+  "continuity_moc_path": "Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md",
+  "continuity_receipts_root": "Project_Obsidian_Vault/30_Core/Continuity/Orchestration Receipts",
+  "branch_prefix": "core/",
+  "verification_profiles": {
+    "focused": ["python tools/test_runner.py affected --base origin/master"],
+    "broad": ["python tools/test_runner.py full"]
+  },
+  "ownership_notice": "References Core authority only; it does not grant new file ownership."
+}

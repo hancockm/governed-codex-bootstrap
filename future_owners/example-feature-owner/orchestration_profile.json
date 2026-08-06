@@ -1,0 +1,14 @@
+{
+  "schema_version": "owner_scoped_orchestration_owner_profile_v1",
+  "owner": "example_feature",
+  "role_instruction_path": "future_owners/example-feature-owner/ROLE.md",
+  "bootstrap_prompt_path": "future_owners/example-feature-owner/BOOTSTRAP.md",
+  "continuity_moc_path": "future_owners/example-feature-owner/continuity/MOC.md",
+  "continuity_receipts_root": "future_owners/example-feature-owner/continuity/Orchestration Receipts",
+  "branch_prefix": "feature-example/",
+  "verification_profiles": {
+    "focused": ["python tools/test_runner.py affected --base origin/master"],
+    "broad": ["python tools/test_runner.py full"]
+  },
+  "ownership_notice": "Template profile; inactive until Core records Git ownership and activation."
+}

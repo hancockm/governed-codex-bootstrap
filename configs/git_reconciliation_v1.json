@@ -1,7 +1,46 @@
 {
-  "schema_version": 1,
-  "integration_owner": "core",
-  "primary_branch": "master",
-  "forbidden_recovery_operations": ["reset", "rebase", "forced-update"],
-  "sync_main_requires": ["primary_checkout", "clean_worktree", "local_equals_origin"]
+  "schema_version": "git_reconciliation_config_v1",
+  "canonical_remote": "origin",
+  "canonical_branch": "master",
+  "worktree_root": ".worktrees",
+  "protected_branches": ["master"],
+  "agent_aliases": {},
+  "roles": {
+    "core": {
+      "display_name": "Core",
+      "strict_prefixes": ["core/"],
+      "legacy_prefixes": ["codex/core-", "application/", "operations/", "runtime/"]
+    },
+    "interface": {
+      "display_name": "Interface Owner",
+      "strict_prefixes": ["interface/"],
+      "legacy_prefixes": ["codex/interface-"]
+    },
+    "domain": {
+      "display_name": "Domain Owner",
+      "strict_prefixes": ["domain/"],
+      "legacy_prefixes": ["codex/domain-"]
+    },
+    "governance": {
+      "display_name": "Governance Owner",
+      "strict_prefixes": ["governance/"],
+      "legacy_prefixes": ["codex/governance-"]
+    },
+    "audit": {
+      "display_name": "Audit Owner",
+      "strict_prefixes": ["audit/"],
+      "legacy_prefixes": ["codex/audit-"]
+    },
+    "documentation": {
+      "display_name": "Documentation Owner",
+      "strict_prefixes": ["documentation/"],
+      "legacy_prefixes": ["codex/documentation-"]
+    },
+    "compliance": {
+      "display_name": "Compliance Owner",
+      "strict_prefixes": ["compliance/"],
+      "legacy_prefixes": ["codex/compliance-"]
+    }
+  },
+  "ambiguous_prefixes": ["codex/", "docs/", "integration/", "reconcile/", "safety/"]
 }
