@@ -7,7 +7,7 @@ This repository is a clean-room starting point for a project that must retain ev
 | Plane | Purpose | Primary assets |
 | --- | --- | --- |
 | Authority | Who may decide and change what | `AGENTS.md`, `roles/`, owner registry |
-| Canonical knowledge | Accepted, current project truth | `canonical/` and capability registry |
+| Canonical knowledge | Accepted, current project truth | `Project_Obsidian_Vault/00_Canonical/` and capability registry |
 | Coordination | Requests, critique, work selection, handoffs | `coordination/` and work packets |
 | Execution | Bounded implementation and verification | `tools/`, `tests/`, test policy |
 | Delivery | Reviewable commits and safe integration | Git policy and reconciliation tool |
@@ -21,8 +21,8 @@ Research is source-only material. It is immutable after intake and never becomes
 2. Copy each research file into `research/inbox/` and register it with `python tools/research_intake.py research/inbox/your-file.md --title "Short title" --origin "where it came from"`.
 3. Start the cold-path evidence lane with `python tools/research_organizer.py scan`, then `python tools/research_organizer.py build`. It preserves originals, extracts supported plain text/Markdown, records exact and near-duplicate provenance, and writes a research map with candidates for human review. An optional PDF adapter may be added later; unsupported formats remain visible rather than silently skipped.
 4. Review candidates without deleting them: `python tools/research_organizer.py review candidate-id --status superseded --reason "..."`. Permitted statuses are `current`, `candidate`, `superseded`, `deadend_candidate`, `evidence`, and `source`. Dead-end and superseded candidates remain source material and cannot enter canonical documentation automatically.
-5. Have the Core owner compare immutable records and review decisions, state uncertainties, and write only supported, explicitly accepted claims into `canonical/THESIS.md`, `canonical/ARCHITECTURE.md`, `canonical/SPEC.md`, and `canonical/ROADMAP.md`.
-6. Update `canonical/capability_registry.json` with the accepted capability state. Then activate a future owner only by changing the owner registry and adding its role, bootstrap, and continuity material.
+5. Read the maintained vault from `Project_Obsidian_Vault/00_Home/Project MOC.md`: research first, then canonical and Core MOCs. Have the Core owner compare immutable records and review decisions, state uncertainties, and write only supported, explicitly accepted claims into `Project_Obsidian_Vault/00_Canonical/`.
+6. Update `configs/capability_registry_v1.json` with the accepted capability state. Then activate a future owner only by changing the owner registry and adding its role, bootstrap, and continuity material.
 7. Run `python tools/architecture_conformance.py`, focused tests, and finally `python tools/test_runner.py full` before an integration candidate is accepted.
 
 ## Authority hierarchy and canonical truth
@@ -119,7 +119,7 @@ The impact map is fail-closed: an unknown runtime source change chooses the broa
 
 ## Clean-room build order and recovery assets
 
-Create a project in this exact order: root policy and six-plane directories; source-preserving research inbox/records/schema; research organizer and tests; empty canonical templates and capability registry; Core role/bootstrap/continuity roots; owner, orchestration, Git, testing, and conformance configurations; packet, reconciliation, continuity, and test-runner tools; future-owner inactive scaffold; third-party artifact records; then the self-conformance test. Recovery is supported by immutable research records, hashed work packets and receipts, bounded transcript exports, Git inspection reports, pytest last-failure cache under `tmp/`, and the serial isolation suite. No remote is assumed by this bootstrap.
+Create a project in this exact order: root policy and six-plane directories; the maintained vault and its narrative MOCs; source-preserving research inbox/records/schema; research organizer and tests; empty vault canonical templates and capability registry; Core role/bootstrap/continuity roots; owner, orchestration, Git, testing, vault-maintenance, and conformance configurations; packet, reconciliation, continuity, source-documentation, vault, and test-runner tools; future-owner inactive scaffold; third-party artifact records; then the self-conformance test. Recovery is supported by immutable research records, hashed work packets and receipts, bounded transcript exports, Git inspection reports, pytest last-failure cache under `tmp/`, and the serial isolation suite. No remote is assumed by this bootstrap.
 
 Run the complete initial verification with:
 

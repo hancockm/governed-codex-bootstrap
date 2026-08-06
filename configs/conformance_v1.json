@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "required_planes": {
-    "authority": ["AGENTS.md", "roles/core/ROLE.md", "configs/owners_v1.json"],
-    "canonical_knowledge": ["canonical/THESIS.md", "canonical/ARCHITECTURE.md", "canonical/SPEC.md", "canonical/ROADMAP.md", "canonical/capability_registry.json"],
-    "coordination": ["coordination/README.md", "configs/owner_scoped_orchestration_v1.json"],
-    "execution": ["tools/test_runner.py", "configs/testing/execution_v1.json", "configs/testing/test_impact_v1.json"],
+    "authority": ["AGENTS.md", "roles/core/ROLE.md", "configs/owners_v1.json", "docs/CORE_AGENT_WORKFLOW.md", "docs/OWNER_SCOPED_ORCHESTRATION.md", "docs/VAULT_INFORMATION_ARCHITECTURE_STANDARD.md"],
+    "canonical_knowledge": ["Project_Obsidian_Vault/00_Home/Project MOC.md", "Project_Obsidian_Vault/00_Canonical/Core Thesis.md", "Project_Obsidian_Vault/00_Canonical/ARCHITECTURE.md", "Project_Obsidian_Vault/00_Canonical/SPEC.md", "Project_Obsidian_Vault/00_Canonical/ROADMAP.md", "configs/capability_registry_v1.json"],
+    "coordination": ["coordination/README.md", "Project_Obsidian_Vault/40_Coordination/Agent-to-Agent Discussions MOC.md", "configs/owner_scoped_orchestration_v1.json"],
+    "execution": ["tools/test_runner.py", "tools/source_doc_audit.py", "tools/vault_maintainer.py", "docs/SOURCE_DOCUMENTATION_STYLE.md", "docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md", "configs/testing/execution_v1.json", "configs/testing/test_impact_v1.json", "configs/vault_maintenance_registry_v1.json"],
     "delivery": ["tools/origin_reconciler.py", "configs/git_reconciliation_v1.json"],
-    "continuity": ["tools/export_continuity.py", "continuity/core/README.md"]
+    "continuity": ["tools/export_continuity.py", "continuity/core/README.md", "Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md"]
   },
   "research_first": {"research_dir": "research", "canonical_dir": "canonical", "initial_active_owners": ["core"], "cold_start_sequence": ["research_intake", "research_organization", "core_canonicalization", "core_delivery", "future_owner_activation"]},
   "forbidden_project_markers": ["Hilbert", "C:\\\\Users\\\\", "/Users/"]

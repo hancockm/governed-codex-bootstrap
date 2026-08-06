@@ -7,6 +7,9 @@ import tomllib
 from pathlib import Path
 from typing import Any
 
+from .source_docs import audit_package
+from .vault import check as check_vault
+
 
 def _load(root: Path, relative: str) -> Any:
     return json.loads((root / relative).read_text(encoding="utf-8"))
@@ -33,6 +36,19 @@ def check_repository(root: Path) -> list[str]:
         for item in paths:
             if not (root / item).is_file():
                 failures.append(f"{plane}: missing {item}")
+    old_canonical = root / "canonical"
+    if old_canonical.exists() and any(old_canonical.rglob("*")):
+        failures.append("canonical: narrative canonical files must exist only in the vault")
+    registry = _load(root, "configs/vault_maintenance_registry_v1.json")
+    vault_root = root / registry["vault_root"]
+    if not vault_root.is_dir() or any(not (vault_root / path).is_file() for path in registry["canonical_paths"]):
+        failures.append("canonical: vault canonical single source is incomplete")
+    vault_errors = check_vault(root)
+    if vault_errors:
+        failures.extend(f"vault: {error}" for error in vault_errors)
+    source_findings = audit_package(root / "governance_bootstrap")
+    if source_findings:
+        failures.extend(f"source-doc: {finding}" for finding in source_findings)
     research_policy = config["research_first"]
     research = root / research_policy["research_dir"]
     records = research / "records"

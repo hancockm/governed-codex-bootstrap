@@ -37,7 +37,7 @@ def affected_targets(paths: list[str]) -> list[str]:
             if any(fnmatch.fnmatch(path, pattern) for pattern in mapping["source_globs"]):
                 selected.update(mapping["focused"])
                 matched = True
-        if not matched and (path.endswith(".py") or path.startswith("configs/") or path.startswith("canonical/")):
+        if not matched and (path.endswith(".py") or path.startswith("configs/") or path.startswith("Project_Obsidian_Vault/00_Canonical/")):
             unknown = True
     if unknown:
         return config["unknown_runtime_boundary"]

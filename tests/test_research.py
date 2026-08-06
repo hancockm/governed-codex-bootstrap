@@ -12,8 +12,8 @@ from governance_bootstrap.research_organizer import build, may_enter_canonical, 
 def research_root(tmp_path: Path) -> Path:
     (tmp_path / "research/inbox").mkdir(parents=True)
     (tmp_path / "research/records").mkdir()
-    (tmp_path / "canonical").mkdir()
-    (tmp_path / "canonical/THESIS.md").write_text("unchanged\n", encoding="utf-8")
+    (tmp_path / "Project_Obsidian_Vault/00_Canonical").mkdir(parents=True)
+    (tmp_path / "Project_Obsidian_Vault/00_Canonical/Core Thesis.md").write_text("unchanged\n", encoding="utf-8")
     return tmp_path
 
 
@@ -46,7 +46,7 @@ def test_deadend_candidate_never_enters_canonical_without_explicit_review(tmp_pa
     assert not may_enter_canonical(root, candidate["candidate_id"])
     review(root, candidate["candidate_id"], "superseded", "replaced by later evidence")
     assert not may_enter_canonical(root, candidate["candidate_id"])
-    assert (root / "canonical/THESIS.md").read_text(encoding="utf-8") == "unchanged\n"
+    assert (root / "Project_Obsidian_Vault/00_Canonical/Core Thesis.md").read_text(encoding="utf-8") == "unchanged\n"
 
 
 def test_review_rejects_unknown_status(tmp_path: Path) -> None:

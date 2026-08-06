@@ -1,0 +1,21 @@
+from __future__ import annotations
+
+from pathlib import Path
+
+from governance_bootstrap.source_docs import audit_package
+from governance_bootstrap.vault import check, report, sync_navigation
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_vault_is_maintained_single_source_and_navigation_is_idempotent() -> None:
+    assert check(ROOT) == []
+    result = sync_navigation(ROOT)
+    assert result == {"ok": True, "applied": False, "changes": [], "diagnostics": []}
+    assert report(ROOT)["oversized"] == []
+    assert not (ROOT / "canonical").exists()
+
+
+def test_source_documentation_audit_covers_public_package_source() -> None:
+    assert audit_package(ROOT / "governance_bootstrap") == []
