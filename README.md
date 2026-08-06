@@ -14,6 +14,7 @@ Start reading in the vault at `Project_Obsidian_Vault/00_Home/Project MOC.md`, t
 | `tools/test_runner.py`, `source_doc_audit.py`, `vault_maintainer.py` | Execute lifecycle tests, audit public source, and maintain safe navigation. |
 | `tools/origin_reconciler.py`, `capability_status.py`, `export_agent_thread_continuity.py` | Report delivery facts, maturity evidence, and complete bounded continuity archives. |
 | `tools/tool_parity.py`, `configs/tool_parity_v1.json` | Require an explicit complete counterpart, generic adaptation, or product-specific exclusion for every reference tool. |
+| `configs/documentation_system_v1.json`, `docs/DOCUMENTATION_SYSTEM_PARITY.md` | Enforce substantive project-neutral equivalents for the instruction, Core bootstrap, continuity, Git, vault, and owner-workflow system. |
 | `configs/` and `docs/` | Machine policy plus operational runbooks. |
 
 The cold start is research intake and organization; Core canonicalization; advisory selection audit and plan handoff; user approval; Sol packet classification; Terra candidate; one reused saved-project Luna task through corrections; authorized integration; Core synchronization; continuity export; then Sol finalization/archive acknowledgment.
@@ -77,6 +78,14 @@ Use capability states such as `proposed`, `active`, `verified`, `deferred`, `sup
 Core begins with no inferred domain doctrine. It verifies the bootstrap, organizes research, identifies agreement and uncertainty, records an assumption ledger, and writes the minimum supported canonical baseline. Every substantial plan freezes its decision evidence at the initial inspected state: distinguish selection evidence (canonical ordering, contract, ownership, prerequisites, tests) from later delivery conditions (unrelated worktree changes or navigation drift). Reopen a conclusion only when the selected item or its material prerequisite changes.
 
 Publish agent-to-agent material under `coordination/` as a bounded record. A critique begins by listing common agreement, all disagreements, weak points, a convergence move, and decision status. Each substantive critique point receives a disposition: accepted, partly accepted, rejected, deferred, or requires user approval. A2A records preserve convergence history; Core alone promotes accepted conclusions to canonical documents.
+
+The complete Core rehydration prompt is
+`Project_Obsidian_Vault/30_Core/Core Bootstrap.md`. Its continuity MOC links
+separate reorientation, assumption-audit, canonical/runtime reconciliation,
+and continuity-maintenance protocols. This prevents the common failure where a
+short bootstrap pointer exists but does not contain enough authority order,
+evidence order, owner boundaries, recovery, and closeout detail to restart the
+system safely.
 
 ## Risk, packet, and delivery state machine
 
@@ -174,6 +183,11 @@ The bootstrap deliberately does not copy product runtime utilities. See
 `docs/TOOL_PARITY.md` for the distinction between complete generic equivalents,
 generic adaptations, explicit product-specific exclusions, and bootstrap-native
 tools. Run `python tools/tool_parity.py` whenever the tool inventory changes.
+
+The same rule applies to instructions and maintained Markdown. See
+`docs/DOCUMENTATION_SYSTEM_PARITY.md`; conformance rejects missing operational
+surfaces, skeletal replacements, incomplete Core continuity protocols, and
+project-specific reference markers.
 
 Run the complete initial verification with:
 

@@ -1,0 +1,247 @@
+{
+  "schema_version": "governed_documentation_system_v1",
+  "surfaces": [
+    {
+      "path": "AGENTS.md",
+      "classification": "operational_equivalent",
+      "minimum_lines": 280,
+      "required_headings": [
+        "## Mandatory Agent Continuity Closeout",
+        "## Planning Evidence Cutoff",
+        "## Integrated Planning And Implementation Cycle",
+        "## Owner-Scoped Orchestration",
+        "## Git Staging, Commit, and Push Discipline",
+        "## Vault Information Architecture"
+      ]
+    },
+    {
+      "path": "docs/GIT_RECONCILIATION.md",
+      "classification": "operational_equivalent",
+      "minimum_lines": 180,
+      "required_headings": [
+        "## Start-of-work inspection",
+        "## Durable closeout evidence",
+        "## Core integration inbox",
+        "## Core-only primary synchronization",
+        "## Worktree lifecycle",
+        "## Recovery examples"
+      ]
+    },
+    {
+      "path": "docs/CORE_AGENT_WORKFLOW.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 150,
+      "required_headings": [
+        "## Required Starting Points",
+        "## Research-First Canonicalization",
+        "## Reorientation And Next-Step Discovery",
+        "## Implementation Routine",
+        "## Continuity Closeout",
+        "## Definition Of Complete"
+      ]
+    },
+    {
+      "path": "docs/OWNER_SCOPED_ORCHESTRATION.md",
+      "classification": "operational_equivalent",
+      "minimum_lines": 140,
+      "required_headings": [
+        "## Operating Shape",
+        "## Risk Tiers",
+        "## Work Packet Contract",
+        "## Packet And Receipt Flow",
+        "## Saved-Project Runner Rule",
+        "## Future-Owner Adoption"
+      ]
+    },
+    {
+      "path": "docs/VAULT_INFORMATION_ARCHITECTURE_STANDARD.md",
+      "classification": "operational_equivalent",
+      "minimum_lines": 120,
+      "required_headings": [
+        "## Narrative Maps Of Content",
+        "## Breadcrumb Trail",
+        "## Ownership And Rollout",
+        "## Canonical And Evidence Areas",
+        "## Acceptance"
+      ]
+    },
+    {
+      "path": "docs/SOURCE_DOCUMENTATION_STYLE.md",
+      "classification": "operational_equivalent",
+      "minimum_lines": 85,
+      "required_headings": [
+        "## Core Rule",
+        "## Python Docstrings",
+        "## Dataclasses And Protocols",
+        "## Boundaries"
+      ]
+    },
+    {
+      "path": "docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 65,
+      "required_headings": [
+        "## Required Pre-Work",
+        "## README Shape",
+        "## Boundary Discipline",
+        "## Activation And Retirement"
+      ]
+    },
+    {
+      "path": "docs/POWERSHELL_AGENT_INSTRUCTIONS.md",
+      "classification": "operational_equivalent",
+      "minimum_lines": 130,
+      "required_headings": [
+        "## Statement Blocks And Output",
+        "## Upstream Syntax",
+        "## Separate Inspection, Mutation, And Verification",
+        "## Exit Codes And Inspection Failures",
+        "## Checklist"
+      ]
+    },
+    {
+      "path": "docs/AGENT_CONTINUITY_EXPORT.md",
+      "classification": "operational_equivalent",
+      "minimum_lines": 75,
+      "required_headings": [
+        "## Selection Boundary",
+        "## Output Contract",
+        "## Required Closeout Sequence",
+        "## Ownership Rules",
+        "## Transaction And Recovery",
+        "## Failure Rules"
+      ]
+    },
+    {
+      "path": "docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md",
+      "classification": "operational_equivalent",
+      "minimum_lines": 50,
+      "required_headings": [
+        "## Preflight",
+        "## Finding Classification",
+        "## Safe Mutation",
+        "## Cross-Owner Handoff",
+        "## Verification And Closeout"
+      ]
+    },
+    {
+      "path": "docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 90,
+      "required_headings": [
+        "## Lifecycle States",
+        "## Boundary Recognition",
+        "## Required Assets",
+        "## Dependency Architecture",
+        "## Core Activation",
+        "## Retirement"
+      ]
+    },
+    {
+      "path": "roles/core/ROLE.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 40,
+      "required_headings": [
+        "## Owner And Scope",
+        "## Startup",
+        "## Decision Boundary",
+        "## Owner-Scoped Orchestration",
+        "## Closeout"
+      ]
+    },
+    {
+      "path": "roles/core/BOOTSTRAP.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 15,
+      "required_headings": []
+    },
+    {
+      "path": "Project_Obsidian_Vault/30_Core/Core Bootstrap.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 110,
+      "required_headings": ["# Core Bootstrap Prompt"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 20,
+      "required_headings": ["# Core Continuity MOC"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/30_Core/Core Protocols.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 45,
+      "required_headings": [
+        "## Authority",
+        "## Planning",
+        "## Implementation",
+        "## Cross-Owner Boundaries",
+        "## Delivery",
+        "## Continuity"
+      ]
+    },
+    {
+      "path": "Project_Obsidian_Vault/30_Core/Continuity/Protocols/Reorientation And Next-Step Discovery.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 30,
+      "required_headings": ["## Rehydrate", "## Select", "## Report"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/30_Core/Continuity/Protocols/Assumption Audit.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 25,
+      "required_headings": ["## Classes", "## Required Questions"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/30_Core/Continuity/Protocols/Canonical-To-Runtime Reconciliation.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 25,
+      "required_headings": ["## Evidence Order", "## Reconciliation"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/30_Core/Continuity/Protocols/Continuity Maintenance Protocol.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 30,
+      "required_headings": ["## Export", "## Maintain", "## Close"]
+    },
+    {
+      "path": "docs/DOCUMENTATION_SYSTEM_PARITY.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 80,
+      "required_headings": [
+        "## Parity Classes",
+        "## Shared Operational Surfaces",
+        "## Core Continuity Equivalence",
+        "## Future Owner Equivalence",
+        "## Deliberate Exclusions",
+        "## Conformance"
+      ]
+    },
+    {
+      "path": "coordination/README.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 45,
+      "required_headings": [
+        "## Reading Order",
+        "## Critique Structure",
+        "## Atomic Records",
+        "## Cross-Owner Publication"
+      ]
+    }
+  ],
+  "required_core_continuity_protocols": [
+    "Project_Obsidian_Vault/30_Core/Continuity/Protocols/Reorientation And Next-Step Discovery.md",
+    "Project_Obsidian_Vault/30_Core/Continuity/Protocols/Assumption Audit.md",
+    "Project_Obsidian_Vault/30_Core/Continuity/Protocols/Canonical-To-Runtime Reconciliation.md",
+    "Project_Obsidian_Vault/30_Core/Continuity/Protocols/Continuity Maintenance Protocol.md"
+  ],
+  "adaptation_dispositions": {
+    "shared_repository_governance": "retain as project-neutral operational contracts",
+    "core_owner_workflow": "retain authority and evidence behavior while deriving project doctrine from research",
+    "owner_specific_instruction_sets": "create only during explicit owner activation from the inactive owner template",
+    "owner_specific_continuity_packs": "create only for an activated owner and never prepopulate with reference transcripts",
+    "product_runtime_architecture": "exclude because runtime doctrine must be derived from this project's research",
+    "domain_parameter_manuals": "exclude until a recognized owner and accepted domain contract require them",
+    "product_specific_tooling": "classify separately in the tool parity manifest"
+  }
+}

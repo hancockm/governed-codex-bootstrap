@@ -30,6 +30,55 @@ def _require_artifact(failures: list[str], root: Path, name: str, version: str) 
         failures.append(f"third-party: invalid hash or provenance in {path.name}")
 
 
+def validate_documentation_system(root: Path) -> list[str]:
+    """Return violations of the governed instruction and Markdown contract."""
+    manifest = _load(root, "configs/documentation_system_v1.json")
+    failures: list[str] = []
+    if manifest.get("schema_version") != "governed_documentation_system_v1":
+        failures.append("invalid documentation-system schema")
+        return failures
+    allowed_classes = {"operational_equivalent", "generic_adaptation"}
+    seen: set[str] = set()
+    for surface in manifest.get("surfaces", []):
+        relative = surface.get("path", "")
+        if not relative or relative in seen:
+            failures.append(f"invalid or duplicate documentation surface {relative!r}")
+            continue
+        seen.add(relative)
+        if surface.get("classification") not in allowed_classes:
+            failures.append(f"invalid documentation classification for {relative}")
+        path = root / relative
+        if not path.is_file():
+            failures.append(f"missing documentation surface {relative}")
+            continue
+        lines = path.read_text(encoding="utf-8").splitlines()
+        minimum = surface.get("minimum_lines")
+        if not isinstance(minimum, int) or minimum < 1 or len(lines) < minimum:
+            failures.append(
+                f"documentation surface {relative} has {len(lines)} lines; "
+                f"requires at least {minimum}"
+            )
+        headings = {line.strip() for line in lines if line.lstrip().startswith("#")}
+        for heading in surface.get("required_headings", []):
+            if heading not in headings:
+                failures.append(f"documentation surface {relative} is missing heading {heading!r}")
+    for relative in manifest.get("required_core_continuity_protocols", []):
+        if not (root / relative).is_file():
+            failures.append(f"missing Core continuity protocol {relative}")
+    required_dispositions = {
+        "shared_repository_governance",
+        "core_owner_workflow",
+        "owner_specific_instruction_sets",
+        "owner_specific_continuity_packs",
+        "product_runtime_architecture",
+        "domain_parameter_manuals",
+        "product_specific_tooling",
+    }
+    if set(manifest.get("adaptation_dispositions", {})) != required_dispositions:
+        failures.append("documentation adaptation dispositions are incomplete")
+    return failures
+
+
 def check_repository(root: Path) -> list[str]:
     """Return deterministic violations of the bootstrap architecture."""
     config = _load(root, "configs/conformance_v1.json")
@@ -38,6 +87,9 @@ def check_repository(root: Path) -> list[str]:
         for item in paths:
             if not (root / item).is_file():
                 failures.append(f"{plane}: missing {item}")
+    failures.extend(
+        f"documentation: {item}" for item in validate_documentation_system(root)
+    )
     old_canonical = root / "canonical"
     if old_canonical.exists() and any(old_canonical.rglob("*")):
         failures.append("canonical: narrative canonical files must exist only in the vault")

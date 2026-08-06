@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from governance_bootstrap.conformance import check_repository
+from governance_bootstrap.conformance import check_repository, validate_documentation_system
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,3 +47,45 @@ def test_no_project_specific_markers_or_absolute_paths() -> None:
     assert not [item for item in check_repository(ROOT) if item.startswith("neutrality:")]
     assert "C:" not in (ROOT / "README.md").read_text(encoding="utf-8")
     assert policy["forbidden_project_markers"]
+
+
+def test_documentation_system_preserves_operational_equivalence() -> None:
+    manifest = json.loads(
+        (ROOT / "configs/documentation_system_v1.json").read_text(encoding="utf-8")
+    )
+    assert validate_documentation_system(ROOT) == []
+    classifications = {item["classification"] for item in manifest["surfaces"]}
+    assert classifications == {"operational_equivalent", "generic_adaptation"}
+    assert {
+        "AGENTS.md",
+        "docs/GIT_RECONCILIATION.md",
+        "Project_Obsidian_Vault/30_Core/Core Bootstrap.md",
+        "Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md",
+    } <= {item["path"] for item in manifest["surfaces"]}
+
+
+def test_core_bootstrap_has_complete_rehydration_and_closeout_contract() -> None:
+    bootstrap = (ROOT / "Project_Obsidian_Vault/30_Core/Core Bootstrap.md").read_text(
+        encoding="utf-8"
+    )
+    for phrase in (
+        "Required starting order:",
+        "Authority order:",
+        "For discovery or next-step work:",
+        "For authorized implementation:",
+        "Before completing substantial Core work:",
+        "Your first response is a concise rehydration report",
+    ):
+        assert phrase in bootstrap
+
+
+def test_git_guide_covers_reconciliation_delivery_and_recovery() -> None:
+    guide = (ROOT / "docs/GIT_RECONCILIATION.md").read_text(encoding="utf-8")
+    for phrase in (
+        "awaiting_named_integrator",
+        "git merge --ff-only",
+        "inspection_failed",
+        "stable patch-ID",
+        "git worktree remove",
+    ):
+        assert phrase in guide

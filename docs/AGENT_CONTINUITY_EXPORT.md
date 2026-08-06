@@ -1,42 +1,92 @@
 # Agent Continuity Export
 
-The complete continuity exporter is `tools/export_agent_thread_continuity.py`. It reads the exact Codex session JSONL source and selects only user-visible `response_item` messages whose role is `user` or `assistant`. It excludes hidden instructions, private reasoning, tool activity, duplicate event projections, encrypted material, and runtime records.
+`tools/export_agent_thread_continuity.py` exports a complete bounded,
+user-visible task history into exactly one owner continuity pack. Continuity
+is noncanonical source context.
 
-## Output contract
+## Selection Boundary
+
+The exporter reads the exact session JSONL and selects user-visible
+`response_item` messages whose role is `user` or `assistant`. It freezes the
+stable full-line source prefix observed at startup and records its byte count
+and SHA-256.
+
+It excludes hidden instructions, private reasoning, tool calls and outputs,
+encrypted material, runtime state, and duplicate event projections. Detected
+credentials are replaced deterministically with `[REDACTED_CREDENTIAL]`; the
+manifest retains the original record hash without retaining plaintext.
+
+## Output Contract
 
 One transcript root contains:
 
-- `visible_messages.jsonl`: exact selected source lines unless credential redaction was required;
-- chronological Markdown parts containing HTML-escaped display projections;
-- monthly and transcript MOCs with managed path-qualified links;
-- `manifest.json` binding the source prefix, selected records, role and phase counts, redactions, schemas, and output inventory.
+- `visible_messages.jsonl`: exact selected source lines except required
+  credential redaction;
+- chronological Markdown parts with HTML-safe projections;
+- monthly and transcript MOCs;
+- `manifest.json` binding source prefix, selected records, schemas, role/phase
+  counts, redactions, and output inventory.
 
-Detected credentials are replaced deterministically with `[REDACTED_CREDENTIAL]`. The manifest retains the original source-record hash without retaining the credential. Continuity remains source-only history, never canonical doctrine.
+Markdown is a display projection. The selected JSONL and hashes are the source
+evidence. Generated records are never hand-edited.
 
-## Required closeout sequence
+## Required Closeout Sequence
 
-Set owner-specific values and run:
+Dry-run with owner-specific values:
 
-```powershell
-python tools/export_agent_thread_continuity.py `
-  --source <exact-session.jsonl> `
-  --thread-id <thread-id> `
-  --output-dir <registered-transcript-root> `
-  --vault-target <vault-relative-transcript-root> `
-  --agent-label <owner-label> `
-  --manifest-schema-version <owner-manifest-schema> `
-  --transcript-schema-version <owner-transcript-schema>
+```text
+python tools/export_agent_thread_continuity.py \
+  --source <exact-session.jsonl> \
+  --thread-id <thread-id> \
+  --output-dir <registered-transcript-root> \
+  --vault-target <vault-relative-root> \
+  --agent-label <owner-label> \
+  --manifest-schema-version <manifest-schema> \
+  --transcript-schema-version <transcript-schema>
 ```
 
-The first run is a dry run. Repeat it with `--apply`, then synchronize the owning vault scope. After navigation is final, run the same command with `--refresh-manifest`, apply the proposed refresh, and run it once more without `--apply`. The last run must report `changed: false`.
+Then:
 
-Run the owning vault check and `git diff --check`, inspect status, and stage only the registered transcript root. Do not add new durable reasoning after the exported boundary unless the transcript is exported again.
+1. repeat with `--apply`;
+2. link the transcript root from the owning continuity MOC if it is new;
+3. run vault navigation dry-run, apply, and a second dry-run;
+4. rerun exporter with `--refresh-manifest --apply`;
+5. rerun `--refresh-manifest` without apply and require `changed: false`;
+6. validate the owning vault scope and `git diff --check`;
+7. inspect status and stage only the registered owner archive;
+8. commit/push closeout before the substantial task ends.
 
-## Ownership and failure rules
+Do not introduce new durable reasoning after the recorded export boundary. If
+the final response needs a new material conclusion, export again.
 
-- One thread ID belongs to exactly one continuity pack.
-- Re-exporting the same thread to its owning root is allowed.
-- Cross-owner copying, including an unfinished archive without a manifest, is rejected.
-- Missing exact source is a closeout blocker; summaries and memory are not substitutes.
-- Writes use a temporary sibling tree, retry bounded Windows replacements, fall back to in-place transactional restoration when necessary, and restore the prior tree after failure.
-- Generated transcript files and manifest inventories are never hand-edited.
+## Ownership Rules
+
+- one thread ID belongs to one owner pack;
+- re-export to the same owning root is allowed;
+- cross-owner copying or mirroring is rejected;
+- ownership changes use a new task and thread ID;
+- subordinate lane receipts stay in the Sol owner's pack;
+- A2A links carry cross-owner context without transcript duplication.
+
+## Transaction And Recovery
+
+The exporter builds the complete output tree before replacement, validates
+unique ownership and file hashes, and writes transactionally. On Windows it
+uses bounded replacement retries and a restoration path when directory
+replacement cannot complete. A failed write restores the prior tree and does
+not leave a partial archive.
+
+The manifest distinguishes source-observed state from final post-navigation
+output inventory. Navigation changes therefore require a manifest refresh.
+Repeated export/refresh against unchanged source and navigation must be byte-
+idempotent.
+
+## Failure Rules
+
+- Missing exact source is a closeout blocker; memory and summaries are not
+  substitutes.
+- A duplicate thread claim is an ownership blocker.
+- A truncated or changing source prefix requires a new bounded observation.
+- Credential detection never permits plaintext retention for completeness.
+- A write or validation failure is not a successful export.
+- Size warnings do not waive structural or ownership errors.

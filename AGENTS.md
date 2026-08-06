@@ -1,66 +1,311 @@
-# Repository governance
+# Repository Guidance
 
-Detailed procedures are in `docs/CORE_AGENT_WORKFLOW.md`, `docs/OWNER_SCOPED_ORCHESTRATION.md`, `docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md`, `docs/GIT_RECONCILIATION.md`, `docs/AGENT_CONTINUITY_EXPORT.md`, `docs/POWERSHELL_AGENT_INSTRUCTIONS.md`, `docs/SOURCE_DOCUMENTATION_STYLE.md`, `docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md`, `docs/VAULT_INFORMATION_ARCHITECTURE_STANDARD.md`, and `docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md`. The maintained reading surface starts at `Project_Obsidian_Vault/00_Home/Project MOC.md`.
+This file is the repository-wide operational authority. Detailed procedures
+live in `docs/`; role-specific ownership and startup instructions live under
+`roles/` and in the registered continuity pack. Domain or product doctrine
+must be derived from this project's research and canonical vault, never from
+the reference repository used to design this bootstrap.
 
-## Role startup
+## Agent Role Instructions
 
-Before substantial work, read the active owner's role and bootstrap material, the Core continuity MOC when Core owns the work, current canonical vault MOCs, relevant source evidence, configuration, tests, and Git state. Continuity is useful context but never authority over current source. Future owners are inactive until all registered activation prerequisites are complete.
+Before substantial work, read the active owner's role, bootstrap prompt,
+continuity MOC, and owner profile. Core starts at:
 
-## Authority, evidence, and ownership
+- `roles/core/ROLE.md`
+- `roles/core/BOOTSTRAP.md`
+- `Project_Obsidian_Vault/30_Core/Core Bootstrap.md`
+- `Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md`
 
-The user authorizes goals and material scope changes. Core is the sole active initial owner: it controls canonicalization, future-owner activation, primary-branch integration, and the owning continuity pack. Research records are immutable source evidence, never canonical truth. Core promotes a reviewed claim only by recording its evidence, decision, canonical wording, and verification witness.
+Future-owner templates are non-authorizing. Only an owner marked `active` in
+the owner registry may dispatch work. Role instructions may narrow ownership
+or add checks, but they may not weaken this file's Git, continuity, safety, or
+evidence rules.
 
-An owner may change only its active, registered scope. Exploration, a critique, an attached transcript, or a proposed architecture does not grant implementation authority. Resolve ownership conflicts through a coordination record; do not create a parallel contract, parser, ledger, or store to bypass an existing boundary.
+## Mandatory Agent Continuity Closeout
 
-## Mandatory continuity and collaboration semantics
+Every substantial owner task exports its complete bounded user-visible
+transcript to exactly one registered continuity pack. Use
+`tools/export_agent_thread_continuity.py` with the exact session source,
+thread ID, owner label, owner schemas, transcript directory, and vault target.
 
-Every substantial owner task exports its bounded user-visible transcript into its registered continuity pack before it is reported complete. Use `tools/export_agent_thread_continuity.py` with the exact session source, thread ID, registered output directory, vault target, owner label, and owner schema versions. Dry-run the export, apply it, synchronize maintained vault navigation, refresh the manifest against the post-navigation bytes, and require a second dry manifest refresh with `changed: false`. The export boundary is a stable full-line source prefix with source and selected-record hashes. If the exact source is unavailable, state that closeout is incomplete rather than reconstructing it from memory. User questions, exploratory discussion, and attached material are context, not authorization; accepted plans authorize only their stated scope.
+A valid export:
 
-## Mathematical and executable evidence
+- selects every user-visible `user` and `assistant` response-item record in a
+  stable full-line source prefix;
+- excludes hidden instructions, private reasoning, tool calls and outputs,
+  encrypted content, runtime state, and duplicate projections;
+- redacts detected credentials without retaining their plaintext;
+- records source-prefix, selected-record, redaction, and output hashes;
+- generates display-safe Markdown and chronological MOCs transactionally.
 
-Treat mathematical audits as findings-only unless correction is explicitly authorized. Support material numerical or algebraic claims with executable witnesses appropriate to the project (symbolic computation for exact identities and the active numerical runtime for finite behavior). Reconcile source, tests, configuration, and canonical documents; distinguish analytic invariants from finite-runtime effects. Metadata remains non-semantic unless an accepted contract promotes it.
+Dry-run first, apply the verified export, synchronize the owning vault scope,
+refresh the manifest against post-navigation bytes, and require an idempotent
+dry refresh. A narrative `no-update` disposition never waives transcript
+export. If the exact source is unavailable, mark closeout incomplete rather
+than reconstructing it from memory, summaries, or A2A notes.
 
-## Planning and coordination
+One thread belongs to one owner pack. Ownership changes require a new task and
+thread ID. Cross-owner context travels through A2A records and links, not
+duplicate transcript archives. Terra and Luna produce compact receipts in the
+owner's pack; they do not become independent continuity owners.
 
-For substantial planning, freeze selection evidence at the first inspected repository state. Separate selection evidence (canonical contracts, owner scope, prerequisites, tests) from later delivery conditions (unrelated worktree changes or generated output). Record material assumptions and reopen a decision only when the selected work or a material prerequisite changes.
+## User Collaboration And Decision Semantics
 
-Publish A2A work in `coordination/` as a bounded convergence record: common agreement, all remaining disagreements, critical weak points, convergence move, and decision status. Each substantive point receives an explicit disposition. Core alone promotes accepted conclusions to canonical documents.
+- A question, attachment, research note, critique, or hypothetical design is
+  context, not implementation authorization.
+- An accepted plan authorizes only its recorded scope, owner boundaries, and
+  delivery conditions.
+- The latest explicit user instruction controls intent. Current canonical
+  documents control accepted project doctrine. Source, tests, configuration,
+  receipts, and Git history establish implemented behavior.
+- Continuity and A2A records preserve context and convergence but do not
+  promote themselves into canonical truth.
+- Challenge material assumptions and expose disagreement directly. Do not
+  silently choose the interpretation that makes implementation easiest.
+- Preserve distinctions between source and derived state, observation and
+  authority, passive receipt and executed decision, proposal and truth.
+- Do not create feature-local replacements for existing public contracts,
+  parsers, ledgers, repositories, or schemas to bypass an owner boundary.
+- Route another owner's work through an A2A request. Do not edit that owner's
+  semantics, UI, doctrine, continuity, or private implementation.
 
-For a Core plan, decide whether accepted convergence changes thesis, architecture, specification, roadmap, registry, or none. Record why a canonical update is needed or not. Do not consume a separate user turn for required documentation, registry, coordination, navigation, or continuity closeout belonging to the accepted implementation cycle.
+## Mathematical Evidence And Verification
 
-## Integrated delivery lanes
+Mathematical audits are findings-only unless correction is explicitly
+authorized. Use executable symbolic computation for exact identities and the
+project's numerical runtime for finite behavior. Do not rely on mental
+arithmetic for material numerical claims.
 
-Sol classifies risk and publishes a packet. Terra performs only the packet's bounded work, runs the required test profiles, and may create a candidate commit. Luna validates the exact candidate and never commits, pushes, integrates, resets, rebases, or deletes. A Luna task must be created in the saved project, one task identifier is reused for every correction/reverification in the implementation cycle, and a projectless task is invalid.
+For each accepted mathematical change, reconcile the active implementation,
+configuration, tests, and canonical description. Distinguish analytic
+invariants from rounding, overflow, underflow, tolerance, and platform
+behavior. Add a focused executable witness. Metadata remains non-semantic and
+non-geometric unless a separately accepted contract promotes it.
 
-Luna's accepted receipt is not archival acknowledgment. Sol alone creates the separate subordinate archive/finalization record after the accepted exact-candidate receipt, no correction remains, delivery and integration are complete, primary synchronization and terminal reconciliation pass, and worktree cleanup is confirmed. Failed, blocked, and user-input-needed tasks remain visible.
+## Planning Evidence Cutoff
 
-## Testing and temporary artifacts
+For planning-only work, freeze decision evidence at the first successfully
+inspected repository state. Record the baseline commit and relevant worktree
+state. Separate:
 
-Use `tools/test_runner.py focused <targets>` for one surface; `failed` for cached failures only; `affected --base <ref>` for fail-closed impact selection; `broad` for the mapped regression boundary; and `full` once for final parallel-safe then serial execution. Keep lifecycle options out of global pytest options. Parallel-safe tests run with at most four workers; shared repositories, services, fixed ports, mutable process environment, and shared storage are serial.
+- **selection evidence**: canonical order, contracts, ownership,
+  prerequisites, configuration, and relevant tests;
+- **delivery conditions**: later unrelated commits, navigation drift,
+  generated files, or other-owner worktree churn.
 
-All scratch data, pytest cache, and temporary test output belong under `tmp/`. Remove task-specific temporary output before closeout, or identify the exact retained path and recovery action.
+Reopen a conclusion only when a later change modifies the selected work, a
+material prerequisite, ownership, authorization, or essential evidence. Do
+not repeatedly refresh the entire repository in pursuit of a perfect
+operational snapshot. If the user asks for reconsideration, start a new dated
+baseline.
 
-## Coding, persistence, source, and feature discipline
+## Integrated Planning And Implementation Cycle
 
-Use the smallest sufficient change, define verifiable acceptance conditions, and run focused then broader checks. Business and orchestration code depends on storage-neutral ports; concrete database paths, queries, transactions, migrations, and driver settings remain in selected adapters. Preserve atomic domain operations rather than replacing them with get-then-insert choreography. Follow the source documentation standard and audit public source. Feature agents follow the feature documentation standard and request cross-owner capabilities instead of recreating core behavior.
+A planning cycle includes reorientation, assumption and ownership analysis,
+the source-only work-selection audit, relevant A2A critique, and an approval-
+ready plan. It does not implement the proposed gate.
 
-Every repository tool must be classified by
-`configs/tool_parity_v1.json`. A short substitute is not an acceptable
-counterpart to a mature governance tool. Before closing a tool change, run
-`python tools/tool_parity.py`; add either a complete generic equivalent, a
-tested generic adaptation, or a reasoned product-specific exclusion. Never
-silently omit lifecycle functions because the bootstrap is a new repository.
+After approval, the implementation cycle includes the accepted change,
+focused and broader verification, canonical/package documentation, capability
+evidence, A2A completion updates, generated navigation, scoped Git delivery,
+and continuity closeout. These process artifacts do not consume a separate
+user turn. Separate feature and continuity commits are allowed, but both must
+be delivered before the cycle is reported complete.
 
-## Git, worktrees, and reconciliation
+Spillover requires a genuine blocker such as missing exact source, unresolved
+ownership, a security/licensing decision, a target-file conflict, or a real
+test failure. Documentation volume and unrelated repository churn are not
+blockers.
 
-Inspect `git status --short` before staging. Stage only current-task files, inspect staged name-status, and do not absorb concurrent or unowned changes. Core alone may run `python tools/origin_reconciler.py sync-main --agent core`; it requires a clean primary checkout, no active Git operation, no local-only commits, a resolvable remote primary branch, and uses only `fetch` plus `merge --ff-only`. It never switches branches, resets, rebases, discards, or deletes.
+## Universal Work-Selection Audit
 
-Before a remote exists, affected comparison and primary synchronization fail closed. A branch is complete only when it is terminally landed or explicitly superseded by an authorized owner; a named integrator request is visible, not terminal.
+Every substantial next-step selection produces one source-only work-selection
+audit under the configured coordination scope. The audit is advisory: it does
+not create ownership, authorization, or an implementation gate. A missing or
+adverse audit must remain visible but cannot silently override the user or the
+owner registry.
 
-## Continuity
+## Agent-to-Agent Critique Workflow
 
-One source thread belongs to one continuity owner. Preserve exact safe user/assistant response-item lines; exclude hidden instructions, reasoning, tool calls and outputs, duplicate event projections, runtime state, and encrypted content. Redact detected credentials deterministically while retaining each source-record hash. Build HTML-safe Markdown projections, chronological MOCs, a selected-record JSONL archive, and a manifest that records roles, phases, redactions, source-prefix identity, and output hashes. The output transaction must be retry-safe, rollback-safe, and byte-idempotent. Never copy one thread into another owner pack or reconstruct unavailable source history from summaries. Terra and Luna provide receipts in the owning pack and do not become separate continuity owners.
+Before a substantial plan, inspect the coordination MOC, update log, and only
+the records relevant to the current boundary. A critique uses:
 
-## Vault information architecture and UX gate
+1. Common Agreement
+2. All Remaining Disagreements
+3. Critical Weak Points
+4. Convergence Move
+5. Decision Status
 
-Use the vault standard for all maintained navigation: canonical prose has one location in the vault, records have one parent, links are path-qualified, generated breadcrumbs are maintainer-owned, and archives preserve provenance. Run report/check/dry-run/apply only through the conservative maintainer. For user-facing work, apply the average-user UX gate in the Core workflow: ordinary-user comprehension, recovery, accessibility, and a clear primary path are delivery evidence.
+Record each substantive point as `Accepted`, `Partially accepted`, `Rejected`,
+`Deferred`, or `Requires user approval`. External critique is advisory. Core
+alone promotes accepted conclusions to thesis, architecture, specification,
+roadmap, or capability registry.
+
+Use `tools/agent_to_agent_plan_handoff.py` for immutable content-addressed
+records. The compatibility command is `tools/agent_to_agent_handoff.py`.
+External CLI invocation is optional, explicitly configured, and successful
+only when the assigned record changes; an empty response or zero process exit
+is not evidence of a completed critique.
+
+## Coding Discipline
+
+### Think Before Coding
+
+Inspect discoverable repository facts before asking the user. State material
+assumptions and stop when unresolved ambiguity changes scope, contracts,
+ownership, security, or irreversible outcomes. Prefer the simpler design when
+it satisfies the accepted behavior.
+
+### Prefer The Smallest Sufficient Change
+
+Implement only accepted behavior. Reuse current public patterns. Avoid
+speculative abstractions, premature configuration, adjacent refactors, and
+format-only churn. Every changed line must trace to the task, its tests, or
+cleanup made necessary by those changes.
+
+### Persistence Boundaries
+
+Business and orchestration code depends on storage-neutral repository ports.
+Database paths, schemas, queries, transactions, migrations, driver settings,
+and ORM details belong in selected persistence adapters. Preserve atomic
+domain operations such as claim-or-replay; do not replace them with vulnerable
+generic `get()` then `insert()` choreography. Do not introduce a generic CRUD
+layer or persistence owner without a demonstrated, approved need.
+
+### Execute Against Verifiable Goals
+
+Define concrete success criteria before editing. Reproduce bugs with a test,
+exercise invalid inputs for validators, and establish before/after evidence
+for refactors. Iterate with the narrowest checks, then run the broader boundary
+required by risk. Report unrelated failures without absorbing them into scope.
+
+### Test Execution Workflow
+
+Use the repository runner rather than repeating the full suite during active
+debugging:
+
+```text
+python tools/test_runner.py focused <tests>
+python tools/test_runner.py failed
+python tools/test_runner.py affected --base <ref>
+python tools/test_runner.py broad
+python tools/test_runner.py full
+```
+
+Focused work stops early. `failed` uses the local pytest failure cache without
+falling back to the full suite. Affected selection is fail-closed through the
+versioned impact map. Broad runs stop after a bounded number of failures.
+Full runs parallel-safe tests once and then exclusive tests serially. A failed
+full run returns to serial failed triage; do not repeatedly relaunch all
+workers while debugging.
+
+### Temporary Test Artifacts
+
+All scratch data, reproductions, caches, and run output belong under `tmp/`.
+Do not create root-level `.pytest-*`, `t0`, or `t1` directories. Use narrow
+task-specific names and remove task-specific output before closeout. A shared
+pytest failure cache may remain only at the configured ignored path. Report
+the exact path and recovery action for any artifact that cannot be removed.
+
+## Source Documentation
+
+Follow `docs/SOURCE_DOCUMENTATION_STYLE.md`. Public source uses native type
+annotations plus concise Google-style docstrings. Run
+`python tools/source_doc_audit.py` before closing source changes. Do not edit
+vendored or generated source merely to satisfy local style.
+
+## Feature Agent Documentation
+
+Follow `docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md`. An active feature
+package documents purpose, status, ownership, non-ownership, module map,
+public imports, test expectations, and vault/role links before more source is
+added. Feature owners consume public Core contracts and request missing
+boundaries through A2A rather than recreating them.
+
+## Owner-Scoped Orchestration
+
+Owner Orchestrator (Sol) controls authority, scope, review, publication, and
+continuity. Implementer (Terra) makes one packet-bounded local candidate.
+Verification Runner (Luna) independently verifies the exact candidate without
+repository writes. Required model bindings and risk escalation are fail-
+closed; no silent substitution is allowed.
+
+One saved-project Luna task is reused through every correction in an
+implementation cycle. A projectless runner task is invalid. Luna's accepted
+receipt is not archive acknowledgment. Sol archives accepted or superseded
+subordinate tasks only after receipt capture, no pending correction, delivery,
+primary synchronization, terminal reconciliation, and worktree cleanup.
+Failed, blocked, or user-input-needed tasks remain visible.
+
+## Git Staging, Commit, and Push Discipline
+
+Root `AGENTS.md` is the sole repository-wide Git authority. Before staging,
+inspect `git status --short --untracked-files=all --ignore-submodules=all` and
+treat a nonzero exit as inspection failure. Separate current-task changes from
+pre-existing or concurrent state. Stage explicit paths only, inspect
+`git diff --cached --name-status` and `git diff --cached --check`, and push only
+the intended commit or branch.
+
+### Mandatory Branch Reconciliation
+
+Every branch-owning agent runs:
+
+```text
+python tools/origin_reconciler.py inspect --agent <owner>
+python tools/origin_reconciler.py closeout --agent <owner> --branch <branch> --disposition <state>
+```
+
+A pushed branch is not reconciled. `landed` requires exact reachability or a
+complete unambiguous stable patch-ID mapping. `superseded` requires explicit
+owner authorization and replacement/abandonment evidence.
+`awaiting_named_integrator` is a routed blocker, not completion. Non-Core
+owners must not update, reset, merge, or rebase the primary branch.
+
+Core is the single primary-branch integrator. At startup and closeout, Core
+runs `origin_reconciler.py inbox --agent core`. A nonempty inbox blocks a new
+Core gate unless every item is landed, authorized as superseded, or explicitly
+allowed to proceed in parallel. Only Core may run `sync-main --agent core`,
+which uses a clean-primary `merge --ff-only` and verifies exact equality with
+the configured remote primary branch.
+
+### Branch Landing And Disposition
+
+Every implementation branch ends in one durable owner-authored disposition:
+`landed`, `superseded`, or `awaiting_named_integrator`. Record exact commits,
+target, patch mappings when hashes changed, evidence reference, and remaining
+action. A final chat statement is not durable evidence.
+
+### Worktree Creation And Closeout
+
+Reserve the primary checkout for clean Core integration. Normal work uses the
+configured repository-local `.worktrees/<owner>-<slice>` root. Before removal,
+verify exact registration, path containment, clean status, no active Git
+operation, terminal disposition, and remote evidence. Remove with
+`git worktree remove`, verify disappearance from `git worktree list`, and
+delete only an exact verified leftover directory if Git deregisters but leaves
+files. Worktree cleanup never authorizes discarding unowned changes.
+
+## Average-user UX gate
+
+For user-facing work, identify the ordinary primary user and shortest safe
+path. Test plain-language comprehension, actionable error recovery, preserved
+input after recoverable failures, keyboard access, focus order, labels, zoom,
+reduced motion, responsive layout, and explicit unavailable/denied/degraded
+states. Expert controls must not obscure the common path.
+
+## Vault Information Architecture
+
+The Obsidian vault is the maintained narrative reading surface. Canonical
+prose has one location; every managed child has one parent; links are path-
+qualified; MOCs contain narrative descriptions rather than filename dumps;
+and generated breadcrumbs are maintainer-owned. Run report/check/navigation
+through `tools/vault_maintainer.py`. Never hand-edit generated blocks or
+destructively split notes without a lossless migration and restoration proof.
+
+## Documentation-System Parity
+
+Every governance instruction and maintained Markdown contract is classified
+by `configs/documentation_system_v1.json`. A short placeholder is not an
+equivalent operational document. Changes must retain required headings,
+commands, authority boundaries, recovery behavior, and neutral terminology.
+Run `python tools/architecture_conformance.py` before closeout.
