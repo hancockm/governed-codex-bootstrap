@@ -9,7 +9,10 @@ from typing import Any
 
 def git(root: Path, *args: str) -> tuple[int, str]:
     """Run a bounded Git command without shell interpolation."""
-    completed = subprocess.run(["git", *args], cwd=root, text=True, capture_output=True, check=False)
+    try:
+        completed = subprocess.run(["git", *args], cwd=root, text=True, capture_output=True, check=False)
+    except OSError as error:
+        return 3, str(error)
     return completed.returncode, (completed.stdout + completed.stderr).strip()
 
 
@@ -49,7 +52,7 @@ def inspect(root: Path) -> dict[str, Any]:
         "repository": repository,
         "inspection_failed": inspection_failed,
         "branch": branch if branch_code == 0 else "",
-        "clean": repository and not bool(status),
+        "clean": repository and not worktree_failed and not bool(status),
         "status": status,
         "active_operation": active_operation,
         "registered_worktrees": registered_worktrees,
