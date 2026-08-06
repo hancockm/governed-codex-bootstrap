@@ -20,6 +20,7 @@ cleanup follows `docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md`.
 | `tools/tool_parity.py`, `configs/tool_parity_v1.json` | Require an explicit complete counterpart, generic adaptation, or product-specific exclusion for every reference tool. |
 | `configs/documentation_system_v1.json`, `docs/DOCUMENTATION_SYSTEM_PARITY.md` | Enforce substantive project-neutral equivalents for the instruction, Core bootstrap, continuity, Git, vault, and owner-workflow system. |
 | `configs/` and `docs/` | Machine policy plus operational runbooks. |
+| Folder-local `README.md` files | Explain each maintained directory, significant artifact, generated-content boundary, and change rule at the point of use. |
 
 The cold start is research intake and organization; Core canonicalization; advisory selection audit and plan handoff; user approval; Sol packet classification; Terra candidate; one reused saved-project Luna task through corrections; authorized integration; Core synchronization; continuity export; then Sol finalization/archive acknowledgment.
 

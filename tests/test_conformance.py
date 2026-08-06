@@ -64,6 +64,34 @@ def test_documentation_system_preserves_operational_equivalence() -> None:
     } <= {item["path"] for item in manifest["surfaces"]}
 
 
+def test_folder_readmes_explain_every_registered_maintained_directory() -> None:
+    manifest = json.loads(
+        (ROOT / "configs/documentation_system_v1.json").read_text(encoding="utf-8")
+    )
+    folders = {item["directory"]: item for item in manifest["folder_readmes"]}
+    assert {
+        "configs",
+        "docs",
+        "governance_bootstrap",
+        "roles/core",
+        "tests",
+        "tests/tools",
+        "tools",
+    } <= folders.keys()
+    assert validate_documentation_system(ROOT) == []
+
+
+def test_tools_readme_describes_each_operator_tool() -> None:
+    readme = (ROOT / "tools/README.md").read_text(encoding="utf-8")
+    maintained_tools = {
+        path.name
+        for path in (ROOT / "tools").glob("*.py")
+        if path.name != "__init__.py"
+    }
+    assert maintained_tools
+    assert all(f"`{name}`" in readme for name in maintained_tools)
+
+
 def test_core_bootstrap_has_complete_rehydration_and_closeout_contract() -> None:
     bootstrap = (ROOT / "Project_Obsidian_Vault/30_Core/Core Bootstrap.md").read_text(
         encoding="utf-8"

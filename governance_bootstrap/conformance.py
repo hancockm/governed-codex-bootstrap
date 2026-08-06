@@ -65,6 +65,31 @@ def validate_documentation_system(root: Path) -> list[str]:
     for relative in manifest.get("required_core_continuity_protocols", []):
         if not (root / relative).is_file():
             failures.append(f"missing Core continuity protocol {relative}")
+    documented_directories: set[str] = set()
+    for folder in manifest.get("folder_readmes", []):
+        directory = folder.get("directory", "")
+        readme = folder.get("readme", "")
+        if not directory or directory in documented_directories:
+            failures.append(f"invalid or duplicate folder documentation {directory!r}")
+            continue
+        documented_directories.add(directory)
+        directory_path = root / directory
+        readme_path = root / readme
+        if not directory_path.is_dir():
+            failures.append(f"missing documented directory {directory}")
+            continue
+        if readme_path.parent != directory_path or not readme_path.is_file():
+            failures.append(f"missing folder README {readme or directory + '/README.md'}")
+            continue
+        text = readme_path.read_text(encoding="utf-8")
+        for entry in folder.get("required_entries", []):
+            if entry not in text:
+                failures.append(f"folder README {readme} does not describe {entry}")
+        for heading in folder.get("required_headings", []):
+            if heading not in text:
+                failures.append(f"folder README {readme} is missing heading {heading!r}")
+    if not documented_directories:
+        failures.append("folder documentation inventory is empty")
     required_dispositions = {
         "shared_repository_governance",
         "core_owner_workflow",

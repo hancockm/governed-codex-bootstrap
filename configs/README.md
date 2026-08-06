@@ -1,0 +1,30 @@
+# Configuration Registry
+
+## Purpose
+
+This directory holds versioned, machine-readable governance policy. Markdown
+explains the rules; these files provide the identities and constraints that
+tools validate.
+
+## Contents
+
+| File or directory | Significance |
+| --- | --- |
+| `capability_registry_v1.json` | Declares capability maturity and its evidence. |
+| `conformance_v1.json` | Defines the six required governance planes and research-first cold start. |
+| `core_moc_v1.json` | Registers Core vault hierarchy and maintained navigation. |
+| `documentation_system_v1.json` | Registers required operational documents, folder READMEs, and adaptation dispositions. |
+| `git_reconciliation_v1.json` | Defines the primary branch, remote, owners, namespaces, and worktree root. |
+| `owner_scoped_orchestration_v1.json` | Defines lane models, owner profiles, Git authority, and subordinate-task lifecycle. |
+| `owners_v1.json` | Registers active and inactive owners and their dependency profiles. |
+| `risk_classification_v1.json` | Maps change triggers to required orchestration tiers. |
+| `tool_parity_v1.json` | Records the disposition of each reference and bootstrap tool. |
+| `vault_maintenance_registry_v1.json` | Registers maintained vault scopes, owners, schemas, and generated navigation. |
+| `work_selection_audit_v1.json` | Defines the advisory work-selection audit schema and fixtures. |
+| `testing/` | Contains test execution and source-to-test impact policy. |
+
+## Change Discipline
+
+Configuration changes require matching tests and documentation. Never edit a
+versioned policy merely to make a failing check pass; reconcile the intended
+contract first, then change the policy and its consumers together.

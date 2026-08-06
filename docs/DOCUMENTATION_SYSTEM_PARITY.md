@@ -30,6 +30,7 @@ by requiring paths, minimum substantive size, and essential headings.
 | Vault standard | Single narrative source, one parent per child, owner-authored MOCs, generated breadcrumbs, validation, and lossless recovery |
 | Continuity export | Exact source-prefix selection, redaction, transactional output, ownership, navigation, manifest idempotence, and failure posture |
 | Source and feature documentation | Public-contract documentation, package maps, ownership boundaries, cross-owner requests, and executable audit |
+| Folder documentation | A local README for every maintained directory, with artifact significance, generated-content posture, and change discipline |
 | PowerShell guidance | Safe control-flow pipelines, explicit upstream syntax, literal paths, separate mutations, and exit-code checks |
 
 ## Core Continuity Equivalence
@@ -116,5 +117,6 @@ python -m pytest -q tests/test_conformance.py
 
 Conformance fails when a required operational document disappears, collapses
 below its substantive floor, loses an essential heading, omits a Core
-continuity protocol, loses a required vault README/instruction disposition, or
-introduces a forbidden project-specific marker.
+continuity protocol, loses a required vault README/instruction disposition,
+leaves a registered maintained directory undocumented, fails to describe a
+registered artifact, or introduces a forbidden project-specific marker.

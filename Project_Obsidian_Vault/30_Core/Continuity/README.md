@@ -1,7 +1,7 @@
 # Core Continuity Guide
 
 <!-- generated:breadcrumbs:start -->
-<< Previous: none | Up: [[30_Core/Continuity/Core Continuity MOC]] | Next: [[30_Core/Continuity/Protocols/Reorientation And Next-Step Discovery]] >>
+<< Previous: none | Up: [[30_Core/Continuity/Core Continuity MOC]] | Next: [[30_Core/Continuity/Protocols/README]] >>
 <!-- generated:breadcrumbs:end -->
 
 Core continuity preserves the bounded evidence needed to resume work. It does

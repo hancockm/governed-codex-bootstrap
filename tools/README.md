@@ -1,0 +1,40 @@
+# Repository Tools
+
+## Purpose
+
+This directory contains the command-line programs that enforce the governed
+development workflow. Tools report evidence or perform narrowly declared
+repository maintenance; they do not create product authority.
+
+## Contents
+
+| File | Significance |
+| --- | --- |
+| `__init__.py` | Makes the directory importable so tests and other tools can reuse public helpers without shelling out. |
+| `agent_to_agent_handoff.py` | Compatibility entry point for the canonical plan-handoff command. It preserves older operator commands without maintaining a second workflow. |
+| `agent_to_agent_plan_handoff.py` | Creates immutable, content-addressed plan-critique requests and optionally captures configured external critique results. |
+| `agent_work_selection_audit.py` | Records the frozen evidence, ownership, prerequisites, and disposition behind a substantial next-step selection. |
+| `architecture_conformance.py` | Runs the repository-wide six-plane and documentation conformance check. This is the principal bootstrap acceptance command. |
+| `capability_status.py` | Validates and reports machine-readable capability maturity without inferring implementation from prose. |
+| `check_agent_discussion_updates.py` | Detects coordination records that changed and need owner review or publication handling. |
+| `export_agent_thread_continuity.py` | Exports one exact bounded user-visible task transcript transactionally, with redaction, ownership, navigation, and manifest evidence. |
+| `origin_reconciler.py` | Inspects branches, remotes, worktrees, reachability, patch equivalence, owner integration inboxes, and Core-only primary synchronization. |
+| `owner_scoped_orchestration.py` | Validates risk classifications, immutable work packets, lane receipts, runner bindings, and owner receipt publication. It does not invoke models or Git. |
+| `research_intake.py` | Imports one research artifact into immutable, content-addressed source records with provenance. |
+| `research_organizer.py` | Scans, compares, reviews, and maps research records without promoting them into canonical doctrine. |
+| `source_doc_audit.py` | Checks project-owned Python public surfaces for the required module and API documentation. |
+| `test_runner.py` | Provides focused, cached-failure, affected, broad, and isolated full-suite test profiles. |
+| `tool_parity.py` | Validates the explicit disposition of reusable reference tools, generic adaptations, bootstrap-native tools, and deliberate exclusions. |
+| `vault_maintainer.py` | Validates vault ownership and navigation, synchronizes generated breadcrumbs, and performs bounded migration or restoration operations. |
+
+The corresponding tests are described in [`tests/tools/README.md`](../tests/tools/README.md).
+Operational procedures live in [`docs/README.md`](../docs/README.md).
+
+## Change Discipline
+
+- Keep each tool project-neutral and deterministic where its contract requires it.
+- State read/write, network, secret, and recovery behavior in the module and CLI documentation.
+- Add or update the matching test and impact-map entry when behavior changes.
+- Do not duplicate an existing tool under a new name; compatibility entry points
+  must delegate to one canonical implementation.
+- Write temporary output only under the configured ignored `tmp/` tree.

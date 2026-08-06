@@ -218,6 +218,21 @@ annotations plus concise Google-style docstrings. Run
 `python tools/source_doc_audit.py` before closing source changes. Do not edit
 vendored or generated source merely to satisfy local style.
 
+### Folder Documentation
+
+Every maintained repository directory has a local `README.md` registered in
+`configs/documentation_system_v1.json`. The README explains the directory's
+purpose, significant files or subdirectories, and change discipline. Source,
+tool, configuration, test, and third-party directories must describe each
+maintained immediate artifact; generated-output directories identify their
+generator and prohibit hand edits.
+
+When adding, renaming, moving, or retiring a maintained artifact, update its
+nearest folder README and the folder-documentation inventory in the same
+change. Temporary, cache, Git-internal, and task-worktree directories are
+excluded because they are not maintained repository content. Run
+`python tools/architecture_conformance.py` to verify coverage.
+
 ## Feature Agent Documentation
 
 Follow `docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md`. An active feature

@@ -1,7 +1,7 @@
 # Agent-To-Agent Instruction Hub
 
 <!-- generated:breadcrumbs:start -->
-<< Previous: [[40_Coordination/README]] | Up: [[40_Coordination/Agent-to-Agent Discussions MOC]] | Next: [[40_Coordination/Generated/Active Records]] >>
+<< Previous: [[40_Coordination/README]] | Up: [[40_Coordination/Agent-to-Agent Discussions MOC]] | Next: [[40_Coordination/Generated/README]] >>
 <!-- generated:breadcrumbs:end -->
 
 This hub routes active owners and supporting review roles to shared

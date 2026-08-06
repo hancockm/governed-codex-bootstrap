@@ -6,8 +6,12 @@
 
 This source area holds critique and convergence records. Each record distinguishes agreement, remaining disagreement, weak points, convergence move, and decision status. Core records a disposition before any promotion.
 
+The [[40_Coordination/Generated/README|generated coordination guide]] explains
+which projections are tool-owned and how their source records are maintained.
+
 <!-- managed:moc-children:start -->
 - [[40_Coordination/README.md]] — Coordination reading order, record lifecycle, publication, and authority guide.
 - [[40_Coordination/Instructions/README.md]] — Shared instruction hub for active owners and supporting review roles.
+- [[40_Coordination/Generated/README.md]] — Generated-record ownership, contents, and maintenance guide.
 - [[40_Coordination/Generated/Active Records.md]] — Immutable generated coordination record index.
 <!-- managed:moc-children:end -->
