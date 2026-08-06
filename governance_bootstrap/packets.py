@@ -50,6 +50,30 @@ def validate_receipt(receipt: dict[str, Any], packet: dict[str, Any], luna_threa
             errors.append("Luna receipt must be created inside the saved project")
         if receipt.get("implementation_cycle_id") != packet.get("implementation_cycle_id"):
             errors.append("Luna receipt must bind the implementation cycle")
-        if receipt.get("archival_acknowledged") is not True:
-            errors.append("Luna receipt requires archival acknowledgment")
+    return errors
+
+
+def validate_sol_finalization(finalization: dict[str, Any], receipt: dict[str, Any], packet: dict[str, Any]) -> list[str]:
+    """Validate Sol's separate, terminal subordinate archive acknowledgment.
+
+    A failed, blocked, or user-input-needed task deliberately remains visible and
+    cannot receive this terminal acknowledgment.
+    """
+    required = {"owner", "acknowledgment", "packet_id", "candidate_commit", "status", "no_correction_pending", "delivery_complete", "primary_branch_synced", "terminal_reconciliation", "worktree_cleaned"}
+    errors = [f"missing {key}" for key in sorted(required - finalization.keys())]
+    if finalization.get("owner") != "sol" or finalization.get("acknowledgment") != "subordinate_archive":
+        errors.append("finalization must be Sol-owned subordinate_archive")
+    if finalization.get("packet_id") != packet.get("packet_id"):
+        errors.append("finalization packet_id does not bind packet")
+    if finalization.get("candidate_commit") != receipt.get("candidate_commit"):
+        errors.append("finalization does not bind accepted exact candidate")
+    if receipt.get("lane") != "luna" or receipt.get("status") != "accepted":
+        errors.append("finalization requires accepted Luna receipt")
+    if finalization.get("status") in {"failed", "blocked", "user_input_needed"}:
+        errors.append("nonterminal task status must remain visible")
+    if finalization.get("status") != "archived":
+        errors.append("finalization status must be archived")
+    for field in ("no_correction_pending", "delivery_complete", "primary_branch_synced", "terminal_reconciliation", "worktree_cleaned"):
+        if finalization.get(field) is not True:
+            errors.append(f"finalization requires {field}")
     return errors

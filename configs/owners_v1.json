@@ -11,6 +11,9 @@
     "future-owner-template": {
       "active": false,
       "role": "future_owners/owner-template/ROLE.md",
+      "bootstrap": "future_owners/owner-template/BOOTSTRAP.md",
+      "continuity": "future_owners/owner-template/continuity",
+      "profile": "future_owners/owner-template/owner_profile.json",
       "scope": []
     }
   }

@@ -3,9 +3,14 @@
   "saved_project_id": "replace-on-project-activation",
   "project_bound_luna_thread": "replace-on-project-activation",
   "lanes": {
-    "sol": {"purpose": "deterministic risk classification and packet publication", "may_commit": false},
-    "terra": {"purpose": "bounded tracked work and local candidate commit", "may_commit": true},
-    "luna": {"purpose": "single SHA-pinned verification reused for all corrections in one implementation cycle", "may_commit": false, "must_run_in_saved_project": true, "must_reuse_project_bound_thread": true, "must_acknowledge_archive": true}
+    "sol": {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh", "purpose": "deterministic risk classification, packet publication, and subordinate finalization", "may_commit": false},
+    "terra": {"model": "gpt-5.6-terra", "reasoning_effort": "high", "purpose": "bounded tracked work and local candidate commit", "may_commit": true},
+    "luna": {"model": "gpt-5.6-luna", "reasoning_effort": "max", "purpose": "single SHA-pinned verification reused for all corrections in one implementation cycle", "may_commit": false, "must_run_in_saved_project": true, "must_reuse_project_bound_thread": true}
   },
-  "sol_archive_requires": ["accepted_receipt", "commit_push_integration", "primary_branch_sync", "terminal_reconciliation", "worktree_cleanup"]
+  "sol_finalization": {
+    "owner": "sol",
+    "acknowledgment": "subordinate_archive",
+    "requires": ["accepted_exact_candidate_receipt", "no_correction_pending", "commit_push_integration", "primary_branch_sync", "terminal_reconciliation", "worktree_cleanup"],
+    "visible_nonterminal_statuses": ["failed", "blocked", "user_input_needed"]
+  }
 }

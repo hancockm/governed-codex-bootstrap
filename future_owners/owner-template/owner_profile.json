@@ -1,0 +1,7 @@
+{
+  "status": "inactive",
+  "owner": "future-owner-template",
+  "authority": [],
+  "file_scope": [],
+  "activation_requires": ["core_decision", "role", "bootstrap", "continuity_moc", "packet_checks", "model_binding"]
+}

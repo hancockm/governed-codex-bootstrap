@@ -8,6 +8,6 @@
     "delivery": ["tools/origin_reconciler.py", "configs/git_reconciliation_v1.json"],
     "continuity": ["tools/export_continuity.py", "continuity/core/README.md"]
   },
-  "research_first": {"research_dir": "research", "canonical_dir": "canonical", "initial_active_owners": ["core"]},
+  "research_first": {"research_dir": "research", "canonical_dir": "canonical", "initial_active_owners": ["core"], "cold_start_sequence": ["research_intake", "research_organization", "core_canonicalization", "core_delivery", "future_owner_activation"]},
   "forbidden_project_markers": ["Hilbert", "C:\\\\Users\\\\", "/Users/"]
 }

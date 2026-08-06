@@ -99,9 +99,9 @@ The state order is enforced by the repository conformance test: research must ex
 
 1. **Sol** deterministically classifies change risk and creates a work packet.
 2. **Terra** performs bounded tracked work, runs focused/failed/affected/broad checks, and makes a local candidate commit.
-3. **Luna** validates that exact candidate once per implementation cycle and reuses that same task for every correction/reverification. It must be created inside the saved project (a projectless task is invalid). Its receipt binds the candidate, project/task identity, and archive acknowledgment. It never commits or integrates.
+3. **Luna** validates that exact candidate once per implementation cycle and reuses that same task for every correction/reverification. It must be created inside the saved project (a projectless task is invalid). Its receipt binds the candidate and project/task identity; it is never an archive acknowledgment. It never commits or integrates.
 4. A failed full run returns to serial failed triage; it does not repeatedly launch the parallel suite.
-5. Sol archives Luna only after an accepted receipt, commit/push/integration, primary-branch synchronization, terminal reconciliation, and worktree cleanup. Core performs the bounded integration check and exports the owning continuity transcript.
+5. Sol creates the separate subordinate archive/finalization acknowledgment only after an accepted exact-candidate receipt, no correction pending, commit/push/integration, primary-branch synchronization, terminal reconciliation, and worktree cleanup. Failed, blocked, and user-input-needed tasks remain visible. Core performs the bounded integration check and exports the owning continuity transcript.
 
 `tools/work_packet.py` validates packets and receipts. `tools/origin_reconciler.py` only inspects Git or verifies a clean, already-synchronized primary checkout; it does not merge, reset, or rebase.
 

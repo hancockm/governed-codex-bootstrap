@@ -19,6 +19,19 @@ def test_research_is_the_first_cold_start_evidence_lane() -> None:
     assert (ROOT / policy["research_first"]["research_dir"] / "records").is_dir()
     assert list((ROOT / "research/records").glob("*.md"))
     assert [name for name, item in owners.items() if item["active"]] == ["core"]
+    assert policy["research_first"]["cold_start_sequence"][:3] == ["research_intake", "research_organization", "core_canonicalization"]
+
+
+def test_orchestration_has_exact_model_bindings_and_separate_sol_finalization() -> None:
+    orchestration = json.loads((ROOT / "configs/owner_scoped_orchestration_v1.json").read_text(encoding="utf-8"))
+    assert orchestration["lanes"]["sol"]["model"] == "gpt-5.6-sol"
+    assert orchestration["lanes"]["sol"]["reasoning_effort"] == "xhigh"
+    assert orchestration["lanes"]["terra"]["model"] == "gpt-5.6-terra"
+    assert orchestration["lanes"]["terra"]["reasoning_effort"] == "high"
+    assert orchestration["lanes"]["luna"]["model"] == "gpt-5.6-luna"
+    assert orchestration["lanes"]["luna"]["reasoning_effort"] == "max"
+    assert orchestration["sol_finalization"]["owner"] == "sol"
+    assert not orchestration["lanes"]["luna"].get("must_acknowledge_archive", False)
 
 
 def test_no_project_specific_markers_or_absolute_paths() -> None:
