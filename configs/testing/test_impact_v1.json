@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "mappings": [
+    {"source_globs": ["governance_bootstrap/conformance.py", "configs/conformance_v1.json"], "focused": ["tests/test_conformance.py"], "broad": ["tests"]},
+    {"source_globs": ["governance_bootstrap/research.py", "research/**"], "focused": ["tests/test_research.py"], "broad": ["tests"]},
+    {"source_globs": ["governance_bootstrap/packets.py", "coordination/**", "configs/owner_scoped_orchestration_v1.json"], "focused": ["tests/test_packets.py"], "broad": ["tests"]},
+    {"source_globs": ["governance_bootstrap/continuity.py", "continuity/**"], "focused": ["tests/test_continuity.py"], "broad": ["tests"]},
+    {"source_globs": ["governance_bootstrap/git_safety.py", "configs/git_reconciliation_v1.json"], "focused": ["tests/test_git_safety.py"], "broad": ["tests"]}
+  ],
+  "unknown_runtime_boundary": ["tests"]
+}

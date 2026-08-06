@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "integration_owner": "core",
+  "primary_branch": "master",
+  "forbidden_recovery_operations": ["reset", "rebase", "forced-update"],
+  "sync_main_requires": ["primary_checkout", "clean_worktree", "local_equals_origin"]
+}

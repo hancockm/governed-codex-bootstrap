@@ -1,0 +1,9 @@
+{
+  "package": "pytest-xdist",
+  "version": "3.8.0",
+  "artifact": "pytest_xdist-3.8.0-py3-none-any.whl",
+  "sha256": "202ca578cfeb7370784a8c33d6d05bc6e13b4f25b5053c30a152269fd10f0b88",
+  "provenance": "https://pypi.org/pypi/pytest-xdist/3.8.0/json",
+  "license": "MIT",
+  "posture": "Development-only dependency; obtain legal approval for this exact artifact before release adoption."
+}

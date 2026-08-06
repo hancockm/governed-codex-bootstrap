@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "required_planes": {
+    "authority": ["AGENTS.md", "roles/core/ROLE.md", "configs/owners_v1.json"],
+    "canonical_knowledge": ["canonical/THESIS.md", "canonical/ARCHITECTURE.md", "canonical/SPEC.md", "canonical/ROADMAP.md", "canonical/capability_registry.json"],
+    "coordination": ["coordination/README.md", "configs/owner_scoped_orchestration_v1.json"],
+    "execution": ["tools/test_runner.py", "configs/testing/execution_v1.json", "configs/testing/test_impact_v1.json"],
+    "delivery": ["tools/origin_reconciler.py", "configs/git_reconciliation_v1.json"],
+    "continuity": ["tools/export_continuity.py", "continuity/core/README.md"]
+  },
+  "research_first": {"research_dir": "research", "canonical_dir": "canonical", "initial_active_owners": ["core"]},
+  "forbidden_project_markers": ["Hilbert", "C:\\\\Users\\\\", "/Users/"]
+}

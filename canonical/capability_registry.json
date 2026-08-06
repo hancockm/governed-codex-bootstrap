@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "capabilities": [
+    {
+      "id": "governance-bootstrap",
+      "owner": "core",
+      "state": "active",
+      "evidence": ["research-bootstrap-placeholder"],
+      "verification": ["tests/test_conformance.py"]
+    }
+  ]
+}

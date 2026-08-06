@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "owners": {
+    "core": {
+      "active": true,
+      "role": "roles/core/ROLE.md",
+      "bootstrap": "roles/core/BOOTSTRAP.md",
+      "continuity": "continuity/core",
+      "scope": ["canonical", "configs", "coordination", "integration"]
+    },
+    "future-owner-template": {
+      "active": false,
+      "role": "future_owners/owner-template/ROLE.md",
+      "scope": []
+    }
+  }
+}

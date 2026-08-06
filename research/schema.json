@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Immutable research intake metadata",
+  "type": "object",
+  "required": ["record_id", "title", "origin", "source_filename", "sha256", "ingested_at"],
+  "properties": {
+    "record_id": {"type": "string", "pattern": "^research-[a-f0-9]{12}$"},
+    "title": {"type": "string", "minLength": 1},
+    "origin": {"type": "string", "minLength": 1},
+    "source_filename": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "ingested_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false
+}

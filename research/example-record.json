@@ -1,0 +1,8 @@
+{
+  "record_id": "research-0123456789ab",
+  "title": "Example discovery",
+  "origin": "example source",
+  "source_filename": "example.md",
+  "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "ingested_at": "2026-01-01T00:00:00Z"
+}
