@@ -76,6 +76,8 @@ def check(root: Path) -> list[str]:
             expected_breadcrumb = _breadcrumb(registry["parentage"][relative], *_siblings(registry, relative))
             if expected_breadcrumb not in text:
                 errors.append(f"breadcrumb is missing or stale: {relative}")
+        elif relative == registry["root_moc"] and START in text:
+            errors.append("root MOC may not have a breadcrumb")
     for moc, children in registry["mocs"].items():
         if moc not in all_paths:
             errors.append(f"MOC is missing: {moc}")
@@ -126,13 +128,26 @@ def sync_navigation(root: Path, apply: bool = False) -> dict[str, Any]:
     """
     registry, vault_root = _load(root)
     initial = check(root)
-    safe_errors = [error for error in initial if not error.startswith("breadcrumb is missing or stale:") and not error.startswith("managed MOC child block is missing:") and not error.startswith("managed MOC has placeholder description:")]
+    safe_errors = [
+        error
+        for error in initial
+        if not error.startswith("breadcrumb is missing or stale:")
+        and error != "root MOC may not have a breadcrumb"
+        and not error.startswith("managed MOC child block is missing:")
+        and not error.startswith("managed MOC has placeholder description:")
+    ]
     if safe_errors:
         return {"ok": False, "applied": False, "changes": [], "diagnostics": initial}
     changes: list[str] = []
     replacements: list[tuple[Path, str]] = []
     block_pattern = re.compile(re.escape(START) + r".*?" + re.escape(END) + r"\n?", re.DOTALL)
     moc_pattern = re.compile(re.escape(MOC_START) + r".*?" + re.escape(MOC_END) + r"\n?", re.DOTALL)
+    root_moc = vault_root / registry["root_moc"]
+    root_text = root_moc.read_text(encoding="utf-8")
+    root_updated = block_pattern.sub("", root_text).lstrip("\n")
+    if root_updated != root_text:
+        changes.append(registry["root_moc"])
+        replacements.append((root_moc, root_updated))
     for child, parent in registry["parentage"].items():
         path = vault_root / child
         text = path.read_text(encoding="utf-8")
