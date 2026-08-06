@@ -6,8 +6,6 @@
 
 Features are inactive until a capability and owner scope are accepted.
 
-- [[20_Features/Feature Template.md]]
-
 <!-- managed:moc-children:start -->
-- [[20_Features/Feature Template.md]] — Owner-authored description pending.
+- [[20_Features/Feature Template.md]] — Minimum feature documentation shape.
 <!-- managed:moc-children:end -->

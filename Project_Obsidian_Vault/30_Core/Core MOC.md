@@ -4,16 +4,10 @@
 
 # Core MOC
 
-- [[30_Core/Core Bootstrap.md]]
-- [[30_Core/Core Protocols.md]]
-- [[30_Core/Core Vault Maintenance Protocol.md]]
-- [[30_Core/Role Bootstrap and Activation.md]]
-- [[30_Core/Continuity/Core Continuity MOC.md]]
-
 <!-- managed:moc-children:start -->
-- [[30_Core/Core Bootstrap.md]] — Owner-authored description pending.
-- [[30_Core/Core Protocols.md]] — Owner-authored description pending.
-- [[30_Core/Core Vault Maintenance Protocol.md]] — Owner-authored description pending.
-- [[30_Core/Role Bootstrap and Activation.md]] — Owner-authored description pending.
-- [[30_Core/Continuity/Core Continuity MOC.md]] — Owner-authored description pending.
+- [[30_Core/Core Bootstrap.md]] — Research-first Core startup sequence.
+- [[30_Core/Core Protocols.md]] — Core authority and promotion responsibilities.
+- [[30_Core/Core Vault Maintenance Protocol.md]] — Conservative Core-owned vault cleanup.
+- [[30_Core/Role Bootstrap and Activation.md]] — Dependency mapping and owner activation protocol.
+- [[30_Core/Continuity/Core Continuity MOC.md]] — Bounded Core continuity exports.
 <!-- managed:moc-children:end -->

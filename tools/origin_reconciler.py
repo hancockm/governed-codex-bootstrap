@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from governance_bootstrap.git_safety import git, inspect, sync_main_safe
+from governance_bootstrap.git_safety import git, inspect, patch_equivalence, sync_main_safe
 
 
 def main() -> int:
@@ -47,10 +47,16 @@ def main() -> int:
         if args.disposition == "landed":
             code, _ = git(root, "merge-base", "--is-ancestor", args.branch, "origin/master")
             if code:
-                report["errors"] = ["landed requires exact reachability from origin/master; patch-equivalence is not implemented by this bounded reconciler"]
-                print(json.dumps(report, indent=2, sort_keys=True))
-                return 3
-            report["evidence"].append("exact_reachability")
+                equivalence = patch_equivalence(root, args.branch)
+                if not equivalence["ok"]:
+                    report["errors"] = ["landed requires exact reachability or complete unambiguous stable patch-id mapping"]
+                    report["patch_mappings"] = equivalence
+                    print(json.dumps(report, indent=2, sort_keys=True))
+                    return 3
+                report["evidence"].append("complete_stable_patch_id_mapping")
+                report["patch_mappings"] = equivalence["mappings"]
+            else:
+                report["evidence"].append("exact_reachability")
         if args.disposition == "superseded":
             if not args.evidence or not args.evidence.is_file():
                 report["errors"] = ["superseded requires explicit replacement or abandonment evidence file"]
@@ -79,6 +85,11 @@ def main() -> int:
             return 3
         if not commits:
             continue
+        exact_code, _ = git(root, "merge-base", "--is-ancestor", branch, "origin/master")
+        if exact_code:
+            equivalence = patch_equivalence(root, branch)
+            if equivalence["ok"]:
+                continue
         owner = next((name for name, prefix in prefixes.items() if branch.removeprefix("origin/").startswith(prefix)), None)
         entry = {"branch": branch, "branch_only_commits": commits.splitlines(), "disposition": "requires_owner_review"}
         (known if owner else unknown).append({**entry, **({"owner": owner} if owner else {})})

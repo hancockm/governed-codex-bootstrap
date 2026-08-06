@@ -6,8 +6,6 @@
 
 This source area holds critique and convergence records. Each record distinguishes agreement, remaining disagreement, weak points, convergence move, and decision status. Core records a disposition before any promotion.
 
-- [[40_Coordination/Generated/Active Records.md]]
-
 <!-- managed:moc-children:start -->
-- [[40_Coordination/Generated/Active Records.md]] — Owner-authored description pending.
+- [[40_Coordination/Generated/Active Records.md]] — Immutable generated coordination record index.
 <!-- managed:moc-children:end -->

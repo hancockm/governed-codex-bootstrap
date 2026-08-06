@@ -83,6 +83,8 @@ def check(root: Path) -> list[str]:
         text = (vault_root / moc).read_text(encoding="utf-8")
         if MOC_START not in text or MOC_END not in text:
             errors.append(f"managed MOC child block is missing: {moc}")
+        if "Owner-authored description pending." in text:
+            errors.append(f"managed MOC has placeholder description: {moc}")
         for child in children:
             if f"[[{child}]]" not in text:
                 errors.append(f"MOC link is missing: {moc} -> {child}")
@@ -124,7 +126,7 @@ def sync_navigation(root: Path, apply: bool = False) -> dict[str, Any]:
     """
     registry, vault_root = _load(root)
     initial = check(root)
-    safe_errors = [error for error in initial if not error.startswith("breadcrumb is missing or stale:") and not error.startswith("managed MOC child block is missing:")]
+    safe_errors = [error for error in initial if not error.startswith("breadcrumb is missing or stale:") and not error.startswith("managed MOC child block is missing:") and not error.startswith("managed MOC has placeholder description:")]
     if safe_errors:
         return {"ok": False, "applied": False, "changes": [], "diagnostics": initial}
     changes: list[str] = []
@@ -144,7 +146,11 @@ def sync_navigation(root: Path, apply: bool = False) -> dict[str, Any]:
         path = vault_root / moc
         text = path.read_text(encoding="utf-8")
         block = _moc_block(registry, moc)
-        updated = moc_pattern.sub(block + "\n", text) if MOC_START in text else text.rstrip() + "\n\n" + block + "\n"
+        updated = moc_pattern.sub(block + "\n", text) if MOC_START in text else text
+        for child in registry["mocs"][moc]:
+            updated = re.sub(rf"(?m)^- \[\[{re.escape(child)}\]\]\s*$\n?", "", updated)
+        if MOC_START not in updated:
+            updated = updated.rstrip() + "\n\n" + block + "\n"
         if updated != text:
             changes.append(moc)
             replacements.append((path, updated))

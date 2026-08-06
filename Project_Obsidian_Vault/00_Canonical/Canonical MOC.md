@@ -4,16 +4,10 @@
 
 # Canonical MOC
 
-- [[00_Canonical/Core Thesis.md]]
-- [[00_Canonical/ARCHITECTURE.md]]
-- [[00_Canonical/SPEC.md]]
-- [[00_Canonical/ROADMAP.md]]
-- [[00_Canonical/Capability Registry.md]]
-
 <!-- managed:moc-children:start -->
-- [[00_Canonical/Core Thesis.md]] — Owner-authored description pending.
-- [[00_Canonical/ARCHITECTURE.md]] — Owner-authored description pending.
-- [[00_Canonical/SPEC.md]] — Owner-authored description pending.
-- [[00_Canonical/ROADMAP.md]] — Owner-authored description pending.
-- [[00_Canonical/Capability Registry.md]] — Owner-authored description pending.
+- [[00_Canonical/Core Thesis.md]] — Accepted governing claims with research evidence.
+- [[00_Canonical/ARCHITECTURE.md]] — Stable six-plane architecture and boundaries.
+- [[00_Canonical/SPEC.md]] — Observable behavior and contract expectations.
+- [[00_Canonical/ROADMAP.md]] — Ordered authorized capability gates.
+- [[00_Canonical/Capability Registry.md]] — Reference to machine capability state.
 <!-- managed:moc-children:end -->

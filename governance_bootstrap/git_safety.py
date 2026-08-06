@@ -34,7 +34,17 @@ def inspect(root: Path) -> dict[str, Any]:
     repository = status_code == 0 and branch_code == 0 and git_dir is not None
     operation_markers = ("MERGE_HEAD", "CHERRY_PICK_HEAD", "REVERT_HEAD", "BISECT_LOG", "rebase-apply", "rebase-merge")
     active_operation = bool(git_dir and any((git_dir / marker).exists() for marker in operation_markers))
-    inspection_failed = not repository
+    worktree_code, worktree_output = git(root, "worktree", "list", "--porcelain")
+    registered_worktrees = [line.removeprefix("worktree ") for line in worktree_output.splitlines() if line.startswith("worktree ")]
+    worktree_statuses = []
+    worktree_failed = worktree_code != 0
+    for location in registered_worktrees:
+        status_code, worktree_status = git(Path(location), "status", "--porcelain=v1", "--untracked-files=all")
+        worktree_statuses.append({"path": location, "clean": status_code == 0 and not bool(worktree_status), "status": worktree_status, "inspection_failed": status_code != 0})
+        worktree_failed = worktree_failed or status_code != 0
+    physical_root = root / ".worktrees"
+    physical_worktrees = sorted(item.name for item in physical_root.iterdir() if item.is_dir()) if physical_root.is_dir() else []
+    inspection_failed = not repository or worktree_failed
     return {
         "repository": repository,
         "inspection_failed": inspection_failed,
@@ -42,6 +52,9 @@ def inspect(root: Path) -> dict[str, Any]:
         "clean": repository and not bool(status),
         "status": status,
         "active_operation": active_operation,
+        "registered_worktrees": registered_worktrees,
+        "physical_worktrees": physical_worktrees,
+        "worktree_statuses": worktree_statuses,
     }
 
 
@@ -96,3 +109,43 @@ def sync_main_safe(root: Path, agent: str, branch: str = "master", no_fetch: boo
     if final_local_code or final_remote_code or final_local != final_remote:
         return ["local primary branch is not synchronized with origin"]
     return []
+
+
+def patch_equivalence(root: Path, branch: str, base: str = "origin/master") -> dict[str, object]:
+    """Map every non-merge branch-only commit to one stable patch-id replacement.
+
+    Empty diffs, merge commits, missing patch IDs, and non-unique target matches are
+    unresolved. The result is suitable for evidence reporting, never merge authority.
+    """
+    code, branch_output = git(root, "rev-list", "--no-merges", f"{base}..{branch}")
+    if code:
+        return {"ok": False, "mappings": [], "unresolved": ["cannot enumerate branch-only commits"]}
+    branch_commits = [item for item in branch_output.splitlines() if item]
+    merge_code, merges = git(root, "rev-list", "--merges", f"{base}..{branch}")
+    if merge_code:
+        return {"ok": False, "mappings": [], "unresolved": ["cannot enumerate merge commits"]}
+    code, main_output = git(root, "rev-list", "--no-merges", base)
+    if code:
+        return {"ok": False, "mappings": [], "unresolved": ["cannot enumerate target commits"]}
+    def patch_id(commit: str) -> str | None:
+        show = subprocess.run(["git", "show", "--pretty=format:", "--no-ext-diff", commit], cwd=root, text=True, capture_output=True, check=False)
+        if show.returncode or not show.stdout.strip():
+            return None
+        patched = subprocess.run(["git", "patch-id", "--stable"], cwd=root, text=True, input=show.stdout, capture_output=True, check=False)
+        return patched.stdout.split()[0] if patched.returncode == 0 and patched.stdout.split() else None
+    target_ids: dict[str, list[str]] = {}
+    for commit in main_output.splitlines():
+        identifier = patch_id(commit)
+        if identifier:
+            target_ids.setdefault(identifier, []).append(commit)
+    mappings, unresolved = [], [f"merge commit: {commit}" for commit in merges.splitlines() if commit]
+    for commit in branch_commits:
+        identifier = patch_id(commit)
+        matches = target_ids.get(identifier or "", [])
+        if not identifier:
+            unresolved.append(f"unmappable commit: {commit}")
+        elif len(matches) != 1:
+            unresolved.append(f"ambiguous or absent patch-id match: {commit}")
+        else:
+            mappings.append({"original": commit, "replacement": matches[0], "patch_id": identifier})
+    return {"ok": bool(branch_commits) and not unresolved and len(mappings) == len(branch_commits), "mappings": mappings, "unresolved": unresolved}

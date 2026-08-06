@@ -15,6 +15,7 @@ def test_vault_is_maintained_single_source_and_navigation_is_idempotent() -> Non
     assert result == {"ok": True, "applied": False, "changes": [], "diagnostics": []}
     assert report(ROOT)["oversized"] == []
     assert not (ROOT / "canonical").exists()
+    assert "Owner-authored description pending." not in "\n".join(path.read_text(encoding="utf-8") for path in (ROOT / "Project_Obsidian_Vault").rglob("*.md"))
 
 
 def test_source_documentation_audit_covers_public_package_source() -> None:

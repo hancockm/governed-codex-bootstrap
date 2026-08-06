@@ -6,8 +6,6 @@
 
 Research is source-only. Start with immutable records in `research/records/`, then use the generated `research/derived/research_map.json` and separate `research/reviews/` decisions. No candidate is canonical without Core's explicit promotion.
 
-- [[10_Research/Research Source Map.md]]
-
 <!-- managed:moc-children:start -->
-- [[10_Research/Research Source Map.md]] — Owner-authored description pending.
+- [[10_Research/Research Source Map.md]] — Reproducible organizer output and review boundary.
 <!-- managed:moc-children:end -->
