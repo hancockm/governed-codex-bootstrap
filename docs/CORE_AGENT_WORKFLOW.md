@@ -7,3 +7,5 @@ Core freezes planning evidence, records assumptions and ownership, produces an a
 Apply an average-user UX gate to user-facing changes: state the primary user outcome, test ordinary comprehension and error recovery, verify accessible labels/keyboard behavior where relevant, and keep expert controls from obscuring the common path. This is a review requirement, not a substitute for product research.
 
 See `docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md` for Core-only vault cleanup.
+
+See `docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md` before recognizing, adopting, or activating a separate owner.

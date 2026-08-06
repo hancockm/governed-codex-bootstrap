@@ -6,6 +6,7 @@
       "role": "roles/core/ROLE.md",
       "bootstrap": "roles/core/BOOTSTRAP.md",
       "continuity": "continuity/core",
+      "profile": "roles/core/owner_profile.json",
       "scope": ["canonical", "configs", "coordination", "integration"]
     },
     "future-owner-template": {
@@ -14,6 +15,14 @@
       "bootstrap": "future_owners/owner-template/BOOTSTRAP.md",
       "continuity": "future_owners/owner-template/continuity",
       "profile": "future_owners/owner-template/owner_profile.json",
+      "scope": []
+    },
+    "example-feature-owner": {
+      "active": false,
+      "role": "future_owners/example-feature-owner/ROLE.md",
+      "bootstrap": "future_owners/example-feature-owner/BOOTSTRAP.md",
+      "continuity": "future_owners/example-feature-owner/continuity",
+      "profile": "future_owners/example-feature-owner/owner_profile.json",
       "scope": []
     }
   }

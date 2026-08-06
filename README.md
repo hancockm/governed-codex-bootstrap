@@ -17,6 +17,21 @@ Start reading in the vault at `Project_Obsidian_Vault/00_Home/Project MOC.md`, t
 
 The cold start is research intake and organization; Core canonicalization; advisory selection audit and plan handoff; user approval; Sol packet classification; Terra candidate; one reused saved-project Luna task through corrections; authorized integration; Core synchronization; continuity export; then Sol finalization/archive acknowledgment.
 
+## Create a new role from Core
+
+Core recognizes a demonstrated boundary; names stable and Git identities plus branch/worktree namespaces; records authority, non-ownership, scopes, public dependencies, and consumers; supplies role/bootstrap/profile/continuity/vault/feature/test assets; obtains owner adoption and activation evidence; integrates and marks the role active before its first task. A template is never dispatch authority.
+
+```mermaid
+flowchart LR
+  Boundary["Demonstrated boundary"] --> Recognition["Core recognition"]
+  Recognition --> Map["Dependency and scope map"]
+  Map --> Assets["Role, profile, continuity, tests"]
+  Assets --> Adoption["Owner adoption evidence"]
+  Adoption --> Integration["Core integration"]
+  Integration --> Active["Active: dispatch authorized"]
+  Active --> Retirement["Superseded: provenance retained"]
+```
+
 ## The six planes
 
 | Plane | Purpose | Primary assets |

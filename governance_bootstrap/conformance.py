@@ -64,6 +64,36 @@ def check_repository(root: Path) -> list[str]:
     active = sorted(name for name, value in owners.items() if value.get("active"))
     if active != research_policy["initial_active_owners"]:
         failures.append("research-first: initial bootstrap may activate only Core")
+    owner_ids: set[str] = set()
+    git_owners: set[str] = set()
+    branch_prefixes: set[str] = set()
+    worktree_prefixes: set[str] = set()
+    for name, owner in owners.items():
+        profile_path = root / owner.get("profile", "")
+        if not profile_path.is_file():
+            failures.append(f"owner: missing dependency profile for {name}")
+            continue
+        profile = json.loads(profile_path.read_text(encoding="utf-8"))
+        required_profile = {"owner_id", "git_owner", "branch_prefix", "worktree_prefix", "lifecycle_state", "owned_paths", "prohibited_paths", "owns_capabilities", "consumes_capabilities", "public_contracts", "upstream_owners", "downstream_consumers", "continuity", "verification_profiles", "orchestration", "activation_evidence", "no_ownership_grant"}
+        if required_profile - profile.keys():
+            failures.append(f"owner: incomplete dependency map for {name}")
+            continue
+        for field, seen in (("owner_id", owner_ids), ("git_owner", git_owners), ("branch_prefix", branch_prefixes), ("worktree_prefix", worktree_prefixes)):
+            value = profile[field]
+            if value in seen:
+                failures.append(f"owner: duplicate {field} {value}")
+            seen.add(value)
+        private_dependencies = profile.get("private_implementation_dependencies", []) or [value for value in [*profile["consumes_capabilities"], *profile["public_contracts"]] if "private" in value.lower()]
+        if private_dependencies:
+            failures.append(f"owner: private cross-owner dependency for {name}")
+        continuity = profile["continuity"]
+        if not continuity.get("moc") or not (root / continuity["moc"]).exists():
+            failures.append(f"owner: missing continuity MOC for {name}")
+        if owner.get("active"):
+            if profile["lifecycle_state"] != "active" or profile["no_ownership_grant"] or not profile["activation_evidence"] or not profile["verification_profiles"] or not profile["orchestration"].get("lanes"):
+                failures.append(f"owner: active prerequisites are incomplete for {name}")
+        elif profile["lifecycle_state"] == "active" or not profile["no_ownership_grant"]:
+            failures.append(f"owner: inactive scaffold grants authority for {name}")
     template = owners.get("future-owner-template", {})
     if template.get("active") or any(not (root / template.get(key, "")).exists() for key in ("role", "bootstrap", "continuity", "profile")):
         failures.append("future-owner: inactive template prerequisites are incomplete")

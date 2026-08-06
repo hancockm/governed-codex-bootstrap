@@ -34,6 +34,16 @@ def test_orchestration_has_exact_model_bindings_and_separate_sol_finalization() 
     assert not orchestration["lanes"]["luna"].get("must_acknowledge_archive", False)
 
 
+def test_owner_dependency_profiles_keep_examples_inactive_and_non_authorizing() -> None:
+    owners = json.loads((ROOT / "configs/owners_v1.json").read_text(encoding="utf-8"))["owners"]
+    for name in ("future-owner-template", "example-feature-owner"):
+        profile = json.loads((ROOT / owners[name]["profile"]).read_text(encoding="utf-8"))
+        assert owners[name]["active"] is False
+        assert profile["lifecycle_state"] != "active"
+        assert profile["no_ownership_grant"] is True
+        assert profile["branch_prefix"] and profile["worktree_prefix"]
+
+
 def test_no_project_specific_markers_or_absolute_paths() -> None:
     policy = json.loads((ROOT / "configs/conformance_v1.json").read_text(encoding="utf-8"))
     assert not [item for item in check_repository(ROOT) if item.startswith("neutrality:")]

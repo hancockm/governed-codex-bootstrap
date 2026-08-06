@@ -1,0 +1,19 @@
+{
+  "owner_id": "example-feature-owner",
+  "git_owner": "example-feature-owner",
+  "branch_prefix": "example-feature-owner/",
+  "worktree_prefix": "example-feature-owner-",
+  "lifecycle_state": "recognized_inactive",
+  "owned_paths": ["future_owners/example-feature-owner"],
+  "prohibited_paths": ["Project_Obsidian_Vault/00_Canonical", "configs"],
+  "owns_capabilities": [],
+  "consumes_capabilities": ["governance-bootstrap"],
+  "public_contracts": ["configs/capability_registry_v1.json"],
+  "upstream_owners": ["core"],
+  "downstream_consumers": [],
+  "continuity": {"moc": "future_owners/example-feature-owner/continuity/MOC.md", "protocol": "", "receipts": "", "transcripts": ""},
+  "verification_profiles": ["focused", "broad"],
+  "orchestration": {"reference": "configs/owner_scoped_orchestration_v1.json", "lanes": []},
+  "activation_evidence": [],
+  "no_ownership_grant": true
+}

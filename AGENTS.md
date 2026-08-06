@@ -1,6 +1,6 @@
 # Repository governance
 
-Detailed procedures are in `docs/CORE_AGENT_WORKFLOW.md`, `docs/OWNER_SCOPED_ORCHESTRATION.md`, `docs/GIT_RECONCILIATION.md`, `docs/POWERSHELL_AGENT_INSTRUCTIONS.md`, `docs/SOURCE_DOCUMENTATION_STYLE.md`, `docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md`, `docs/VAULT_INFORMATION_ARCHITECTURE_STANDARD.md`, and `docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md`. The maintained reading surface starts at `Project_Obsidian_Vault/00_Home/Project MOC.md`.
+Detailed procedures are in `docs/CORE_AGENT_WORKFLOW.md`, `docs/OWNER_SCOPED_ORCHESTRATION.md`, `docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md`, `docs/GIT_RECONCILIATION.md`, `docs/POWERSHELL_AGENT_INSTRUCTIONS.md`, `docs/SOURCE_DOCUMENTATION_STYLE.md`, `docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md`, `docs/VAULT_INFORMATION_ARCHITECTURE_STANDARD.md`, and `docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md`. The maintained reading surface starts at `Project_Obsidian_Vault/00_Home/Project MOC.md`.
 
 ## Role startup
 

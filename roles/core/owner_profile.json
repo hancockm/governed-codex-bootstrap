@@ -1,0 +1,19 @@
+{
+  "owner_id": "core",
+  "git_owner": "core",
+  "branch_prefix": "core/",
+  "worktree_prefix": "core-",
+  "lifecycle_state": "active",
+  "owned_paths": ["configs", "Project_Obsidian_Vault/00_Canonical", "Project_Obsidian_Vault/30_Core"],
+  "prohibited_paths": [],
+  "owns_capabilities": ["governance-bootstrap"],
+  "consumes_capabilities": [],
+  "public_contracts": [],
+  "upstream_owners": [],
+  "downstream_consumers": [],
+  "continuity": {"moc": "Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md", "protocol": "continuity/core/README.md", "receipts": "coordination/receipts", "transcripts": "continuity/core/transcripts"},
+  "verification_profiles": ["focused", "affected", "broad", "full"],
+  "orchestration": {"reference": "configs/owner_scoped_orchestration_v1.json", "lanes": ["sol", "terra", "luna"]},
+  "activation_evidence": ["bootstrap-initialization"],
+  "no_ownership_grant": false
+}
