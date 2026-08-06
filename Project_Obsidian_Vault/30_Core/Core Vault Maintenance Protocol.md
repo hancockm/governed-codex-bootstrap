@@ -1,5 +1,5 @@
 <!-- generated:breadcrumbs:start -->
-> Parent: [[30_Core/Core MOC.md]]
+> Previous: [[30_Core/Core Protocols.md]] | Up: [[30_Core/Core MOC.md]] | Next: [[30_Core/Role Bootstrap and Activation.md]]
 <!-- generated:breadcrumbs:end -->
 
 # Core Vault Maintenance Protocol

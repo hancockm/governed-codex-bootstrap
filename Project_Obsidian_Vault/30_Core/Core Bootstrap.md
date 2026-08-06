@@ -1,5 +1,5 @@
 <!-- generated:breadcrumbs:start -->
-> Parent: [[30_Core/Core MOC.md]]
+> Previous: none | Up: [[30_Core/Core MOC.md]] | Next: [[30_Core/Core Protocols.md]]
 <!-- generated:breadcrumbs:end -->
 
 # Core Bootstrap

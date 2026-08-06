@@ -133,7 +133,7 @@ The state order is enforced by the repository conformance test: research must ex
 4. A failed full run returns to serial failed triage; it does not repeatedly launch the parallel suite.
 5. Sol creates the separate subordinate archive/finalization acknowledgment only after an accepted exact-candidate receipt, no correction pending, commit/push/integration, primary-branch synchronization, terminal reconciliation, and worktree cleanup. Failed, blocked, and user-input-needed tasks remain visible. Core performs the bounded integration check and exports the owning continuity transcript.
 
-`tools/work_packet.py` validates packets and receipts. `tools/origin_reconciler.py` only inspects Git or verifies a clean, already-synchronized primary checkout; it does not merge, reset, or rebase.
+`tools/work_packet.py` validates packets and receipts. `tools/origin_reconciler.py` reports bounded reconciliation facts and, for Core only, may fetch/prune and fast-forward the clean primary checkout with `merge --ff-only`; it never infers integration authority, resets, rebases, or deletes.
 
 ## Test profiles
 

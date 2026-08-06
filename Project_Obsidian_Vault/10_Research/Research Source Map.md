@@ -1,5 +1,5 @@
 <!-- generated:breadcrumbs:start -->
-> Parent: [[10_Research/Research Sources MOC.md]]
+> Previous: none | Up: [[10_Research/Research Sources MOC.md]] | Next: none
 <!-- generated:breadcrumbs:end -->
 
 # Research Source Map

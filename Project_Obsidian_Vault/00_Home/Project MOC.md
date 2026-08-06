@@ -10,3 +10,12 @@ This maintained vault is the narrative reading surface for this governed project
 - [[30_Core/Core MOC.md]]
 - [[40_Coordination/Agent-to-Agent Discussions MOC.md]]
 - [[90_Archive/Archive MOC.md]]
+
+<!-- managed:moc-children:start -->
+- [[00_Canonical/Canonical MOC.md]] — Owner-authored description pending.
+- [[10_Research/Research Sources MOC.md]] — Owner-authored description pending.
+- [[20_Features/Features MOC.md]] — Owner-authored description pending.
+- [[30_Core/Core MOC.md]] — Owner-authored description pending.
+- [[40_Coordination/Agent-to-Agent Discussions MOC.md]] — Owner-authored description pending.
+- [[90_Archive/Archive MOC.md]] — Owner-authored description pending.
+<!-- managed:moc-children:end -->

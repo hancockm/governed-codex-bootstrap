@@ -1,5 +1,5 @@
 <!-- generated:breadcrumbs:start -->
-> Parent: [[40_Coordination/Agent-to-Agent Discussions MOC.md]]
+> Previous: none | Up: [[40_Coordination/Agent-to-Agent Discussions MOC.md]] | Next: none
 <!-- generated:breadcrumbs:end -->
 
 # Active Coordination Records

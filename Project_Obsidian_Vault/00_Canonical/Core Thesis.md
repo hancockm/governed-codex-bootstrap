@@ -1,5 +1,5 @@
 <!-- generated:breadcrumbs:start -->
-> Parent: [[00_Canonical/Canonical MOC.md]]
+> Previous: none | Up: [[00_Canonical/Canonical MOC.md]] | Next: [[00_Canonical/ARCHITECTURE.md]]
 <!-- generated:breadcrumbs:end -->
 
 # Core Thesis

@@ -1,5 +1,5 @@
 <!-- generated:breadcrumbs:start -->
-> Parent: [[30_Core/Core MOC.md]]
+> Previous: [[30_Core/Role Bootstrap and Activation.md]] | Up: [[30_Core/Core MOC.md]] | Next: none
 <!-- generated:breadcrumbs:end -->
 
 # Core Continuity MOC

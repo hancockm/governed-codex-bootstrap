@@ -1,5 +1,5 @@
 <!-- generated:breadcrumbs:start -->
-> Parent: [[00_Canonical/Canonical MOC.md]]
+> Previous: [[00_Canonical/SPEC.md]] | Up: [[00_Canonical/Canonical MOC.md]] | Next: [[00_Canonical/Capability Registry.md]]
 <!-- generated:breadcrumbs:end -->
 
 # Roadmap

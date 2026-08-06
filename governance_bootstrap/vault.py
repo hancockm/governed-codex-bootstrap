@@ -11,6 +11,8 @@ LINK_PATTERN = re.compile(r"(?<!!)\[\[([^\]|#]+)(?:\|[^\]]+)?\]\]")
 TRANSCLUSION_PATTERN = re.compile(r"!\[\[")
 START = "<!-- generated:breadcrumbs:start -->"
 END = "<!-- generated:breadcrumbs:end -->"
+MOC_START = "<!-- managed:moc-children:start -->"
+MOC_END = "<!-- managed:moc-children:end -->"
 
 
 def _load(root: Path) -> tuple[dict[str, Any], Path]:
@@ -68,10 +70,10 @@ def check(root: Path) -> list[str]:
         for target in LINK_PATTERN.findall(text):
             if "/" not in target:
                 errors.append(f"link is not path-qualified: {relative} -> {target}")
-            elif target not in all_paths and not dynamic(target):
+            elif target not in all_paths and not (vault_root / target).is_file():
                 errors.append(f"link target is missing: {relative} -> {target}")
         if relative in registry["parentage"]:
-            expected_breadcrumb = _breadcrumb(registry["parentage"][relative])
+            expected_breadcrumb = _breadcrumb(registry["parentage"][relative], *_siblings(registry, relative))
             if expected_breadcrumb not in text:
                 errors.append(f"breadcrumb is missing or stale: {relative}")
     for moc, children in registry["mocs"].items():
@@ -79,15 +81,39 @@ def check(root: Path) -> list[str]:
             errors.append(f"MOC is missing: {moc}")
             continue
         text = (vault_root / moc).read_text(encoding="utf-8")
+        if MOC_START not in text or MOC_END not in text:
+            errors.append(f"managed MOC child block is missing: {moc}")
         for child in children:
             if f"[[{child}]]" not in text:
                 errors.append(f"MOC link is missing: {moc} -> {child}")
     return errors
 
 
-def _breadcrumb(parent: str) -> str:
+def _siblings(registry: dict[str, Any], child: str) -> tuple[str | None, str | None]:
+    """Return sibling paths in registered owner-authored MOC order."""
+    parent = registry["parentage"].get(child)
+    children = registry.get("mocs", {}).get(parent, [])
+    if child not in children:
+        return None, None
+    index = children.index(child)
+    return (children[index - 1] if index else None, children[index + 1] if index + 1 < len(children) else None)
+
+
+def _breadcrumb(parent: str, previous: str | None, next_item: str | None) -> str:
     """Produce the generated, path-qualified breadcrumb block."""
-    return f"{START}\n> Parent: [[{parent}]]\n{END}"
+    previous_link = f"[[{previous}]]" if previous else "none"
+    next_link = f"[[{next_item}]]" if next_item else "none"
+    return f"{START}\n> Previous: {previous_link} | Up: [[{parent}]] | Next: {next_link}\n{END}"
+
+
+def _moc_block(registry: dict[str, Any], moc: str) -> str:
+    """Produce a generated MOC child block from path-qualified registry order."""
+    descriptions = registry.get("moc_descriptions", {})
+    lines = [MOC_START]
+    for child in registry["mocs"].get(moc, []):
+        lines.append(f"- [[{child}]] — {descriptions.get(child, 'Owner-authored description pending.')}" )
+    lines.append(MOC_END)
+    return "\n".join(lines)
 
 
 def sync_navigation(root: Path, apply: bool = False) -> dict[str, Any]:
@@ -98,20 +124,29 @@ def sync_navigation(root: Path, apply: bool = False) -> dict[str, Any]:
     """
     registry, vault_root = _load(root)
     initial = check(root)
-    safe_errors = [error for error in initial if not error.startswith("breadcrumb is missing or stale:")]
+    safe_errors = [error for error in initial if not error.startswith("breadcrumb is missing or stale:") and not error.startswith("managed MOC child block is missing:")]
     if safe_errors:
         return {"ok": False, "applied": False, "changes": [], "diagnostics": initial}
     changes: list[str] = []
     replacements: list[tuple[Path, str]] = []
     block_pattern = re.compile(re.escape(START) + r".*?" + re.escape(END) + r"\n?", re.DOTALL)
+    moc_pattern = re.compile(re.escape(MOC_START) + r".*?" + re.escape(MOC_END) + r"\n?", re.DOTALL)
     for child, parent in registry["parentage"].items():
         path = vault_root / child
         text = path.read_text(encoding="utf-8")
-        desired = _breadcrumb(parent) + "\n\n"
+        desired = _breadcrumb(parent, *_siblings(registry, child)) + "\n\n"
         updated = block_pattern.sub("", text).lstrip("\n")
         updated = desired + updated
         if updated != text:
             changes.append(child)
+            replacements.append((path, updated))
+    for moc in registry["mocs"]:
+        path = vault_root / moc
+        text = path.read_text(encoding="utf-8")
+        block = _moc_block(registry, moc)
+        updated = moc_pattern.sub(block + "\n", text) if MOC_START in text else text.rstrip() + "\n\n" + block + "\n"
+        if updated != text:
+            changes.append(moc)
             replacements.append((path, updated))
     if apply:
         for path, text in replacements:

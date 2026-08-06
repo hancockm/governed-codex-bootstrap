@@ -1,5 +1,5 @@
 <!-- generated:breadcrumbs:start -->
-> Parent: [[00_Home/Project MOC.md]]
+> Previous: [[40_Coordination/Agent-to-Agent Discussions MOC.md]] | Up: [[00_Home/Project MOC.md]] | Next: none
 <!-- generated:breadcrumbs:end -->
 
 # Archive MOC

@@ -1,5 +1,5 @@
 <!-- generated:breadcrumbs:start -->
-> Parent: [[00_Canonical/Canonical MOC.md]]
+> Previous: [[00_Canonical/Core Thesis.md]] | Up: [[00_Canonical/Canonical MOC.md]] | Next: [[00_Canonical/SPEC.md]]
 <!-- generated:breadcrumbs:end -->
 
 # Architecture
