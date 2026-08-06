@@ -5,6 +5,7 @@
 <!-- generated:breadcrumbs:end -->
 
 <!-- managed:moc-children:start -->
+- [[30_Core/README.md]] — Core authority, reading order, evidence, delivery, and continuity guide.
 - [[30_Core/Core Bootstrap.md]] — Research-first Core startup sequence.
 - [[30_Core/Core Protocols.md]] — Core authority and promotion responsibilities.
 - [[30_Core/Core Vault Maintenance Protocol.md]] — Conservative Core-owned vault cleanup.

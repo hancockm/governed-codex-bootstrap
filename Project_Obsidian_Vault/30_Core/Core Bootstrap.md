@@ -9,7 +9,7 @@ repository_baseline_commit: bootstrap_initial
 # Core Bootstrap Prompt
 
 <!-- generated:breadcrumbs:start -->
-<< Previous: none | Up: [[30_Core/Core MOC]] | Next: [[30_Core/Core Protocols]] >>
+<< Previous: [[30_Core/README]] | Up: [[30_Core/Core MOC]] | Next: [[30_Core/Core Protocols]] >>
 <!-- generated:breadcrumbs:end -->
 
 Copy the following prompt into a new Core task after context loss, on another

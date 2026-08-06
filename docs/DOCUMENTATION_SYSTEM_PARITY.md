@@ -67,6 +67,30 @@ recognized boundary
 
 The inactive template proves the structure without preselecting domains.
 
+## Vault README And Instruction Equivalence
+
+The vault provides practical READMEs for its root, canonical, research,
+features, Core, Core continuity, coordination, and archive areas. These notes
+explain reading order, authority, ownership, maintenance, and recovery while
+the MOCs remain the navigable hierarchy.
+
+The vault instruction hub retains reusable behavior for:
+
+- user collaboration and decision semantics;
+- frozen-baseline work-selection audits;
+- repository-local worktree navigation to the binding root policy;
+- Core startup, promotion, integration, and continuity;
+- future-owner recognition, adoption, activation, and retirement;
+- advisory review and critique;
+- owner-scoped development lanes;
+- optional external critique handoffs.
+
+Owner-specific manuals and continuity packs are not copied into a clean
+bootstrap. They are generated only after activation. Transcript-root and
+monthly READMEs are exporter output and therefore appear only after a real
+thread is archived. Publication or summary guides remain deferred until their
+owners and capabilities exist.
+
 ## Deliberate Exclusions
 
 Do not import:
@@ -92,4 +116,5 @@ python -m pytest -q tests/test_conformance.py
 
 Conformance fails when a required operational document disappears, collapses
 below its substantive floor, loses an essential heading, omits a Core
-continuity protocol, or introduces a forbidden project-specific marker.
+continuity protocol, loses a required vault README/instruction disposition, or
+introduces a forbidden project-specific marker.

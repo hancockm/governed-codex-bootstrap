@@ -218,6 +218,125 @@
       ]
     },
     {
+      "path": "Project_Obsidian_Vault/README.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 70,
+      "required_headings": [
+        "## Start Here",
+        "## Authority Layers",
+        "## Maintained And Generated Content",
+        "## Owner Instructions",
+        "## Maintenance",
+        "## Recovery"
+      ]
+    },
+    {
+      "path": "Project_Obsidian_Vault/00_Canonical/README.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 30,
+      "required_headings": ["## Responsibilities", "## Promotion Boundary", "## Change Discipline"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/10_Research/README.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 30,
+      "required_headings": ["## Intake", "## Organization", "## Review", "## Promotion"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/20_Features/README.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 30,
+      "required_headings": ["## Before Activation", "## Activation", "## Feature Documentation", "## Cross-Owner Changes"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/30_Core/README.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 35,
+      "required_headings": ["## Reading Order", "## Evidence Discipline", "## Owner Boundary", "## Delivery"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/30_Core/Continuity/README.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 38,
+      "required_headings": ["## Components", "## Ownership", "## Export", "## Subordinate Receipts"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/40_Coordination/README.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 40,
+      "required_headings": ["## Start Here", "## Record Types", "## Critique Contract", "## Publication", "## Authority"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/40_Coordination/Instructions/README.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 110,
+      "required_headings": [
+        "## Required Starting Order",
+        "## Critique Preamble And Shape",
+        "## Binding Coordination Rules",
+        "## Planning Routine",
+        "## Implementation And Publication",
+        "## Role Model",
+        "## Context Compression",
+        "## Feature Documentation Routine",
+        "## Instruction Map"
+      ]
+    },
+    {
+      "path": "Project_Obsidian_Vault/40_Coordination/Instructions/All Owners User Collaboration And Decision Semantics.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 45,
+      "required_headings": ["## Common Agreement", "## All Remaining Disagreements", "## Critical Weak Points", "## Convergence Move", "## Decision Status"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/40_Coordination/Instructions/Universal Work Selection Audit.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 50,
+      "required_headings": ["## Purpose", "## Evidence Boundary", "## Procedure", "## Commands", "## Boundaries", "## Decision Status"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/40_Coordination/Instructions/Repository-Local Worktree Standard.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 35,
+      "required_headings": ["## Binding Authority", "## Shared Convention", "## Closeout Principle", "## Safety Boundary", "## Decision Status"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/40_Coordination/Instructions/Core Owner.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 38,
+      "required_headings": ["## Purpose", "## Startup", "## Decision Boundary", "## Planning", "## Delivery", "## Write Authority"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/40_Coordination/Instructions/Future Owner Template.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 44,
+      "required_headings": ["## Status", "## Recognition", "## Required Assets", "## Adoption", "## Activation", "## Retirement"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/40_Coordination/Instructions/Review And Critique Agent.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 30,
+      "required_headings": ["## Purpose", "## Required Behavior", "## Write Authority", "## Decision Status"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/40_Coordination/Instructions/Owner-Scoped Development Lanes.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 34,
+      "required_headings": ["## Team", "## Packet And Receipts", "## Correction Cycle", "## Publication And Archive"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/40_Coordination/Instructions/External Critique Handoff.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 35,
+      "required_headings": ["## Purpose", "## Create The Handoff", "## Completion Evidence", "## Failure And Fallback", "## Publication"]
+    },
+    {
+      "path": "Project_Obsidian_Vault/90_Archive/README.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 25,
+      "required_headings": ["## Admission", "## Boundaries", "## Restoration"]
+    },
+    {
       "path": "coordination/README.md",
       "classification": "generic_adaptation",
       "minimum_lines": 45,
@@ -243,5 +362,17 @@
     "product_runtime_architecture": "exclude because runtime doctrine must be derived from this project's research",
     "domain_parameter_manuals": "exclude until a recognized owner and accepted domain contract require them",
     "product_specific_tooling": "classify separately in the tool parity manifest"
+  },
+  "vault_reference_dispositions": {
+    "plane_readmes": "retain as project-neutral practical entry points linked from maintained MOCs",
+    "shared_instruction_hub": "retain reusable coordination, planning, publication, and context-compression behavior",
+    "core_owner_instructions": "adapt to empty-domain Core authority and research-first startup",
+    "future_owner_instructions": "generate only after Core recognition and preserve inactive templates as non-authorizing",
+    "owner_continuity_packs": "create for activated owners with one thread owner and no copied reference history",
+    "transcript_and_month_readmes": "generate only when transcript exports exist; do not seed empty synthetic archives",
+    "feature_readmes": "create when a feature boundary is recognized and document its actual owner and public dependencies",
+    "publication_and_summary_readmes": "defer until a publication owner or accepted reader-facing capability exists",
+    "product_and_domain_manuals": "exclude until local research and canonical decisions establish the corresponding project need",
+    "historical_rollout_records": "exclude from the clean bootstrap while retaining the reusable maintenance and activation protocols"
   }
 }

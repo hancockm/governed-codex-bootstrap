@@ -76,6 +76,20 @@ def validate_documentation_system(root: Path) -> list[str]:
     }
     if set(manifest.get("adaptation_dispositions", {})) != required_dispositions:
         failures.append("documentation adaptation dispositions are incomplete")
+    required_vault_dispositions = {
+        "plane_readmes",
+        "shared_instruction_hub",
+        "core_owner_instructions",
+        "future_owner_instructions",
+        "owner_continuity_packs",
+        "transcript_and_month_readmes",
+        "feature_readmes",
+        "publication_and_summary_readmes",
+        "product_and_domain_manuals",
+        "historical_rollout_records",
+    }
+    if set(manifest.get("vault_reference_dispositions", {})) != required_vault_dispositions:
+        failures.append("vault README and instruction dispositions are incomplete")
     return failures
 
 

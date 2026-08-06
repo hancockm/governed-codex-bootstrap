@@ -1,7 +1,7 @@
 # Active Coordination Records
 
 <!-- generated:breadcrumbs:start -->
-<< Previous: none | Up: [[40_Coordination/Agent-to-Agent Discussions MOC]] | Next: none >>
+<< Previous: [[40_Coordination/Instructions/README]] | Up: [[40_Coordination/Agent-to-Agent Discussions MOC]] | Next: none >>
 <!-- generated:breadcrumbs:end -->
 
 Generated, immutable plan handoffs and selection audits are indexed here. They are advisory evidence until an owner records a disposition.

@@ -1,7 +1,7 @@
 # Reorientation And Next-Step Discovery
 
 <!-- generated:breadcrumbs:start -->
-<< Previous: none | Up: [[30_Core/Continuity/Core Continuity MOC]] | Next: [[30_Core/Continuity/Protocols/Assumption Audit]] >>
+<< Previous: [[30_Core/Continuity/README]] | Up: [[30_Core/Continuity/Core Continuity MOC]] | Next: [[30_Core/Continuity/Protocols/Assumption Audit]] >>
 <!-- generated:breadcrumbs:end -->
 
 Use this protocol after context loss, at the start of a substantial Core task,

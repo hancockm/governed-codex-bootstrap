@@ -89,3 +89,30 @@ def test_git_guide_covers_reconciliation_delivery_and_recovery() -> None:
         "git worktree remove",
     ):
         assert phrase in guide
+
+
+def test_vault_readmes_and_instruction_hub_are_complete() -> None:
+    manifest = json.loads(
+        (ROOT / "configs/documentation_system_v1.json").read_text(encoding="utf-8")
+    )
+    surfaces = {item["path"] for item in manifest["surfaces"]}
+    assert {
+        "Project_Obsidian_Vault/README.md",
+        "Project_Obsidian_Vault/10_Research/README.md",
+        "Project_Obsidian_Vault/30_Core/Continuity/README.md",
+        "Project_Obsidian_Vault/40_Coordination/README.md",
+        "Project_Obsidian_Vault/40_Coordination/Instructions/README.md",
+        "Project_Obsidian_Vault/90_Archive/README.md",
+    } <= surfaces
+    hub = (
+        ROOT / "Project_Obsidian_Vault/40_Coordination/Instructions/README.md"
+    ).read_text(encoding="utf-8")
+    for phrase in (
+        "## Required Starting Order",
+        "## Critique Preamble And Shape",
+        "## Planning Routine",
+        "## Implementation And Publication",
+        "## Instruction Map",
+    ):
+        assert phrase in hub
+    assert len(manifest["vault_reference_dispositions"]) == 10

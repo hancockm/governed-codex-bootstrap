@@ -10,6 +10,7 @@ then use the assumption and canonical/runtime protocols appropriate to the
 request. Use continuity maintenance only during closeout or repair.
 
 <!-- managed:moc-children:start -->
+- [[30_Core/Continuity/README.md]] — Continuity ownership, transcript, receipt, and recovery guide.
 - [[30_Core/Continuity/Protocols/Reorientation And Next-Step Discovery.md]] — Reconstruct current state, freeze planning evidence, and select the smallest unblocked Core-owned step.
 - [[30_Core/Continuity/Protocols/Assumption Audit.md]] — Classify verified, invalidated, unverified, and owner-dependent assumptions before sequencing work.
 - [[30_Core/Continuity/Protocols/Canonical-To-Runtime Reconciliation.md]] — Compare canonical doctrine, capability status, source, configuration, tests, receipts, and Git evidence without silently choosing one plane.

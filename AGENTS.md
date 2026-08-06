@@ -16,6 +16,10 @@ continuity MOC, and owner profile. Core starts at:
 - `Project_Obsidian_Vault/30_Core/Core Bootstrap.md`
 - `Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md`
 
+Shared vault-local coordination instructions begin at:
+
+- `Project_Obsidian_Vault/40_Coordination/Instructions/README.md`
+
 Future-owner templates are non-authorizing. Only an owner marked `active` in
 the owner registry may dispatch work. Role instructions may narrow ownership
 or add checks, but they may not weaken this file's Git, continuity, safety, or

@@ -7,5 +7,6 @@
 Features are inactive until a capability and owner scope are accepted.
 
 <!-- managed:moc-children:start -->
+- [[20_Features/README.md]] — Feature documentation, ownership, activation, and retirement guide.
 - [[20_Features/Feature Template.md]] — Minimum feature documentation shape.
 <!-- managed:moc-children:end -->
