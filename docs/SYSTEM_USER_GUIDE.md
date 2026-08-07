@@ -286,6 +286,166 @@ way for one owner to direct another owner's private design. A published A2A
 record is source evidence. It becomes actionable only through the responsible
 owner's disposition and any user approval required by the proposed change.
 
+### Set Up A2A Coordination From The Bootstrap
+
+The standalone bootstrap already contains the coordination vault, Core owner,
+root policy, handoff tools, generated-index boundary, and conformance tests.
+There is no separate service to deploy and no plugin is required. Setup means
+verifying those assets, connecting the Git publication path, and proving one
+content-addressed handoff can be created, discovered, dispositioned, and
+closed.
+
+#### 1. Verify the installed coordination substrate
+
+From the repository root, confirm these assets exist:
+
+```text
+Project_Obsidian_Vault/40_Coordination/
+├── Agent-to-Agent Discussions MOC.md
+├── README.md
+├── Instructions/README.md
+└── Generated/Active Records.md
+
+coordination/README.md
+tools/agent_to_agent_plan_handoff.py
+tools/agent_to_agent_handoff.py
+tools/check_agent_discussion_updates.py
+configs/owners_v1.json
+configs/vault_maintenance_registry_v1.json
+```
+
+Then run the non-mutating preflight:
+
+```powershell
+python tools/owner_scoped_orchestration.py check-owner --owner core --active
+python tools/vault_maintainer.py check --scope project
+python tools/architecture_conformance.py
+python -m pytest -q tests/test_workflow_tools.py
+```
+
+The initial receiving owner is Core. Do not address a handoff to a future
+owner merely because its example files exist. That owner must first complete
+recognition, adoption, and Core activation under
+`docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md`.
+
+#### 2. Connect shared Git delivery
+
+Configure the project's remote repository and confirm the primary branch and
+owner namespaces using `docs/GIT_RECONCILIATION.md`. A2A delivery depends on
+shared Git reachability: creating a Markdown file in a local worktree does not
+notify another owner.
+
+Core remains the primary-branch integrator. A feature owner publishes its A2A
+record on its owner branch and routes that branch to Core. The receiving owner
+acts only after the record is reachable from the shared primary history or
+the user explicitly authorizes a different publication lane.
+
+#### 3. Create the first plan-critique handoff
+
+Write the proposed plan under a task-specific directory such as
+`tmp/a2a-setup/plan.md`. Do not place scratch plans in the vault. Inspect the
+exact prompt without writing repository files:
+
+```powershell
+python tools/agent_to_agent_plan_handoff.py `
+  --topic "First bounded plan" `
+  --plan-file tmp/a2a-setup/plan.md `
+  --owner core `
+  --dry-run
+```
+
+Review the frozen baseline, target record, disagreement statement, complete
+plan, and five required critique headings. When correct, publish the local
+handoff transaction:
+
+```powershell
+python tools/agent_to_agent_plan_handoff.py `
+  --topic "First bounded plan" `
+  --plan-file tmp/a2a-setup/plan.md `
+  --owner core `
+  --apply
+```
+
+The JSON result reports the record path, immutable identity hash, whether the
+transaction created new files, and the pending owner-disposition state. By
+default, one transaction writes or updates:
+
+- the content-addressed record beneath
+  `40_Coordination/Threads/Implementation Plan Critiques/Entries/`;
+- `40_Coordination/Generated/Active Records.md`;
+- `40_Coordination/Generated/Critique Update Log.md`.
+
+Run the identical `--apply` command again. It must return the same record and
+identity with `applied: false`; different content under the same identity is
+rejected. Do not hand-edit the generated indexes.
+
+An external critique provider is optional. `--invoke` is used only after its
+command, data access, cost, and user authorization are configured. Without an
+external provider, the record remains a valid advisory handoff awaiting an
+owner's disposition.
+
+#### 4. Verify human and agent discovery
+
+Open `Project_Obsidian_Vault/40_Coordination/Generated/Active Records.md` and
+follow the new link. Then run:
+
+```powershell
+python tools/check_agent_discussion_updates.py
+python tools/vault_maintainer.py sync-navigation --scope project
+python tools/vault_maintainer.py check --scope project
+git status --short --untracked-files=all --ignore-submodules=all
+```
+
+The update checker is read-only and returns compact JSON context for a review
+hook. Navigation synchronization is also a dry run unless `--apply` is
+provided. If the dry run reports expected generated-navigation changes, apply
+them once and rerun it to prove idempotence.
+
+Stage only the atomic handoff and its tool-generated coordination changes.
+Commit, push the owner branch, route it to Core when necessary, and verify the
+record is reachable from the shared primary branch. Only then has the handoff
+been delivered.
+
+#### 5. Receive and disposition the handoff
+
+At startup, the receiving owner's Sol task reads the coordination MOC, active
+index, and only the relevant atomic record. It verifies the record's baseline
+and repository claims before responding. The owner publishes a separate
+atomic response or disposition; it does not rewrite the immutable request.
+
+The response states:
+
+- `Accepted`, `Partially accepted`, `Rejected`, `Deferred`, or
+  `Requires user approval` for every substantive point;
+- the receiving owner's interpretation of its boundary;
+- the smallest accepted public outcome;
+- remaining disagreements, evidence gaps, and owner dependencies;
+- whether implementation is authorized, still needs a user-approved plan, or
+  remains blocked;
+- the next owner and exact action.
+
+Plan-critique automation does not turn a boundary request into code authority.
+For public-contract, evidence, licensing, audit, or integration needs, create
+a separate atomic boundary record using the fields under "What an atomic
+boundary request contains." Until a dedicated boundary-record command is
+approved, the owner authors that source record and Core maintains its
+navigation through the configured vault workflow; generated files are never
+edited manually.
+
+#### 6. Close or keep the request active
+
+After accepted implementation, append a separate completion disposition with
+the exact branch, commits, tests, landing or patch-equivalence evidence,
+continuity reference, and remaining action. `Accepted`, `Implemented`, and
+`Resolved` are different states. Deferred work records a reopening trigger;
+rejected work preserves its rationale; unresolved integration stays visible
+until Core lands or explicitly supersedes it.
+
+Remove `tmp/a2a-setup/` after the exercise. The setup proof is complete when
+the atomic record is discoverable, its owner disposition is reachable from
+shared history, generated navigation is idempotent, vault and workflow tests
+pass, and no unexplained temporary or worktree state remains.
+
 ### Who decides the direction
 
 | Participant | Decides | Does not decide |

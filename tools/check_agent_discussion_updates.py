@@ -1,6 +1,6 @@
-"""external critique hook helper that surfaces the latest agent-to-agent critique updates.
+"""Surface the latest agent-to-agent critique updates to a review hook.
 
-The script is intentionally read-only. external critique CLI can run it as a BeforeAgent
+The script is intentionally read-only. An external critique CLI can run it as a BeforeAgent
 hook and append the returned ``additionalContext`` to the next model request.
 """
 
@@ -16,6 +16,7 @@ UPDATE_LOG = (
     ROOT
     / "Project_Obsidian_Vault"
     / "40_Coordination"
+    / "Generated"
     / "Critique Update Log.md"
 )
 MOC_START = "<!-- managed:moc-children:start -->"

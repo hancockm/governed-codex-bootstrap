@@ -108,6 +108,7 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
         "## The Vault And The LLM Wiki Pattern",
         "## Owner-Scoped Orchestration",
         "## Agent-To-Agent Discussions And Owner Direction",
+        "### Set Up A2A Coordination From The Bootstrap",
         "## Close A Task Promptly And Rehydrate Correctly",
         "## What Is Unique Here",
         "## How The Architecture Is Opinionated",
@@ -137,6 +138,10 @@ def test_system_user_guide_defines_a2a_authority_and_owner_direction() -> None:
         "Common Agreement",
         "All Remaining Disagreements",
         "Core needs a third-party licensing disposition",
+        "tools/check_agent_discussion_updates.py",
+        "40_Coordination/Generated/Active Records.md",
+        "The owner publishes a separate",
+        "generated files are never",
     ):
         assert phrase in guide
 

@@ -61,7 +61,17 @@ def test_coordination_apply_is_content_addressed_and_idempotent(tmp_path: Path) 
     assert first.returncode == 0, first.stderr + first.stdout
     first_payload = json.loads(first.stdout)
     record = sample / first_payload["record"]
+    active = sample / "Project_Obsidian_Vault/40_Coordination/Generated/Active Records.md"
+    updates = sample / "Project_Obsidian_Vault/40_Coordination/Generated/Critique Update Log.md"
     original = record.read_bytes()
+    record_ref = record.relative_to(sample / "Project_Obsidian_Vault").with_suffix("").as_posix()
+    assert record_ref in active.read_text(encoding="utf-8")
+    assert first_payload["identity_sha256"] in updates.read_text(encoding="utf-8")
+    discovery = _run(sample, "check_agent_discussion_updates.py")
+    assert discovery.returncode == 0, discovery.stderr + discovery.stdout
+    context = json.loads(discovery.stdout)["hookSpecificOutput"]["additionalContext"]
+    assert first_payload["identity_sha256"] in context
+    assert "test" in context
     second = _run(sample, "agent_to_agent_plan_handoff.py", "--topic", "test", "--plan-file", str(plan), "--apply")
     assert second.returncode == 0, second.stderr + second.stdout
     second_payload = json.loads(second.stdout)

@@ -17,7 +17,7 @@ from typing import Iterable
 
 ROOT = Path(__file__).resolve().parents[1]
 DISCUSSION_DIR = ROOT / "Project_Obsidian_Vault" / "40_Coordination"
-DEFAULT_ACTIVE_THREAD = DISCUSSION_DIR / "Generated" / "Active Implementation Plan Critiques.md"
+DEFAULT_ACTIVE_THREAD = DISCUSSION_DIR / "Generated" / "Active Records.md"
 UPDATE_LOG = DISCUSSION_DIR / "Generated" / "Critique Update Log.md"
 LOG_DIR = ROOT / "tmp" / "agent_handoff_logs"
 MOC_START = "<!-- managed:moc-children:start -->"
