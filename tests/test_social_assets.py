@@ -23,8 +23,8 @@ def test_social_asset_catalog_has_exact_sources_exports_and_alt_text() -> None:
     )
     assets = catalog["assets"]
     assert catalog["schema_version"] == "social_asset_catalog_v1"
-    assert len({item["id"] for item in assets}) == len(assets) == 9
-    assert sorted(item["launch_order"] for item in assets) == list(range(9))
+    assert len({item["id"] for item in assets}) == len(assets) == 10
+    assert sorted(item["launch_order"] for item in assets) == list(range(10))
 
     for asset in assets:
         source = ROOT / asset["source"]

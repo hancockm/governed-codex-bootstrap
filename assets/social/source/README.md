@@ -13,6 +13,7 @@ without relying on generative-image text rendering.
 - `owner-scoped-orchestration.svg` shows Sol, Terra, Luna, and Core roles.
 - `a2a-owner-boundaries.svg` shows atomic cross-owner requests and promotion.
 - `governed-pdf-research.svg` explains optional PDF extraction and consent.
+- `pdf-intake-status-terminal.svg` shows four explicit PDF intake outcomes.
 - `test-lifecycle.svg` shows fast triage followed by final verification.
 - `test-runner-terminal.svg` shows the five executable pytest profiles.
 - `portable-continuity.svg` shows Git-backed owner rehydration.

@@ -12,6 +12,7 @@ text remain authoritative in the parent catalog.
 - `owner-scoped-orchestration-1200x628.png` explains the owner team.
 - `a2a-owner-boundaries-1200x628.png` explains atomic cross-owner coordination.
 - `governed-pdf-research-1200x628.png` explains PDF consent and limits.
+- `pdf-intake-status-terminal-1200x628.png` shows explicit PDF intake receipts.
 - `test-lifecycle-1200x628.png` explains efficient testing.
 - `test-runner-terminal-1200x628.png` shows all five test-runner commands.
 - `portable-continuity-1200x628.png` explains Git-backed rehydration.
