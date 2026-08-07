@@ -7,7 +7,7 @@
 ## Purpose
 
 This directory contains source-only audit records written by
-`agent_work_selection_audit.py` for substantial next-step selections.
+[agent_work_selection_audit.py](../../../../tools/agent_work_selection_audit.py) for substantial next-step selections.
 
 ## Contents
 

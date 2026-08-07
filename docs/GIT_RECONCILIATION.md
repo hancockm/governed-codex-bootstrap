@@ -1,7 +1,7 @@
 # Git Reconciliation Guide
 
 This guide explains the universal Git reconciler. Binding Git authority lives
-in root `AGENTS.md`; this document supplies commands, evidence interpretation,
+in root [AGENTS.md](../AGENTS.md); this document supplies commands, evidence interpretation,
 and recovery procedures.
 
 The reconciler is fail-closed. It reports facts and validates an owner's
@@ -59,7 +59,7 @@ Ahead/behind counts are not dispositions:
 
 Inspect the owner-authored A2A or continuity disposition before integration.
 Legacy branch prefixes may help reporting but never grant file ownership.
-Unqualified prefixes such as `docs/`, `integration/`, `reconcile/`, or
+Unqualified prefixes such as [docs/](.), `integration/`, `reconcile/`, or
 `safety/` remain ambiguous.
 
 ## Durable closeout evidence

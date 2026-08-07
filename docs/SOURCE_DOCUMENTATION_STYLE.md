@@ -91,7 +91,7 @@ Operational documents must include failure and recovery behavior rather than
 only a happy-path summary.
 
 Feature READMEs additionally follow
-`docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md`.
+[docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md](FEATURE_AGENT_DOCUMENTATION_STANDARD.md).
 
 ## Boundaries
 

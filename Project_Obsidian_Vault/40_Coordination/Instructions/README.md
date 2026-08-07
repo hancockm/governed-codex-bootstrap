@@ -5,13 +5,13 @@
 <!-- generated:breadcrumbs:end -->
 
 This hub routes active owners and supporting review roles to shared
-coordination rules. Root `AGENTS.md` remains the repository-wide operational
+coordination rules. Root [AGENTS.md](../../../AGENTS.md) remains the repository-wide operational
 authority. These notes explain how those rules apply inside the vault without
 creating a second, divergent policy source.
 
 ## Required Starting Order
 
-1. Read root `AGENTS.md`.
+1. Read root [AGENTS.md](../../../AGENTS.md).
 2. Read the active owner's role, bootstrap prompt, continuity MOC, and profile.
 3. Read [[40_Coordination/Instructions/All Owners User Collaboration And Decision Semantics.md]].
 4. Read [[40_Coordination/Instructions/Universal Work Selection Audit.md]] for

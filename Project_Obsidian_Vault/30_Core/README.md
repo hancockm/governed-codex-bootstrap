@@ -16,7 +16,7 @@ integration, and the Core continuity pack.
 4. [[30_Core/Core Vault Maintenance Protocol.md]] for vault cleanup
 5. [[30_Core/Continuity/Core Continuity MOC.md]] for reorientation or closeout
 
-Root `AGENTS.md` and `roles/core/ROLE.md` remain operational authorities. This
+Root [AGENTS.md](../../AGENTS.md) and [roles/core/ROLE.md](../../roles/core/ROLE.md) remain operational authorities. This
 vault area supplies the maintained narrative path.
 
 ## Evidence Discipline

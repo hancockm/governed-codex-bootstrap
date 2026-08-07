@@ -42,7 +42,7 @@ specific disagreements remain in their assigned records.
 
 ## Convergence Move
 
-Apply root `AGENTS.md` and the active role profile. When these rules expose an
+Apply root [AGENTS.md](../../../AGENTS.md) and the active role profile. When these rules expose an
 owner dependency, publish a boundary request. When they expose a canonical/
 runtime mismatch, report it and route correction through the responsible
 owner.

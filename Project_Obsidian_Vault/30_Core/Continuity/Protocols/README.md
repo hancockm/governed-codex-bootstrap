@@ -12,13 +12,13 @@ facts.
 
 ## Contents
 
-- `Reorientation And Next-Step Discovery.md` governs cold-start evidence and
+- [Reorientation And Next-Step Discovery.md](Reorientation%20And%20Next-Step%20Discovery.md) governs cold-start evidence and
   bounded next-step selection.
-- `Assumption Audit.md` classifies verified, invalidated, unverified, and
+- [Assumption Audit.md](Assumption%20Audit.md) classifies verified, invalidated, unverified, and
   owner-dependent assumptions.
-- `Canonical-To-Runtime Reconciliation.md` compares doctrine with source,
+- [Canonical-To-Runtime Reconciliation.md](Canonical-To-Runtime%20Reconciliation.md) compares doctrine with source,
   tests, configuration, Git, and receipts.
-- `Continuity Maintenance Protocol.md` governs transcript export, navigation,
+- [Continuity Maintenance Protocol.md](Continuity%20Maintenance%20Protocol.md) governs transcript export, navigation,
   manifest refresh, and closeout.
 
 ## Change Discipline

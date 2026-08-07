@@ -5,7 +5,7 @@
 <!-- generated:breadcrumbs:end -->
 
 Core performs cleanup only after report and check. The complete procedure lives
-in `docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md`.
+in [docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md](../../docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md).
 
 Classify every finding as retained, reparented, archived, generated refresh,
 owner handoff, or blocker. Never infer another owner's narrative, delete solely

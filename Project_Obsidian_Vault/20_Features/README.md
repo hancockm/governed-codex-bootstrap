@@ -16,7 +16,7 @@ domain truth or copy an unrelated mature feature manual.
 
 ## Activation
 
-Core follows `docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md`: recognize the boundary,
+Core follows [docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md](../../docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md): recognize the boundary,
 create inactive connected assets, obtain owner adoption, validate dependency
 architecture, integrate, and publish an activation commit. Only then may the
 owner dispatch work.
@@ -26,7 +26,7 @@ owner dispatch work.
 An active feature maintains purpose, maturity, owned and prohibited paths,
 public contracts, module/folder map, canonical imports, tests, vault MOC,
 role instructions, bootstrap prompt, continuity pack, and retirement evidence.
-Follow `docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md`.
+Follow [docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md](../../docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md).
 
 ## Cross-Owner Changes
 

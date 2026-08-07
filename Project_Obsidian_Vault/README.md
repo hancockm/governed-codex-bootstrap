@@ -1,4 +1,6 @@
+```
 # Governed Project Vault Guide
+```
 
 This Obsidian vault is the maintained narrative reading surface for the
 project. It connects research evidence, current canonical decisions, feature
@@ -43,7 +45,7 @@ continuity explain history but do not become canonical merely by existing.
 ## Maintained And Generated Content
 
 Owners write narrative MOCs, summaries, decisions, and descriptions.
-`tools/vault_maintainer.py` owns breadcrumb blocks. Transcript exporters and
+[tools/vault_maintainer.py](../tools/vault_maintainer.py) owns breadcrumb blocks. Transcript exporters and
 coordination tools own their generated records and indexes. Never hand-edit a
 generated transcript, receipt bundle, breadcrumb, or output inventory.
 
@@ -54,7 +56,7 @@ discoverable from current narrative rather than becoming an unindexed dump.
 ## Owner Instructions
 
 Shared owner instructions live at
-[[40_Coordination/Instructions/README.md]]. Root `AGENTS.md` remains the sole
+[[40_Coordination/Instructions/README.md]]. Root [AGENTS.md](../AGENTS.md) remains the sole
 repository-wide operational authority. Owner instructions narrow scope and
 startup order but cannot weaken shared Git, continuity, safety, evidence, or
 verification rules.
@@ -75,7 +77,7 @@ python tools/vault_maintainer.py sync-navigation --scope project --apply
 ```
 
 Always dry-run navigation before apply, run a second idempotent dry-run, then
-validate the scope. Cleanup follows `docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md`.
+validate the scope. Cleanup follows [docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md](../docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md).
 
 ## Recovery
 

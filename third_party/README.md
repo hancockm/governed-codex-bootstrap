@@ -7,9 +7,9 @@ third-party material intentionally used by the bootstrap.
 
 ## Contents
 
-- `pytest-xdist-3.8.0.json` records the pinned parallel-test dependency.
-- `execnet-2.1.2.json` records xdist's pinned worker-transport dependency.
-- `pypdf-6.14.2.json` records the optional, user-approved native-text PDF
+- [pytest-xdist-3.8.0.json](pytest-xdist-3.8.0.json) records the pinned parallel-test dependency.
+- [execnet-2.1.2.json](execnet-2.1.2.json) records xdist's pinned worker-transport dependency.
+- [pypdf-6.14.2.json](pypdf-6.14.2.json) records the optional, user-approved native-text PDF
   research extractor. It is not installed by the cold start and provides no
   OCR capability.
 

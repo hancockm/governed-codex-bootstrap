@@ -8,11 +8,11 @@ authority.
 
 ## Contents
 
-- `core/` contains the initially active owner's transcript-export boundary.
+- [core/](core) contains the initially active owner's transcript-export boundary.
 - Future owner roots are created only through the activation workflow.
 
 The maintained narrative continuity MOC lives under
-`Project_Obsidian_Vault/30_Core/Continuity/`.
+[Project_Obsidian_Vault/30_Core/Continuity/](../Project_Obsidian_Vault/30_Core/Continuity).
 
 ## Change Discipline
 

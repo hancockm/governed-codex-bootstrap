@@ -63,7 +63,7 @@ The six planes answer different questions:
 
 | Plane | Question | Main artifacts |
 | --- | --- | --- |
-| Authority | Who may decide or change this? | `AGENTS.md`, owner registry, role profiles |
+| Authority | Who may decide or change this? | [AGENTS.md](../AGENTS.md), owner registry, role profiles |
 | Knowledge | What is currently accepted? | Thesis, Architecture, Spec, Roadmap, capability registry |
 | Coordination | What is proposed, disputed, or waiting? | plans, work-selection audits, A2A records |
 | Execution | Who plans, implements, and independently checks? | Sol/Terra/Luna packets and receipts |
@@ -78,7 +78,7 @@ canonical documentation. A pushed branch is not integrated delivery.
 
 The current Codex app supports local projects connected to folders. The
 project's primary folder is the default working directory for Git and for
-discovering repository `AGENTS.md` instructions. See the official
+discovering repository [AGENTS.md](../AGENTS.md) instructions. See the official
 [Projects and chats guide](https://learn.chatgpt.com/docs/projects) and
 [Codex app quickstart](https://learn.chatgpt.com/docs/quickstart?setup=app).
 
@@ -89,7 +89,7 @@ discovering repository `AGENTS.md` instructions. See the official
 2. Open Codex and create or edit a local project.
 3. Add the repository root as a folder and make it the **primary** folder.
 4. Start the task from that saved project, not from a projectless chat. A task
-   outside the project may not receive the repository root, `AGENTS.md`, Git
+   outside the project may not receive the repository root, [AGENTS.md](../AGENTS.md), Git
    context, or expected worktree environment.
 5. Use the local checkout for Core reorientation and planning. Use a
    repository-local `.worktrees/<owner>-<slice>` checkout for implementation
@@ -101,7 +101,7 @@ discovering repository `AGENTS.md` instructions. See the official
    python tools/architecture_conformance.py
    ```
 
-7. Open `Project_Obsidian_Vault/00_Home/Project MOC.md` in Obsidian or a
+7. Open [Project_Obsidian_Vault/00_Home/Project MOC.md](../Project_Obsidian_Vault/00_Home/Project%20MOC.md) in Obsidian or a
    Markdown viewer. Obsidian is the preferred human navigation surface, while
    the files remain ordinary Git-versioned Markdown.
 
@@ -113,7 +113,7 @@ native Codex and repository capabilities:
 | Native capability | When required |
 | --- | --- |
 | Saved local project with the repository as primary folder | Cold start and every owner task |
-| Repository `AGENTS.md` discovery | Cold start and every owner task |
+| Repository [AGENTS.md](../AGENTS.md) discovery | Cold start and every owner task |
 | Git and repository-local worktrees | Implementation and delivery |
 | Sol / `xhigh` owner binding | Owner orchestration |
 | Terra / `high` binding | Any tier that uses the Implementer |
@@ -121,7 +121,7 @@ native Codex and repository capabilities:
 | Saved-project subordinate-task coordination | Delegated implementation and reverification |
 | Subordinate-task archival | Successful orchestration closeout |
 
-The first Core task reads `configs/codex_bootstrap_v1.json` and reports which
+The first Core task reads [configs/codex_bootstrap_v1.json](../configs/codex_bootstrap_v1.json) and reports which
 capabilities are available. A missing capability blocks only the lifecycle
 stage that requires it; it is never silently replaced by a plugin or different
 model.
@@ -183,12 +183,12 @@ was imported.
 
 | Research source | Intake path | Identity and consent boundary |
 | --- | --- | --- |
-| Markdown (`.md`) | Copy to `research/inbox/`, then run `research_intake.py` | Exact file bytes, origin, and content hash |
-| Plain text (`.txt`) | Copy to `research/inbox/`, then run `research_intake.py` | Exact file bytes, origin, and content hash |
-| PDF (`.pdf`) | Copy to `research/inbox/`, then run `research_intake.py` | Exact PDF bytes; optional parsing requires separate installation consent |
-| Public GitHub repository | Run `research_git_adapter.py`; do not copy or clone it into the inbox | Credential-free HTTPS URL, explicit branch/tag ref, full expected commit, selected paths, and explicit network authorization |
+| Markdown (`.md`) | Copy to [research/inbox/](../research/inbox), then run [research_intake.py](../tools/research_intake.py) | Exact file bytes, origin, and content hash |
+| Plain text (`.txt`) | Copy to [research/inbox/](../research/inbox), then run [research_intake.py](../tools/research_intake.py) | Exact file bytes, origin, and content hash |
+| PDF (`.pdf`) | Copy to [research/inbox/](../research/inbox), then run [research_intake.py](../tools/research_intake.py) | Exact PDF bytes; optional parsing requires separate installation consent |
+| Public GitHub repository | Run [research_git_adapter.py](../tools/research_git_adapter.py); do not copy or clone it into the inbox | Credential-free HTTPS URL, explicit branch/tag ref, full expected commit, selected paths, and explicit network authorization |
 
-Put `.md`, `.txt`, and `.pdf` source material in `research/inbox/` and register
+Put `.md`, `.txt`, and `.pdf` source material in [research/inbox/](../research/inbox) and register
 each exact file rather than copying claims directly into canonical documents:
 
 ```powershell
@@ -208,7 +208,7 @@ for encrypted PDFs. A scanned or image-only page remains an explicit
 
 A public GitHub repository—or another public HTTPS Git repository—enters
 through a separate source adapter rather than
-being copied or cloned into `research/inbox/`. Ask Core to identify the public
+being copied or cloned into [research/inbox/](../research/inbox). Ask Core to identify the public
 credential-free HTTPS URL, an explicit branch or tag ref, and the full commit
 that is expected. After the user authorizes that network acquisition, Core may
 run:
@@ -339,7 +339,7 @@ Its application is intentionally different:
 | The primary task reviews a worker | Sol must validate immutable packet/receipt hashes and exact commit identity |
 | Completion is primarily task-level | Completion also requires tests, publication, integration, primary sync, reconciliation, worktree cleanup, continuity, and archive acknowledgment |
 
-The shared prompt templates live in `roles/shared/`. They provide lane
+The shared prompt templates live in [roles/shared/](../roles/shared). They provide lane
 behavior but grant no ownership. The owner profile and immutable work packet
 supply the exact authority, paths, tests, and candidate identity.
 
@@ -617,7 +617,7 @@ architecture, but it cannot manufacture the missing domain decision itself.
 
 When no active owner has the required authority, the work does not silently
 fall to Core or the nearest feature. Core and the user first recognize and
-activate a new owner through `docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md`.
+activate a new owner through [docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md](ROLE_BOOTSTRAP_AND_ACTIVATION.md).
 
 ### Evidence and decision order
 
@@ -697,7 +697,7 @@ Create an immutable plan-critique handoff with:
 python tools/agent_to_agent_plan_handoff.py --topic "<topic>" --plan-file <path> --owner <owner> --apply
 ```
 
-`tools/agent_to_agent_handoff.py` is the compatibility alias. Boundary
+[tools/agent_to_agent_handoff.py](../tools/agent_to_agent_handoff.py) is the compatibility alias. Boundary
 requests and owner responses live as separate atomic coordination records;
 do not disguise a public-contract request as a plan critique.
 
@@ -723,7 +723,7 @@ of assuming a permanent specialty from a provider name.
 | Antigravity (`agy`) | Local wrapper for another configured provider/model | Review the wrapper's exact command, permissions, and egress |
 | Codex CLI | Captured-output fallback | Less independent than a different provider family |
 
-The repository tracks `.env.example` and ignores `.env`. Set up a provider as
+The repository tracks [.env.example](../.env.example) and ignores `.env`. Set up a provider as
 follows:
 
 1. Install its CLI from the official source and verify the exact version.
@@ -781,7 +781,7 @@ The returned Markdown must contain the required preamble and five critique
 headings. A zero exit code, fluent prose, or a local log does not establish
 success. Sol verifies repository claims and dispositions every substantive
 point before any accepted conclusion changes a plan. See
-`Project_Obsidian_Vault/40_Coordination/Instructions/External Critique Handoff.md`
+[Project_Obsidian_Vault/40_Coordination/Instructions/External Critique Handoff.md](../Project_Obsidian_Vault/40_Coordination/Instructions/External%20Critique%20Handoff.md)
 for the complete operator contract and official provider references.
 
 ### A2A lifecycle and unresolved work
@@ -825,7 +825,7 @@ automatic merge authority.
   evidence to the legal owner and does not infer the legal conclusion itself.
 
 Start with
-`Project_Obsidian_Vault/40_Coordination/Agent-to-Agent Discussions MOC.md`,
+[Project_Obsidian_Vault/40_Coordination/Agent-to-Agent Discussions MOC.md](../Project_Obsidian_Vault/40_Coordination/Agent-to-Agent%20Discussions%20MOC.md),
 then read the active-record index and only the records relevant to the current
 boundary. The coordination area preserves how a decision converged; accepted
 shared direction is promoted separately into canonical documents by the
@@ -875,7 +875,7 @@ The owner agent performs the technical lifecycle:
    lands.
 
 The user can inspect active work through
-`Project_Obsidian_Vault/40_Coordination/Generated/Active Records.md`, but should
+[Project_Obsidian_Vault/40_Coordination/Generated/Active Records.md](../Project_Obsidian_Vault/40_Coordination/Generated/Active%20Records.md), but should
 not hand-edit that generated index. The owner publishes a separate response
 rather than rewriting the immutable request, and generated files are never
 used as a shortcut around the maintained workflow.
@@ -884,8 +884,8 @@ used as a shortcut around the maintained workflow.
 work retains a reopening trigger; rejected work retains its rationale; and an
 integration request remains visible until Core lands or explicitly supersedes
 it. Detailed operator commands and recovery behavior live in
-`Project_Obsidian_Vault/40_Coordination/Instructions/External Critique Handoff.md`
-and `docs/GIT_RECONCILIATION.md`, where owner agents—not ordinary users—apply
+[Project_Obsidian_Vault/40_Coordination/Instructions/External Critique Handoff.md](../Project_Obsidian_Vault/40_Coordination/Instructions/External%20Critique%20Handoff.md)
+and [docs/GIT_RECONCILIATION.md](GIT_RECONCILIATION.md), where owner agents—not ordinary users—apply
 them.
 
 The owner agent considers setup proven when the atomic record is discoverable,
@@ -1047,7 +1047,7 @@ Do not archive when:
 2. Open the repository root as the primary folder of a saved Codex project.
 3. Start a new task. Use the bootstrap prompt for the owner being resumed; for
    Core, use
-   `Project_Obsidian_Vault/30_Core/Core Bootstrap.md`.
+   [Project_Obsidian_Vault/30_Core/Core Bootstrap.md](../Project_Obsidian_Vault/30_Core/Core%20Bootstrap.md).
 4. Identify the outcome, responsibility transfer, or next decision. Do not
    paste the entire old chat.
 5. The owner reads its continuity MOC and only the relevant transcript,
@@ -1166,7 +1166,7 @@ replacement for the authority and recovery rules above.
 
 - Open the repository as the primary folder of a saved Codex project.
 - Start one task for one outcome.
-- Rehydrate from `AGENTS.md`, the owner bootstrap, continuity MOC, current
+- Rehydrate from [AGENTS.md](../AGENTS.md), the owner bootstrap, continuity MOC, current
   canonical documents, and live Git evidence.
 - Check pending integration and owner requests before selecting new work.
 

@@ -7,7 +7,7 @@ GitHub README. It is a tracked project asset, not canonical project doctrine.
 
 ## Contents
 
-- `governed-codex-header.png` is the 1500×500 project and X profile header.
+- [governed-codex-header.png](governed-codex-header.png) is the 1500×500 project and X profile header.
 
 ## Change Discipline
 

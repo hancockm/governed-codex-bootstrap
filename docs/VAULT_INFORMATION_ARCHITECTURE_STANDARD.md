@@ -45,7 +45,7 @@ descriptions but must not hand-edit generated breadcrumbs.
 
 ## Ownership And Rollout
 
-`configs/vault_maintenance_registry_v1.json` declares the vault root, scopes,
+[configs/vault_maintenance_registry_v1.json](../configs/vault_maintenance_registry_v1.json) declares the vault root, scopes,
 owners, rollout state, size budgets, and exceptions.
 
 - `enforced`: structural/navigation errors fail checks;
@@ -60,13 +60,13 @@ meaning during cleanup.
 
 ## Canonical And Evidence Areas
 
-- `00_Canonical/`: accepted Thesis, Architecture, Spec, Roadmap, Current State,
+- [00_Canonical/](../Project_Obsidian_Vault/00_Canonical): accepted Thesis, Architecture, Spec, Roadmap, Current State,
   and registry explanation;
-- `10_Research/`: immutable source maps and provenance;
-- `20_Features/`: owner-specific feature entry points;
-- `30_Core/`: Core protocols, bootstrap, and continuity;
-- `40_Coordination/`: A2A critique, requests, selection audits, and updates;
-- `90_Archive/`: superseded material with provenance.
+- [10_Research/](../Project_Obsidian_Vault/10_Research): immutable source maps and provenance;
+- [20_Features/](../Project_Obsidian_Vault/20_Features): owner-specific feature entry points;
+- [30_Core/](../Project_Obsidian_Vault/30_Core): Core protocols, bootstrap, and continuity;
+- [40_Coordination/](../Project_Obsidian_Vault/40_Coordination): A2A critique, requests, selection audits, and updates;
+- [90_Archive/](../Project_Obsidian_Vault/90_Archive): superseded material with provenance.
 
 Research and continuity remain source context. Their presence in the vault
 does not grant canonical status.

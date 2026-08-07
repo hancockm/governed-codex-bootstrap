@@ -9,13 +9,13 @@ domain authority must be derived from this project's evidence.
 
 Before planning or implementation, read in this order:
 
-1. root `AGENTS.md`;
-2. `roles/core/ROLE.md` and `roles/core/BOOTSTRAP.md`;
-3. `Project_Obsidian_Vault/30_Core/Core Bootstrap.md`;
-4. `Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md` and its
+1. root [AGENTS.md](../AGENTS.md);
+2. [roles/core/ROLE.md](../roles/core/ROLE.md) and [roles/core/BOOTSTRAP.md](../roles/core/BOOTSTRAP.md);
+3. [Project_Obsidian_Vault/30_Core/Core Bootstrap.md](../Project_Obsidian_Vault/30_Core/Core%20Bootstrap.md);
+4. [Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md](../Project_Obsidian_Vault/30_Core/Continuity/Core%20Continuity%20MOC.md) and its
    relevant protocols;
-5. `Project_Obsidian_Vault/00_Home/Project MOC.md`;
-6. `Project_Obsidian_Vault/10_Research/Research Sources MOC.md`;
+5. [Project_Obsidian_Vault/00_Home/Project MOC.md](../Project_Obsidian_Vault/00_Home/Project%20MOC.md);
+6. [Project_Obsidian_Vault/10_Research/Research Sources MOC.md](../Project_Obsidian_Vault/10_Research/Research%20Sources%20MOC.md);
 7. the current canonical Thesis, Architecture, Spec, Roadmap, Current State,
    and capability registry;
 8. the coordination MOC, update log, and only relevant open records;
@@ -158,7 +158,7 @@ incomplete until local primary equals remote primary and the inbox is clear.
 Core maintains vault structure, registry, and generated navigation. Other
 owners maintain their meaning and narrative order. Cross-owner cleanup begins
 with report/check and routes owner semantics rather than guessing them. Follow
-`docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md`.
+[docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md](CORE_VAULT_MAINTENANCE_PROTOCOL.md).
 
 ## Average-user UX Gate
 
@@ -170,7 +170,7 @@ secondary.
 
 ## Continuity Closeout
 
-Follow `docs/AGENT_CONTINUITY_EXPORT.md` and the continuity maintenance
+Follow [docs/AGENT_CONTINUITY_EXPORT.md](AGENT_CONTINUITY_EXPORT.md) and the continuity maintenance
 protocol. Export the exact current session source, synchronize navigation,
 refresh the post-navigation manifest, require idempotence, validate the scope,
 stage only Core-owned archive files, and push the closeout. Do not reconstruct

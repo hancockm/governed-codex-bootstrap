@@ -7,7 +7,7 @@ recognized future owner.
 
 ## Contents
 
-- `MOC.md` is the placeholder continuity map that must be replaced with an
+- [MOC.md](MOC.md) is the placeholder continuity map that must be replaced with an
   owner-specific map before activation.
 
 ## Change Discipline

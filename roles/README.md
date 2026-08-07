@@ -7,10 +7,10 @@ recognized owners. Role files narrow ownership but cannot weaken root policy.
 
 ## Contents
 
-- `core/` contains the only initially active owner.
-- `shared/` contains owner-neutral orchestration prompt material.
+- [core/](core) contains the only initially active owner.
+- [shared/](shared) contains owner-neutral orchestration prompt material.
 
-Inactive owner scaffolds live under `future_owners/` until Core recognizes and
+Inactive owner scaffolds live under [future_owners/](../future_owners) until Core recognizes and
 activates them.
 
 ## Change Discipline

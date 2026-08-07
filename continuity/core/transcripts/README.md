@@ -3,7 +3,7 @@
 ## Purpose
 
 This directory receives complete bounded Core transcript exports produced by
-`export_agent_thread_continuity.py` when an exact session source is available.
+[export_agent_thread_continuity.py](../../../tools/export_agent_thread_continuity.py) when an exact session source is available.
 
 ## Contents
 

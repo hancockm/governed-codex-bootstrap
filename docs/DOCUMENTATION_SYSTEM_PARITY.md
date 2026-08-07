@@ -16,7 +16,7 @@ line counts with a reference project.
 - `future_owner_material`: generated only after Core recognizes and activates
   a separate owner.
 
-`configs/documentation_system_v1.json` makes the first two classes executable
+[configs/documentation_system_v1.json](../configs/documentation_system_v1.json) makes the first two classes executable
 by requiring paths, minimum substantive size, and essential headings.
 
 ## Shared Operational Surfaces
@@ -55,7 +55,7 @@ not imported.
 
 A mature repository may contain many owner-specific instruction manuals,
 workflows, and continuity packs. Creating those in a generic bootstrap would
-grant fictional authority. Instead, `docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md`
+grant fictional authority. Instead, [docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md](ROLE_BOOTSTRAP_AND_ACTIVATION.md)
 defines the complete dependency architecture for creating them:
 
 ```text
@@ -104,7 +104,7 @@ Do not import:
 
 Those items must be derived from local research, user approval, and accepted
 canonical contracts. Reusable tools are classified independently by
-`configs/tool_parity_v1.json`.
+[configs/tool_parity_v1.json](../configs/tool_parity_v1.json).
 
 ## Conformance
 

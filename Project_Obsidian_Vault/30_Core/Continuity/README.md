@@ -32,7 +32,7 @@ the owning archive, never duplicate exports.
 
 ## Export
 
-Use `tools/export_agent_thread_continuity.py` with the exact session source,
+Use [tools/export_agent_thread_continuity.py](../../../tools/export_agent_thread_continuity.py) with the exact session source,
 registered schemas, label, thread ID, output directory, and vault target. Dry-
 run, inspect, apply, synchronize navigation, refresh post-navigation hashes,
 and require an idempotent dry refresh.

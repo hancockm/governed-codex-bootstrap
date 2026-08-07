@@ -3,7 +3,8 @@
 ## Purpose
 
 This directory contains content-addressed source records created by
-`research_intake.py` and reviewed or mapped by `research_organizer.py`.
+[research_intake.py](../../tools/research_intake.py) and reviewed or mapped by
+[research_organizer.py](../../tools/research_organizer.py).
 
 ## Contents
 

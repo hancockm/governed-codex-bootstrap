@@ -59,7 +59,7 @@ variables or execute a shell. Unknown `.env` fields are ignored by this tool.
 Keep API keys, tokens, passwords, and session credentials out of `.env`.
 Use the provider CLI's approved login flow, its credential store, or an
 operating-system secret mechanism. The `.env` file is ignored by Git while
-`.env.example` is tracked. Before first use, verify the exact installed CLI and
+[.env.example](../../../.env.example) is tracked. Before first use, verify the exact installed CLI and
 its command contract; examples can become stale when vendors release updates.
 Set `MODEL_ID` explicitly and configure the command to select the same model;
 an invocation without a model identity fails closed. The identity is evidence,

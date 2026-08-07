@@ -11,7 +11,7 @@ active records discoverable without becoming a second source of truth.
 
 ## Contents
 
-- `Active Records.md` indexes currently relevant coordination records.
+- [Active Records.md](Active%20Records.md) indexes currently relevant coordination records.
 - [[40_Coordination/Generated/Work Selection Audits/README|Work Selection Audits/]]
   contains generated source-only selection audits and its local operator note.
 

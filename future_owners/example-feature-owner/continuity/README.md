@@ -7,7 +7,7 @@ future owner can become active. It grants no authority.
 
 ## Contents
 
-- `MOC.md` is the inactive example owner's continuity map.
+- [MOC.md](MOC.md) is the inactive example owner's continuity map.
 
 ## Change Discipline
 

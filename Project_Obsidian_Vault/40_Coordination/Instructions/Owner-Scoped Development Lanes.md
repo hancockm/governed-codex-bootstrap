@@ -34,5 +34,5 @@ accepted or superseded subordinate tasks only after receipt capture, no pending
 correction, delivery, primary synchronization, terminal reconciliation, and
 worktree cleanup. Keep blocked or user-input-needed tasks visible.
 
-The binding procedure is `docs/OWNER_SCOPED_ORCHESTRATION.md` and the machine
-contract is `configs/owner_scoped_orchestration_v1.json`.
+The binding procedure is [docs/OWNER_SCOPED_ORCHESTRATION.md](../../../docs/OWNER_SCOPED_ORCHESTRATION.md) and the machine
+contract is [configs/owner_scoped_orchestration_v1.json](../../../configs/owner_scoped_orchestration_v1.json).

@@ -6,9 +6,9 @@
 
 ## Binding Authority
 
-Root `AGENTS.md` is the sole operational authority for branch creation,
+Root [AGENTS.md](../../../AGENTS.md) is the sole operational authority for branch creation,
 staging, commits, publication, reconciliation, worktree closeout, and primary-
-branch synchronization. `docs/GIT_RECONCILIATION.md` is the practical guide.
+branch synchronization. [docs/GIT_RECONCILIATION.md](../../../docs/GIT_RECONCILIATION.md) is the practical guide.
 This vault note is a navigation pointer, not a second policy copy.
 
 ## Shared Convention
@@ -37,4 +37,4 @@ preserve exact evidence until disposition.
 
 ## Decision Status
 
-Current navigation summary. Amend binding mechanics only in root `AGENTS.md`.
+Current navigation summary. Amend binding mechanics only in root [AGENTS.md](../../../AGENTS.md).

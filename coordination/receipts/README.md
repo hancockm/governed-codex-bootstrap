@@ -3,7 +3,7 @@
 ## Purpose
 
 This directory is the non-vault storage boundary for content-addressed
-coordination receipts created by `agent_to_agent_plan_handoff.py` and related
+coordination receipts created by [agent_to_agent_plan_handoff.py](../../tools/agent_to_agent_plan_handoff.py) and related
 workflow tools.
 
 ## Contents

@@ -7,7 +7,7 @@ vault.
 
 ## Contents
 
-- `Project MOC.md` explains the reading order across research, canonical
+- [Project MOC.md](Project%20MOC.md) explains the reading order across research, canonical
   knowledge, features, Core, coordination, and archive areas.
 
 ## Change Discipline

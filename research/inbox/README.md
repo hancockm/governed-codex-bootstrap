@@ -3,7 +3,7 @@
 ## Purpose
 
 This directory is the staging surface for original project research before it
-is registered by `research_intake.py`.
+is registered by [research_intake.py](../../tools/research_intake.py).
 
 ## Contents
 
@@ -15,7 +15,7 @@ dependency after Core obtains user approval; it extracts native text only and
 does not perform OCR. Other formats remain visible rather than being silently
 converted or discarded.
 
-Do not clone a repository into this inbox. Use `research_git_adapter.py` so
+Do not clone a repository into this inbox. Use [research_git_adapter.py](../../tools/research_git_adapter.py) so
 repository URL, explicit ref, full expected commit, tree, blob identities,
 selection limits, and network authorization are recorded together.
 

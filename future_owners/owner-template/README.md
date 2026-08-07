@@ -7,11 +7,11 @@ namespace, capability, or write authority.
 
 ## Contents
 
-- `ROLE.md` defines the future owner's scope and prohibitions.
-- `BOOTSTRAP.md` defines its cold-start sequence.
-- `owner_profile.json` maps dependencies, public contracts, and owned paths.
-- `orchestration_profile.json` binds owner-scoped development lanes.
-- `continuity/` contains the required continuity MOC scaffold.
+- [ROLE.md](ROLE.md) defines the future owner's scope and prohibitions.
+- [BOOTSTRAP.md](BOOTSTRAP.md) defines its cold-start sequence.
+- [owner_profile.json](owner_profile.json) maps dependencies, public contracts, and owned paths.
+- [orchestration_profile.json](orchestration_profile.json) binds owner-scoped development lanes.
+- [continuity/](continuity) contains the required continuity MOC scaffold.
 
 ## Change Discipline
 

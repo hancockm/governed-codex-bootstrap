@@ -30,9 +30,9 @@ language is not implementation authority.
 
 ## Atomic Records
 
-Use `tools/agent_to_agent_plan_handoff.py` to create one content-addressed
+Use [tools/agent_to_agent_plan_handoff.py](../tools/agent_to_agent_plan_handoff.py) to create one content-addressed
 record per plan. The compatibility alias is
-`tools/agent_to_agent_handoff.py`. Record the frozen baseline, source plan,
+[tools/agent_to_agent_handoff.py](../tools/agent_to_agent_handoff.py). Record the frozen baseline, source plan,
 critique, owner disposition, and relevant hashes together. Managed indexes and
 update records remain compact.
 

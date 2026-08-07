@@ -1,12 +1,12 @@
 # Core Bootstrap Entry Point
 
-Use `Project_Obsidian_Vault/30_Core/Core Bootstrap.md` as the complete cold-
+Use [Project_Obsidian_Vault/30_Core/Core Bootstrap.md](../../Project_Obsidian_Vault/30_Core/Core%20Bootstrap.md) as the complete cold-
 start and rehydration prompt. This file is the stable role-level pointer.
 
 Required order:
 
 1. root repository policy;
-2. `configs/codex_bootstrap_v1.json` native-capability and plugin preflight;
+2. [configs/codex_bootstrap_v1.json](../../configs/codex_bootstrap_v1.json) native-capability and plugin preflight;
 3. Core role and complete vault bootstrap;
 4. Core continuity MOC and relevant protocols;
 5. research MOCs and exact source records; when `.pdf` sources are present or

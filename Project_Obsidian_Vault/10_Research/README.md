@@ -9,12 +9,12 @@ source-only until Core promotes a supported conclusion.
 
 ## Intake
 
-Place candidate `.md`, `.txt`, or `.pdf` files in `research/inbox/`, then
-register them with `tools/research_intake.py`. Intake records origin, title,
+Place candidate `.md`, `.txt`, or `.pdf` files in [research/inbox/](../../research/inbox), then
+register them with [tools/research_intake.py](../../tools/research_intake.py). Intake records origin, title,
 content identity, and exact bytes. Never overwrite an existing immutable
 record.
 
-For an authorized public Git repository, use `tools/research_git_adapter.py`
+For an authorized public Git repository, use [tools/research_git_adapter.py](../../tools/research_git_adapter.py)
 with a credential-free HTTPS URL, explicit branch or tag ref, full expected
 commit, title, and `--authorize-network`. The adapter creates a bounded
 immutable snapshot with commit, tree, blob, path, byte-size, and SHA-256
@@ -23,7 +23,7 @@ reuse rights remain separate review questions.
 
 ## Organization
 
-`tools/research_organizer.py` builds deterministic maps, extracts Markdown and
+[tools/research_organizer.py](../../tools/research_organizer.py) builds deterministic maps, extracts Markdown and
 plain text recursively from file and Git-snapshot records, and extracts native
 PDF text in page order when the approved
 optional `pypdf==6.14.2` dependency is installed. Core asks the user before
@@ -47,4 +47,4 @@ canonical wording, owner alignment, and executable evidence proportional to
 the claim.
 
 Use [[10_Research/Research Source Map.md]] as the vault entry to the generated
-research map. The authoritative byte records remain under `research/records/`.
+research map. The authoritative byte records remain under [research/records/](../../research/records).

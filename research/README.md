@@ -8,14 +8,14 @@ immutable records before any interpretation or canonical promotion.
 
 ## Contents
 
-- `inbox/` stages exact user-supplied sources.
-- `records/` contains content-addressed source bytes and provenance metadata.
+- [inbox/](inbox) stages exact user-supplied sources.
+- [records/](records) contains content-addressed source bytes and provenance metadata.
 - `derived/` contains reproducible organizer output.
 - `reviews/` contains separate human/Core dispositions.
-- `schema.json` describes file-intake metadata.
-- `git_snapshot_schema.json` describes exact repository/ref/commit/tree/blob
+- [schema.json](schema.json) describes file-intake metadata.
+- [git_snapshot_schema.json](git_snapshot_schema.json) describes exact repository/ref/commit/tree/blob
   lineage and bounded file selection.
-- `example-record.json` is only an example.
+- [example-record.json](example-record.json) is only an example.
 
 Markdown and plain-text organization uses the base install. PDF organization
 requires user approval before installing the optional `pypdf==6.14.2` extra,

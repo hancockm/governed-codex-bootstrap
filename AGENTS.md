@@ -1,8 +1,8 @@
 # Repository Guidance
 
 This file is the repository-wide operational authority. Detailed procedures
-live in `docs/`; role-specific ownership and startup instructions live under
-`roles/` and in the registered continuity pack. Domain or product doctrine
+live in [docs/](docs); role-specific ownership and startup instructions live under
+[roles/](roles) and in the registered continuity pack. Domain or product doctrine
 must be derived from this project's research and canonical vault, never from
 the reference repository used to design this bootstrap.
 
@@ -11,14 +11,14 @@ the reference repository used to design this bootstrap.
 Before substantial work, read the active owner's role, bootstrap prompt,
 continuity MOC, and owner profile. Core starts at:
 
-- `roles/core/ROLE.md`
-- `roles/core/BOOTSTRAP.md`
-- `Project_Obsidian_Vault/30_Core/Core Bootstrap.md`
-- `Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md`
+- [roles/core/ROLE.md](roles/core/ROLE.md)
+- [roles/core/BOOTSTRAP.md](roles/core/BOOTSTRAP.md)
+- [Project_Obsidian_Vault/30_Core/Core Bootstrap.md](Project_Obsidian_Vault/30_Core/Core%20Bootstrap.md)
+- [Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md](Project_Obsidian_Vault/30_Core/Continuity/Core%20Continuity%20MOC.md)
 
 Shared vault-local coordination instructions begin at:
 
-- `Project_Obsidian_Vault/40_Coordination/Instructions/README.md`
+- [Project_Obsidian_Vault/40_Coordination/Instructions/README.md](Project_Obsidian_Vault/40_Coordination/Instructions/README.md)
 
 Future-owner templates are non-authorizing. Only an owner marked `active` in
 the owner registry may dispatch work. Role instructions may narrow ownership
@@ -29,7 +29,7 @@ evidence rules.
 
 Every substantial owner task exports its complete bounded user-visible
 transcript to exactly one registered continuity pack. Use
-`tools/export_agent_thread_continuity.py` with the exact session source,
+[tools/export_agent_thread_continuity.py](tools/export_agent_thread_continuity.py) with the exact session source,
 thread ID, owner label, owner schemas, transcript directory, and vault target.
 
 A valid export:
@@ -147,8 +147,8 @@ Record each substantive point as `Accepted`, `Partially accepted`, `Rejected`,
 alone promotes accepted conclusions to thesis, architecture, specification,
 roadmap, or capability registry.
 
-Use `tools/agent_to_agent_plan_handoff.py` for immutable content-addressed
-records. The compatibility command is `tools/agent_to_agent_handoff.py`.
+Use [tools/agent_to_agent_plan_handoff.py](tools/agent_to_agent_plan_handoff.py) for immutable content-addressed
+records. The compatibility command is [tools/agent_to_agent_handoff.py](tools/agent_to_agent_handoff.py).
 External CLI invocation is optional, explicitly configured, and successful
 only when the assigned record changes; an empty response or zero process exit
 is not evidence of a completed critique.
@@ -157,7 +157,7 @@ The local handoff record and the external critique are separate lifecycle
 steps. Configure an external provider only through the allowlisted
 `PROJECT_<PROVIDER>_COMMAND`, `PROJECT_<PROVIDER>_INPUT_MODE`, and
 `PROJECT_<PROVIDER>_MODEL_ID` settings in the ignored repository-root `.env`,
-using `.env.example` as the public template. The declared model identity must
+using [.env.example](.env.example) as the public template. The declared model identity must
 match the model selected by the configured command. Do not store provider
 credentials in `.env`; authenticate the installed CLI through its approved
 credential store or operating-system secret mechanism. Invocation transmits
@@ -229,7 +229,7 @@ the exact path and recovery action for any artifact that cannot be removed.
 
 ## Source Documentation
 
-Follow `docs/SOURCE_DOCUMENTATION_STYLE.md`. Public source uses native type
+Follow [docs/SOURCE_DOCUMENTATION_STYLE.md](docs/SOURCE_DOCUMENTATION_STYLE.md). Public source uses native type
 annotations plus concise Google-style docstrings. Run
 `python tools/source_doc_audit.py` before closing source changes. Do not edit
 vendored or generated source merely to satisfy local style.
@@ -237,7 +237,7 @@ vendored or generated source merely to satisfy local style.
 ### Folder Documentation
 
 Every maintained repository directory has a local `README.md` registered in
-`configs/documentation_system_v1.json`. The README explains the directory's
+[configs/documentation_system_v1.json](configs/documentation_system_v1.json). The README explains the directory's
 purpose, significant files or subdirectories, and change discipline. Source,
 tool, configuration, test, and third-party directories must describe each
 maintained immediate artifact; generated-output directories identify their
@@ -251,7 +251,7 @@ excluded because they are not maintained repository content. Run
 
 ## Feature Agent Documentation
 
-Follow `docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md`. An active feature
+Follow [docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md](docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md). An active feature
 package documents purpose, status, ownership, non-ownership, module map,
 public imports, test expectations, and vault/role links before more source is
 added. Feature owners consume public Core contracts and request missing
@@ -265,7 +265,7 @@ Verification Runner (Luna) independently verifies the exact candidate without
 repository writes. Required model bindings and risk escalation are fail-
 closed; no silent substitution is allowed.
 
-Each lane uses its owner-neutral shared prompt artifact from `roles/shared/`,
+Each lane uses its owner-neutral shared prompt artifact from [roles/shared/](roles/shared),
 composed with the exact owner profile and task packet. Shared prompts cannot
 grant ownership or relax the root policy, and a missing lane template is a
 fail-closed orchestration configuration error.
@@ -287,7 +287,7 @@ that action remains Sol's runtime responsibility.
 
 ## Git Staging, Commit, and Push Discipline
 
-Root `AGENTS.md` is the sole repository-wide Git authority. Before staging,
+Root [AGENTS.md](AGENTS.md) is the sole repository-wide Git authority. Before staging,
 inspect `git status --short --untracked-files=all --ignore-submodules=all` and
 treat a nonzero exit as inspection failure. Separate current-task changes from
 pre-existing or concurrent state. Stage explicit paths only, inspect
@@ -347,13 +347,13 @@ The Obsidian vault is the maintained narrative reading surface. Canonical
 prose has one location; every managed child has one parent; links are path-
 qualified; MOCs contain narrative descriptions rather than filename dumps;
 and generated breadcrumbs are maintainer-owned. Run report/check/navigation
-through `tools/vault_maintainer.py`. Never hand-edit generated blocks or
+through [tools/vault_maintainer.py](tools/vault_maintainer.py). Never hand-edit generated blocks or
 destructively split notes without a lossless migration and restoration proof.
 
 ## Documentation-System Parity
 
 Every governance instruction and maintained Markdown contract is classified
-by `configs/documentation_system_v1.json`. A short placeholder is not an
+by [configs/documentation_system_v1.json](configs/documentation_system_v1.json). A short placeholder is not an
 equivalent operational document. Changes must retain required headings,
 commands, authority boundaries, recovery behavior, and neutral terminology.
 Run `python tools/architecture_conformance.py` before closeout.

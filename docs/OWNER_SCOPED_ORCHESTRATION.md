@@ -17,9 +17,9 @@ Terra and Luna return bounded receipts without private reasoning or secrets.
 
 The registry binds one reusable owner-neutral prompt artifact to each lane:
 
-- `roles/shared/OWNER_ORCHESTRATOR_PROMPT.md` for Sol;
-- `roles/shared/IMPLEMENTER_PROMPT.md` for Terra;
-- `roles/shared/VERIFICATION_RUNNER_PROMPT.md` for Luna.
+- [roles/shared/OWNER_ORCHESTRATOR_PROMPT.md](../roles/shared/OWNER_ORCHESTRATOR_PROMPT.md) for Sol;
+- [roles/shared/IMPLEMENTER_PROMPT.md](../roles/shared/IMPLEMENTER_PROMPT.md) for Terra;
+- [roles/shared/VERIFICATION_RUNNER_PROMPT.md](../roles/shared/VERIFICATION_RUNNER_PROMPT.md) for Luna.
 
 Each artifact is composed with the exact owner profile and task packet. It
 cannot grant owner-specific authority or weaken repository policy. Missing or

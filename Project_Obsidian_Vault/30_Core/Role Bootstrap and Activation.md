@@ -4,7 +4,7 @@
 << Previous: [[30_Core/Core Vault Maintenance Protocol]] | Up: [[30_Core/Core MOC]] | Next: [[30_Core/Continuity/Core Continuity MOC]] >>
 <!-- generated:breadcrumbs:end -->
 
-Core uses `docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md` as the maintained
+Core uses [docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md](../../docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md) as the maintained
 role-creation protocol. Only an `active` registered owner is dispatch-
 authorized; a scaffold remains non-authorizing until adoption, evidence,
 integration, and Core activation are complete.

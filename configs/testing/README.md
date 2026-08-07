@@ -7,9 +7,9 @@ repository can review execution and impact behavior as versioned evidence.
 
 ## Contents
 
-- `execution_v1.json` divides the suite into parallel-safe and exclusive
+- [execution_v1.json](execution_v1.json) divides the suite into parallel-safe and exclusive
   serial surfaces and fixes the worker cap and distribution strategy.
-- `test_impact_v1.json` maps changed source/configuration paths to focused and
+- [test_impact_v1.json](test_impact_v1.json) maps changed source/configuration paths to focused and
   broad test boundaries. Unknown runtime paths fail closed to the broad suite.
 
 ## Change Discipline

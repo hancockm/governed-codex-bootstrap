@@ -1,6 +1,6 @@
 # Agent Continuity Export
 
-`tools/export_agent_thread_continuity.py` exports a complete bounded,
+[tools/export_agent_thread_continuity.py](../tools/export_agent_thread_continuity.py) exports a complete bounded,
 user-visible task history into exactly one owner continuity pack. Continuity
 is noncanonical source context.
 

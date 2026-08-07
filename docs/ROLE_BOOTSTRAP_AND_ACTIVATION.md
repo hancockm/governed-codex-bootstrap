@@ -129,9 +129,9 @@ role is inactive.
 
 ## Future-Owner Template
 
-`future_owners/owner-template/` demonstrates required shape only. Copying it
+[future_owners/owner-template/](../future_owners/owner-template) demonstrates required shape only. Copying it
 does not grant authority. Every filled template must pass the same recognition,
 adoption, integration, and activation sequence.
 
 The complete operator walkthrough and reusable first-task prompt are in
-`docs/SYSTEM_USER_GUIDE.md` under "Create And Activate A New Owner."
+[docs/SYSTEM_USER_GUIDE.md](SYSTEM_USER_GUIDE.md) under "Create And Activate A New Owner."

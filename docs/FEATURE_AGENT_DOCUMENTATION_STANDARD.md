@@ -8,10 +8,10 @@ boundaries, maturity, or verification.
 
 Before planning or implementation, inspect:
 
-- root `AGENTS.md`;
+- root [AGENTS.md](../AGENTS.md);
 - the comparable Core/package README pattern;
-- `docs/SOURCE_DOCUMENTATION_STYLE.md`;
-- `docs/VAULT_INFORMATION_ARCHITECTURE_STANDARD.md`;
+- [docs/SOURCE_DOCUMENTATION_STYLE.md](SOURCE_DOCUMENTATION_STYLE.md);
+- [docs/VAULT_INFORMATION_ARCHITECTURE_STANDARD.md](VAULT_INFORMATION_ARCHITECTURE_STANDARD.md);
 - the feature README and vault MOC;
 - the active owner's role, bootstrap, continuity MOC, and profile;
 - public upstream contracts and relevant A2A requests.

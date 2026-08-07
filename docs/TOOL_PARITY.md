@@ -2,7 +2,7 @@
 
 This bootstrap does not equate a short script with a mature governance tool.
 Every Python tool in the reference repository receives one explicit
-disposition in `configs/tool_parity_v1.json`:
+disposition in [configs/tool_parity_v1.json](../configs/tool_parity_v1.json):
 
 - `full_generic_equivalent` preserves the reusable behavior and callable
   surface while changing only project names, paths, and owner registries.

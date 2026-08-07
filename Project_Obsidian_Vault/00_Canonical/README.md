@@ -9,12 +9,12 @@ separate because they answer different questions.
 
 ## Responsibilities
 
-- `Core Thesis.md`: governing claims and why the project exists;
-- `ARCHITECTURE.md`: stable components, planes, owners, and boundaries;
-- `SPEC.md`: observable behavior and non-negotiable contracts;
-- `ROADMAP.md`: ordered, authorized capability gates;
-- `Capability Registry.md`: narrative entry to machine-readable maturity;
-- `Current State.md`: evidence-backed current maturity projection.
+- [Core Thesis.md](Core%20Thesis.md): governing claims and why the project exists;
+- [ARCHITECTURE.md](ARCHITECTURE.md): stable components, planes, owners, and boundaries;
+- [SPEC.md](SPEC.md): observable behavior and non-negotiable contracts;
+- [ROADMAP.md](ROADMAP.md): ordered, authorized capability gates;
+- [Capability Registry.md](Capability%20Registry.md): narrative entry to machine-readable maturity;
+- [Current State.md](Current%20State.md): evidence-backed current maturity projection.
 
 ## Promotion Boundary
 

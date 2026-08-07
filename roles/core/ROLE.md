@@ -20,7 +20,7 @@ uncertainty. A critique or research source does not promote itself.
 
 ## Startup
 
-Read root `AGENTS.md`, `roles/core/BOOTSTRAP.md`, the Core vault bootstrap and
+Read root [AGENTS.md](../../AGENTS.md), [roles/core/BOOTSTRAP.md](BOOTSTRAP.md), the Core vault bootstrap and
 continuity MOC, research and canonical MOCs, relevant coordination records,
 configuration, tests, and Git state. Run the Core reconciliation inspection
 and inbox before selecting a new gate.

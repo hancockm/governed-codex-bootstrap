@@ -1,12 +1,53 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
+from urllib.parse import unquote
 
 from governance_bootstrap.conformance import check_repository, validate_documentation_system
 
 
 ROOT = Path(__file__).resolve().parents[1]
+IGNORED_DOCUMENTATION_ROOTS = {".git", ".worktrees", "social", "tmp"}
+MARKDOWN_LINK = re.compile(r"!?\[[^\]]+\]\(([^)]+)\)")
+INLINE_CODE = re.compile(r"(?<!`)`([^`\r\n]+)`(?!`)")
+
+
+def _markdown_files() -> list[Path]:
+    return [
+        path
+        for path in ROOT.rglob("*.md")
+        if not IGNORED_DOCUMENTATION_ROOTS.intersection(path.relative_to(ROOT).parts)
+    ]
+
+
+def _outside_fences(path: Path) -> list[tuple[int, str]]:
+    lines: list[tuple[int, str]] = []
+    in_fence = False
+    for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if not in_fence:
+            lines.append((number, line))
+    return lines
+
+
+def _existing_reference(path: Path, value: str) -> Path | None:
+    if value == "README.md" or any(token in value for token in ("<", ">", "*", "|")):
+        return None
+    for candidate in (path.parent / unquote(value), ROOT / unquote(value)):
+        resolved = candidate.resolve()
+        try:
+            relative = resolved.relative_to(ROOT)
+        except ValueError:
+            continue
+        if IGNORED_DOCUMENTATION_ROOTS.intersection(relative.parts):
+            continue
+        if resolved.exists():
+            return resolved
+    return None
 
 
 def test_complete_repository_conforms_to_six_plane_architecture() -> None:
@@ -118,6 +159,41 @@ def test_documentation_system_preserves_operational_equivalence() -> None:
         "Project_Obsidian_Vault/30_Core/Core Bootstrap.md",
         "Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md",
     } <= {item["path"] for item in manifest["surfaces"]}
+
+
+def test_repository_markdown_links_resolve_without_changing_obsidian_wiki_links() -> None:
+    failures: list[str] = []
+    for markdown in _markdown_files():
+        for number, line in _outside_fences(markdown):
+            for match in MARKDOWN_LINK.finditer(line):
+                target = match.group(1).strip().strip("<>")
+                if target.startswith(("#", "http://", "https://", "mailto:")):
+                    continue
+                path_text = target.partition("#")[0].partition("?")[0]
+                resolved = (markdown.parent / unquote(path_text)).resolve()
+                try:
+                    resolved.relative_to(ROOT)
+                except ValueError:
+                    failures.append(f"{markdown.relative_to(ROOT)}:{number}: escapes repository: {target}")
+                    continue
+                if not resolved.exists():
+                    failures.append(f"{markdown.relative_to(ROOT)}:{number}: missing target: {target}")
+    assert failures == []
+
+
+def test_existing_repository_paths_are_links_outside_code_and_obsidian_wiki_syntax() -> None:
+    failures: list[str] = []
+    for markdown in _markdown_files():
+        for number, line in _outside_fences(markdown):
+            for match in INLINE_CODE.finditer(line):
+                if match.start() > 0 and line[match.start() - 1] == "[" and line[match.end():].startswith("]("):
+                    continue
+                value = match.group(1)
+                if _existing_reference(markdown, value) is not None:
+                    failures.append(
+                        f"{markdown.relative_to(ROOT)}:{number}: use a Markdown link for {value}"
+                    )
+    assert failures == []
 
 
 def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -> None:
@@ -296,7 +372,7 @@ def test_tools_readme_describes_each_operator_tool() -> None:
         if path.name != "__init__.py"
     }
     assert maintained_tools
-    assert all(f"`{name}`" in readme for name in maintained_tools)
+    assert all(f"[{name}](" in readme for name in maintained_tools)
 
 
 def test_core_bootstrap_has_complete_rehydration_and_closeout_contract() -> None:
