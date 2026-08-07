@@ -42,6 +42,12 @@ def test_first_bootstrap_requires_native_capabilities_and_no_plugins() -> None:
     }
     assert all(item["default_state"] == "not_required" for item in bootstrap["optional_plugins"])
     assert bootstrap["preflight"]["installation_requires_user_approval"] is True
+    pdf = bootstrap["optional_research_dependencies"][0]
+    assert pdf["id"] == "native_text_pdf_extraction"
+    assert pdf["package"] == "pypdf"
+    assert pdf["version"] == "6.14.2"
+    assert pdf["automatic_download_or_install"] is False
+    assert pdf["user_approval_required"] is True
 
 
 def test_external_a2a_configuration_is_nonsecret_and_opt_in() -> None:
@@ -144,6 +150,10 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
         "Different model families",
         "Copy-Item .env.example .env",
         "External invocation is data egress",
+        "Put `.md`, `.txt`, and `.pdf` source material",
+        "PDF research requires optional pypdf 6.14.2",
+        "python -m pip install -e \".[pdf]\"",
+        "does not perform OCR",
     ):
         assert phrase in guide
     assert guide.count("```mermaid") >= 7
@@ -287,6 +297,8 @@ def test_core_bootstrap_has_complete_rehydration_and_closeout_contract() -> None
         "For authorized implementation:",
         "Before completing substantial Core work:",
         "Your first response is a concise rehydration report",
+        "PDF research requires optional pypdf 6.14.2",
+        "Never download or install a PDF",
     ):
         assert phrase in bootstrap
 

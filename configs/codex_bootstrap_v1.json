@@ -88,6 +88,26 @@
       "use_only_when": "An owner approves access to a specific external source such as a document store, messaging system, or project tracker."
     }
   ],
+  "optional_research_dependencies": [
+    {
+      "id": "native_text_pdf_extraction",
+      "extensions": [".pdf"],
+      "python_extra": "pdf",
+      "package": "pypdf",
+      "version": "6.14.2",
+      "license": "BSD-3-Clause",
+      "artifact_record": "third_party/pypdf-6.14.2.json",
+      "automatic_download_or_install": false,
+      "user_approval_required": true,
+      "install_command_after_approval": "python -m pip install -e \".[pdf]\"",
+      "capability": "Deterministic native-text extraction by PDF page.",
+      "limitations": [
+        "No OCR or image-text recognition.",
+        "Encrypted PDFs are not opened by the research organizer.",
+        "Pages without extractable text remain explicit in the research map."
+      ]
+    }
+  ],
   "preflight": {
     "inspect_installed_plugins": true,
     "cli_command": "codex plugin list --json",

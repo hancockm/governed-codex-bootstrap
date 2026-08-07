@@ -1,0 +1,9 @@
+{
+  "package": "pypdf",
+  "version": "6.14.2",
+  "artifact": "pypdf-6.14.2-py3-none-any.whl",
+  "sha256": "3f07891af76dc002657e04993ab9b4de81de29f9013b9761d0b7968bff12e946",
+  "provenance": "https://pypi.org/pypi/pypdf/6.14.2/json",
+  "license": "BSD-3-Clause",
+  "posture": "Optional native-text PDF research extraction dependency. The bootstrap never downloads or installs it implicitly; Core must obtain explicit user approval first. It provides no OCR and does not authorize password handling for encrypted sources."
+}

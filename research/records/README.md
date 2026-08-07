@@ -8,7 +8,10 @@ This directory contains content-addressed source records created by
 ## Contents
 
 Each record preserves the source hash, provenance, title, origin, and review
-state. Supporting Markdown remains source material, not canonical doctrine.
+state. Markdown, plain text, and PDFs remain source material, not canonical
+doctrine. PDF page text is a derived candidate projection; the exact PDF bytes
+remain authoritative. Empty/image-only pages remain explicit diagnostics and
+are never presented as successfully extracted prose.
 
 ## Change Discipline
 

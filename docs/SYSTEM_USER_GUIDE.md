@@ -115,6 +115,12 @@ capabilities are available. A missing capability blocks only the lifecycle
 stage that requires it; it is never silently replaced by a plugin or different
 model.
 
+Python research parsers follow the same consent rule. Markdown and plain text
+need no optional parser. When the project contains PDFs, Core checks for the
+exact optional `pypdf==6.14.2` artifact, explains its BSD-3-Clause record and
+native-text-only boundary, and asks before downloading or installing it. PDF
+support is a Python project extra, not a Codex plugin.
+
 Inspect plugins from **Codex > Plugins > Installed** or, when the Codex CLI is
 available:
 
@@ -160,14 +166,41 @@ from the template or treat sample research as accepted doctrine.
 
 ### Bring in your research
 
-Put source material in `research/inbox/` and register it rather than copying
-claims directly into canonical documents:
+Put `.md`, `.txt`, and `.pdf` source material in `research/inbox/` and register
+each exact file rather than copying claims directly into canonical documents:
 
 ```powershell
 python tools/research_intake.py research/inbox/example.md --title "Example" --origin "Source description"
+python tools/research_intake.py research/inbox/interview.txt --title "Interview" --origin "Recorded interview transcript"
+python tools/research_intake.py research/inbox/report.pdf --title "Report" --origin "Publisher and source URL"
 python tools/research_organizer.py scan
 python tools/research_organizer.py build
 ```
+
+Intake preserves exact bytes for all three formats and does not require the
+PDF library. Organization reads Markdown and plain text with the base Python
+environment. For a PDF, it uses `pypdf==6.14.2` to extract native text in page
+order. It does not perform OCR, infer text from images, or request passwords
+for encrypted PDFs. A scanned or image-only page remains an explicit
+`no_extractable_text` diagnostic.
+
+If `scan` reports `pdf_dependency_unavailable`, Core—not the user manually
+following a hidden setup step—must explain the exact artifact and ask:
+
+> PDF research requires optional pypdf 6.14.2 (BSD-3-Clause). Do you
+> authorize downloading and installing the project's `[pdf]` optional
+> dependency in this environment?
+
+Only after the user answers affirmatively may Core run:
+
+```powershell
+python -m pip install -e ".[pdf]"
+```
+
+Declining leaves the PDF immutable and visible as unavailable. It does not
+silently drop the file, auto-install another parser, or convert it through an
+external service. If OCR is later required, that is a separate dependency,
+privacy, licensing, and implementation decision.
 
 Review the source map and candidate relationships. Core then proposes the
 minimum supported Thesis, Architecture, Spec, Roadmap, and capability state.
@@ -175,9 +208,9 @@ The user approves promotion; the organizer never promotes material by itself.
 
 ```mermaid
 flowchart LR
-    Raw["research/inbox<br/>raw material"] --> Intake["Content-addressed intake"]
+    Raw["research/inbox<br/>.md · .txt · .pdf"] --> Intake["Content-addressed intake<br/>exact bytes"]
     Intake --> Records["Immutable research records"]
-    Records --> Organize["Maps · duplicates · candidate relations"]
+    Records --> Organize["Text sections or PDF pages<br/>maps · duplicates · diagnostics"]
     Organize --> Review["Core analysis + user decision"]
     Review -->|accepted| Canonical["Canonical vault"]
     Review -->|not accepted| Evidence["Retained source, candidate, or dead end"]

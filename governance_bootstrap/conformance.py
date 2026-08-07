@@ -204,6 +204,23 @@ def check_repository(root: Path) -> list[str]:
         or preflight.get("connector_authorization_is_separate") is not True
     ):
         failures.append("codex-bootstrap: plugin preflight and authorization are incomplete")
+    research_dependencies = codex_bootstrap.get("optional_research_dependencies", [])
+    pdf_dependencies = [
+        item for item in research_dependencies if item.get("id") == "native_text_pdf_extraction"
+    ]
+    if len(pdf_dependencies) != 1:
+        failures.append("codex-bootstrap: native-text PDF dependency declaration is missing")
+    else:
+        pdf_dependency = pdf_dependencies[0]
+        if (
+            pdf_dependency.get("package") != "pypdf"
+            or pdf_dependency.get("version") != "6.14.2"
+            or pdf_dependency.get("python_extra") != "pdf"
+            or pdf_dependency.get("automatic_download_or_install") is not False
+            or pdf_dependency.get("user_approval_required") is not True
+            or pdf_dependency.get("extensions") != [".pdf"]
+        ):
+            failures.append("codex-bootstrap: native-text PDF dependency consent is incomplete")
     owner_ids: set[str] = set()
     git_owners: set[str] = set()
     branch_prefixes: set[str] = set()
@@ -283,6 +300,10 @@ def check_repository(root: Path) -> list[str]:
         failures.append("testing: lifecycle flags must not be global addopts")
     _require_artifact(failures, root, "pytest-xdist", "3.8.0")
     _require_artifact(failures, root, "execnet", "2.1.2")
+    pdf_extra = pyproject.get("project", {}).get("optional-dependencies", {}).get("pdf", [])
+    if pdf_extra != ["pypdf==6.14.2"]:
+        failures.append("research: exact optional PDF dependency is not pinned")
+    _require_artifact(failures, root, "pypdf", "6.14.2")
     for marker in config["forbidden_project_markers"]:
         for path in root.rglob("*"):
             relative = path.relative_to(root).as_posix() if path.is_file() else ""

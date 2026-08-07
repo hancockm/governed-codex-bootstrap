@@ -9,15 +9,20 @@ source-only until Core promotes a supported conclusion.
 
 ## Intake
 
-Place candidate files in `research/inbox/`, then register them with
-`tools/research_intake.py`. Intake records origin, title, content identity,
-and exact bytes. Never overwrite an existing immutable record.
+Place candidate `.md`, `.txt`, or `.pdf` files in `research/inbox/`, then
+register them with `tools/research_intake.py`. Intake records origin, title,
+content identity, and exact bytes. Never overwrite an existing immutable
+record.
 
 ## Organization
 
-`tools/research_organizer.py` builds deterministic maps, extracts supported
-text, and identifies exact or near-duplicate candidates. Organization is not
-semantic promotion. Unsupported formats and ambiguous material remain visible.
+`tools/research_organizer.py` builds deterministic maps, extracts Markdown and
+plain text, and extracts native PDF text in page order when the approved
+optional `pypdf==6.14.2` dependency is installed. Core asks the user before
+downloading or installing that dependency. The extractor performs no OCR,
+does not open encrypted PDFs, and records pages without extractable text as
+diagnostics. Organization is not semantic promotion. Unsupported formats and
+ambiguous material remain visible.
 
 ## Review
 

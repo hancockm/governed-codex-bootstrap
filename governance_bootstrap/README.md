@@ -13,8 +13,8 @@ commands. It implements governance mechanics, not the future product runtime.
 | `common.py` | Shared canonical serialization, hashing, path, and validation primitives. |
 | `conformance.py` | Composes six-plane, documentation, vault, owner, testing, artifact, and neutrality checks. |
 | `coordination.py` | Builds and validates content-addressed coordination records. |
-| `research.py` | Implements immutable research intake and provenance records. |
-| `research_organizer.py` | Implements source comparison, review state, and research-map construction. |
+| `research.py` | Implements immutable `.md`, `.txt`, and `.pdf` research intake and provenance records without parser installation. |
+| `research_organizer.py` | Implements text-section and native-text PDF-page extraction, explicit dependency/format diagnostics, source comparison, review state, and research-map construction. |
 
 The CLI adapters for these modules are indexed in [`tools/README.md`](../tools/README.md).
 

@@ -41,6 +41,19 @@ Required starting order:
    from the Core continuity MOC.
 6. Read the vault home and research MOCs, then inspect exact research records
    relevant to the request.
+   - `.md` and `.txt` records use the built-in text organizer.
+   - If `.pdf` records are present or PDF intake is requested, inspect
+     `configs/codex_bootstrap_v1.json`, the installed `pypdf` version, and
+     `third_party/pypdf-6.14.2.json`.
+   - When the exact optional dependency is unavailable, explain that it
+     extracts native PDF text by page, provides no OCR, and will not open
+     encrypted sources. Ask this question and wait for an affirmative answer:
+     “PDF research requires optional pypdf 6.14.2 (BSD-3-Clause). Do you
+     authorize downloading and installing the project's [pdf] optional
+     dependency in this environment?”
+   - Only after approval may Core run
+     `python -m pip install -e ".[pdf]"`. Never download or install a PDF
+     library implicitly during bootstrap, intake, scan, or organization.
 7. Read current canonical Thesis, Architecture, Spec, Roadmap, Current State,
    and capability-registry explanation.
 8. Read the coordination MOC/update records and only active A2A records

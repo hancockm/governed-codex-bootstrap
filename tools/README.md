@@ -20,8 +20,8 @@ repository maintenance; they do not create product authority.
 | `export_agent_thread_continuity.py` | Exports one exact bounded user-visible task transcript transactionally, with redaction, ownership, navigation, and manifest evidence. |
 | `origin_reconciler.py` | Inspects branches, remotes, worktrees, reachability, patch equivalence, owner integration inboxes, and Core-only primary synchronization. |
 | `owner_scoped_orchestration.py` | Validates risk classifications, immutable work packets, lane receipts, runner bindings, archive acknowledgments, terminal reconciliation/synchronization/worktree evidence, and immutable closeout finalization. It records but does not perform host task archival, invoke models, or mutate Git. |
-| `research_intake.py` | Imports one research artifact into immutable, content-addressed source records with provenance. |
-| `research_organizer.py` | Scans, compares, reviews, and maps research records without promoting them into canonical doctrine. |
+| `research_intake.py` | Imports one `.md`, `.txt`, or `.pdf` research artifact into immutable, content-addressed source records with provenance; intake never installs parsers. |
+| `research_organizer.py` | Scans, compares, reviews, and maps research records without promoting them into canonical doctrine. PDF page extraction is native-text-only, exact-version-bound, and explicitly unavailable until the user-approved optional dependency exists. |
 | `source_doc_audit.py` | Checks project-owned Python public surfaces for the required module and API documentation. |
 | `test_runner.py` | Provides focused, cached-failure, affected, broad, and isolated full-suite test profiles. |
 | `tool_parity.py` | Validates the explicit disposition of reusable reference tools, generic adaptations, bootstrap-native tools, and deliberate exclusions. |

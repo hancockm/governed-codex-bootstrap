@@ -13,7 +13,7 @@ from governance_bootstrap import research_organizer as organizer
 
 
 def scan(root: Path) -> dict:
-    """Report supported and unsupported immutable research records."""
+    """Report supported, dependency-unavailable, and unsupported records."""
 
     return organizer.scan(root)
 
@@ -49,7 +49,11 @@ def main() -> int:
     review_parser.add_argument("--reason", required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    result = scan(root) if args.command == "scan" else build(root) if args.command == "build" else review(root, args.candidate_id, args.status, args.reason)
+    try:
+        result = scan(root) if args.command == "scan" else build(root) if args.command == "build" else review(root, args.candidate_id, args.status, args.reason)
+    except (organizer.ResearchDependencyUnavailable, organizer.ResearchExtractionError) as error:
+        print(json.dumps({"status": "unavailable", "reason": str(error)}, indent=2), file=sys.stderr)
+        return 2
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 

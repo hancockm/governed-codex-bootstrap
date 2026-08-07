@@ -7,9 +7,13 @@ is registered by `research_intake.py`.
 
 ## Contents
 
-Place exact source files here temporarily with enough external provenance to
-describe their origin. Unsupported formats remain visible rather than being
-silently converted or discarded.
+Place exact `.md`, `.txt`, or `.pdf` source files here temporarily with enough
+external provenance to describe their origin. Intake preserves all three as
+exact byte records. Markdown and plain-text organization use the base Python
+environment. PDF organization requires the optional, exact `pypdf==6.14.2`
+dependency after Core obtains user approval; it extracts native text only and
+does not perform OCR. Other formats remain visible rather than being silently
+converted or discarded.
 
 ## Change Discipline
 

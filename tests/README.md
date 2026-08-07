@@ -11,7 +11,7 @@ repository/process fixtures by `configs/testing/execution_v1.json`.
 | File or directory | Significance |
 | --- | --- |
 | `test_conformance.py` | Verifies the six planes, documentation system, research-first state, owners, and orchestration bindings. |
-| `test_research.py` | Verifies immutable intake, duplicate detection, review states, and promotion boundaries. |
+| `test_research.py` | Verifies immutable text/PDF intake, optional PDF dependency consent states, deterministic PDF page extraction, duplicate detection, review states, and promotion boundaries. |
 | `test_runner.py` | Verifies affected-test selection and lifecycle-aware runner behavior. |
 | `test_workflow_tools.py` | Verifies coordination handoff and workflow entry points. |
 | `tools/` | Contains focused tests for each substantial repository CLI. |
