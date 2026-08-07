@@ -44,8 +44,20 @@
       "alt_text": "Owner-scoped development cycle: Sol plans and controls authority, Terra implements the approved packet, Luna independently verifies the exact commit, and Core integrates the primary branch."
     },
     {
-      "id": "governed-pdf-research",
+      "id": "a2a-owner-boundaries",
       "launch_order": 4,
+      "use": "Agent-to-agent boundary follow-up",
+      "source": "assets/social/source/a2a-owner-boundaries.svg",
+      "export": "assets/social/x/a2a-owner-boundaries-1200x628.png",
+      "width": 1200,
+      "height": 628,
+      "post_copy": "Multi-agent systems often fail at the boundary, not the model.\n\nGoverned Codex owners do not edit one another's domains. They publish atomic A2A requests with evidence, an exact need, an owner disposition, and completion proof.\n\nDisagreement stays visible. Authority stays scoped.",
+      "post_timing": "Publish immediately after the owner-scoped orchestration post.",
+      "alt_text": "Agent-to-agent boundary protocol. A requesting owner freezes evidence and asks for a public contract through an immutable A2A record. The responsible owner challenges assumptions and accepts, narrows, defers, or rejects it. Only accepted verified contracts proceed to Core integration."
+    },
+    {
+      "id": "governed-pdf-research",
+      "launch_order": 5,
       "use": "PDF research follow-up",
       "source": "assets/social/source/governed-pdf-research.svg",
       "export": "assets/social/x/governed-pdf-research-1200x628.png",
@@ -55,7 +67,7 @@
     },
     {
       "id": "test-lifecycle",
-      "launch_order": 5,
+      "launch_order": 6,
       "use": "Developer testing follow-up",
       "source": "assets/social/source/test-lifecycle.svg",
       "export": "assets/social/x/test-lifecycle-1200x628.png",
@@ -65,7 +77,7 @@
     },
     {
       "id": "portable-continuity",
-      "launch_order": 6,
+      "launch_order": 7,
       "use": "Continuity follow-up",
       "source": "assets/social/source/portable-continuity.svg",
       "export": "assets/social/x/portable-continuity-1200x628.png",

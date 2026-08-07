@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="628" viewBox="0 0 1200 628" role="img" aria-labelledby="title desc">
+  <title id="title">Agent-to-agent discussions and owner boundaries</title>
+  <desc id="desc">One owner publishes an atomic boundary request, another owner decides it within their authority, and only an accepted contract proceeds to Core integration.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111F"/><stop offset="1" stop-color="#0B1B2D"/></linearGradient>
+    <marker id="cyan-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4DE2C5"/></marker>
+    <marker id="gold-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#F4C95D"/></marker>
+    <style>
+      .brand{font:700 18px 'Segoe UI',sans-serif;letter-spacing:2px;fill:#4DE2C5}
+      .title{font:700 42px 'Segoe UI',sans-serif;fill:#F7FAFC}
+      .sub{font:400 20px 'Segoe UI',sans-serif;fill:#A9B7C7}
+      .card{fill:#102238;stroke:#29445F;stroke-width:2}
+      .cardTitle{font:700 25px 'Segoe UI',sans-serif;fill:#F7FAFC}
+      .eyebrow{font:700 14px 'Segoe UI',sans-serif;letter-spacing:1.4px;fill:#4DE2C5}
+      .detail{font:400 16px 'Segoe UI',sans-serif;fill:#A9B7C7}
+      .field{font:600 16px 'Segoe UI',sans-serif;fill:#F7FAFC}
+      .line{stroke:#4DE2C5;stroke-width:3;fill:none;marker-end:url(#cyan-arrow)}
+      .goldLine{stroke:#F4C95D;stroke-width:3;fill:none;marker-end:url(#gold-arrow)}
+    </style>
+  </defs>
+  <rect width="1200" height="628" fill="url(#bg)"/>
+  <circle cx="1080" cy="-35" r="230" fill="#8B7CFF" opacity=".08"/>
+  <text x="64" y="54" class="brand">AGENT-TO-AGENT COORDINATION</text>
+  <text x="64" y="112" class="title">A2A is a boundary protocol—not shared authority.</text>
+  <text x="64" y="150" class="sub">Owners coordinate through durable requests without editing one another's domains.</text>
+
+  <g transform="translate(64 208)">
+    <rect width="270" height="232" rx="20" fill="#12382F" stroke="#4DE2C5" stroke-width="2"/>
+    <text x="24" y="42" class="eyebrow">REQUESTING OWNER</text>
+    <text x="24" y="80" class="cardTitle">Observe and request</text>
+    <text x="24" y="120" class="detail">Freeze exact evidence</text>
+    <text x="24" y="150" class="detail">Name the missing boundary</text>
+    <text x="24" y="180" class="detail">Request a public contract</text>
+    <text x="24" y="210" class="detail">Never edit the other domain</text>
+  </g>
+
+  <path d="M334 324H384" class="line"/>
+
+  <g transform="translate(384 190)">
+    <rect width="432" height="268" rx="22" fill="#2C2A20" stroke="#F4C95D" stroke-width="2.5"/>
+    <text x="24" y="42" class="eyebrow" fill="#F4C95D">IMMUTABLE A2A RECORD</text>
+    <text x="24" y="80" class="cardTitle">One atomic handoff</text>
+    <circle cx="31" cy="119" r="5" fill="#F4C95D"/><text x="48" y="125" class="field">Evidence and exact source state</text>
+    <circle cx="31" cy="157" r="5" fill="#F4C95D"/><text x="48" y="163" class="field">Requested contract and named owner</text>
+    <circle cx="31" cy="195" r="5" fill="#F4C95D"/><text x="48" y="201" class="field">Accept · narrow · defer · reject</text>
+    <circle cx="31" cy="233" r="5" fill="#F4C95D"/><text x="48" y="239" class="field">Completion evidence or remaining blocker</text>
+  </g>
+
+  <path d="M816 324H866" class="line"/>
+
+  <g transform="translate(866 208)">
+    <rect width="270" height="232" rx="20" fill="#2D294D" stroke="#8B7CFF" stroke-width="2"/>
+    <text x="24" y="42" class="eyebrow">RESPONSIBLE OWNER</text>
+    <text x="24" y="80" class="cardTitle">Challenge and decide</text>
+    <text x="24" y="120" class="detail">Question assumptions</text>
+    <text x="24" y="150" class="detail">Protect private authority</text>
+    <text x="24" y="180" class="detail">Publish a disposition</text>
+    <text x="24" y="210" class="detail">Supply completion evidence</text>
+  </g>
+
+  <path d="M600 458V500" class="goldLine"/>
+  <rect x="292" y="500" width="616" height="68" rx="16" fill="#102238" stroke="#29445F" stroke-width="2"/>
+  <text x="600" y="527" text-anchor="middle" class="eyebrow">ONLY ACCEPTED CONTRACTS CROSS THE PROMOTION BOUNDARY</text>
+  <text x="600" y="553" text-anchor="middle" class="detail">Core integrates verified public contracts; unresolved disagreement remains visible.</text>
+  <text x="64" y="603" class="detail">Coordination preserves disagreement. Ownership prevents silent takeover.</text>
+</svg>

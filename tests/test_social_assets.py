@@ -23,8 +23,8 @@ def test_social_asset_catalog_has_exact_sources_exports_and_alt_text() -> None:
     )
     assets = catalog["assets"]
     assert catalog["schema_version"] == "social_asset_catalog_v1"
-    assert len({item["id"] for item in assets}) == len(assets) == 7
-    assert sorted(item["launch_order"] for item in assets) == list(range(7))
+    assert len({item["id"] for item in assets}) == len(assets) == 8
+    assert sorted(item["launch_order"] for item in assets) == list(range(8))
 
     for asset in assets:
         source = ROOT / asset["source"]
@@ -33,6 +33,10 @@ def test_social_asset_catalog_has_exact_sources_exports_and_alt_text() -> None:
         assert exported.is_file()
         assert asset["alt_text"].strip()
         assert len(asset["alt_text"]) <= 1000
+        if "post_copy" in asset:
+            assert asset["post_copy"].strip()
+            assert len(asset["post_copy"]) <= 280
+            assert asset["post_timing"].strip()
 
         svg = ElementTree.parse(source).getroot()
         assert int(svg.attrib["width"]) == asset["width"]

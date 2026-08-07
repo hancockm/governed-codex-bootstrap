@@ -11,6 +11,7 @@ without relying on generative-image text rendering.
 - `architecture-six-planes.svg` introduces the six-plane system.
 - `research-first-lifecycle.svg` shows source-to-canonical promotion.
 - `owner-scoped-orchestration.svg` shows Sol, Terra, Luna, and Core roles.
+- `a2a-owner-boundaries.svg` shows atomic cross-owner requests and promotion.
 - `governed-pdf-research.svg` explains optional PDF extraction and consent.
 - `test-lifecycle.svg` shows fast triage followed by final verification.
 - `portable-continuity.svg` shows Git-backed owner rehydration.
