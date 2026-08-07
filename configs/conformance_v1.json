@@ -9,6 +9,6 @@
     "continuity": ["tools/export_agent_thread_continuity.py", "docs/AGENT_CONTINUITY_EXPORT.md", "continuity/core/README.md", "Project_Obsidian_Vault/30_Core/Core Bootstrap.md", "Project_Obsidian_Vault/30_Core/Continuity/README.md", "Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md", "Project_Obsidian_Vault/30_Core/Continuity/Protocols/Reorientation And Next-Step Discovery.md", "Project_Obsidian_Vault/30_Core/Continuity/Protocols/Assumption Audit.md", "Project_Obsidian_Vault/30_Core/Continuity/Protocols/Canonical-To-Runtime Reconciliation.md", "Project_Obsidian_Vault/30_Core/Continuity/Protocols/Continuity Maintenance Protocol.md"]
   },
   "research_first": {"research_dir": "research", "canonical_dir": "canonical", "initial_active_owners": ["core"], "cold_start_sequence": ["research_intake", "research_organization", "core_canonicalization", "core_delivery", "future_owner_activation"]},
-  "forbidden_project_markers": ["Hilbert", "C:\\\\Users\\\\", "/Users/"],
-  "reference_marker_allowlist": ["configs/tool_parity_v1.json"]
+  "forbidden_project_markers": ["C:\\\\Users\\\\", "/Users/"],
+  "reference_marker_allowlist": []
 }

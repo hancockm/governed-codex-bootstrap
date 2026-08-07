@@ -1,6 +1,6 @@
 {
   "schema_version": "governance_tool_parity_v1",
-  "reference_repository": "Hilbert",
+  "reference_repository": "source_governance_repository",
   "rules": {
     "full_generic_equivalent": "The generic tool preserves the governance behavior and public callable surface needed outside the reference domain.",
     "generic_adaptation": "The generic tool preserves the governance purpose but replaces project-bound providers, schemas, or vocabularies with explicit generic contracts.",
@@ -21,7 +21,7 @@
       "reference": "tools/agent_to_agent_plan_handoff.py",
       "bootstrap": "tools/agent_to_agent_plan_handoff.py",
       "classification": "generic_adaptation",
-      "rationale": "Preserves immutable critique handoff and owner disposition without importing Hilbert provider runtime.",
+      "rationale": "Preserves immutable critique handoff and owner disposition without importing product-provider runtime.",
       "required_symbols": [
         "HandoffError",
         "_display_path",
@@ -280,7 +280,7 @@
       "reference": "tools/research_organizer.py",
       "bootstrap": "tools/research_organizer.py",
       "classification": "generic_adaptation",
-      "rationale": "Research organization must use project-configured concepts instead of Hilbert-specific manifold, signal, and MAKER vocabulary.",
+      "rationale": "Research organization must use project-configured concepts instead of source-project representation and execution vocabulary.",
       "required_symbols": [
         "build",
         "main",
@@ -378,38 +378,38 @@
       ]
     },
     {
-      "reference": "tools/build_general_hilbert_generic_lexical_measurement_replay.py",
+      "reference": "tools/build_product_generic_lexical_measurement_replay.py",
       "bootstrap": null,
       "classification": "project_specific_excluded",
-      "rationale": "Hilbert Generic lexical measurement runtime and sealed evidence are product-specific.",
+      "rationale": "Product lexical-measurement runtime and sealed evidence are project-specific.",
       "required_symbols": []
     },
     {
-      "reference": "tools/build_general_hilbert_generic_linguistic_lexical_replay.py",
+      "reference": "tools/build_product_generic_linguistic_lexical_replay.py",
       "bootstrap": null,
       "classification": "project_specific_excluded",
-      "rationale": "Hilbert linguistic profile replay is product-specific.",
+      "rationale": "Product linguistic-profile replay is project-specific.",
       "required_symbols": []
     },
     {
-      "reference": "tools/build_general_hilbert_signal_candidate.py",
+      "reference": "tools/build_product_signal_candidate.py",
       "bootstrap": null,
       "classification": "project_specific_excluded",
-      "rationale": "Hilbert signal-candidate construction is product-specific.",
+      "rationale": "Product signal-candidate construction is project-specific.",
       "required_symbols": []
     },
     {
-      "reference": "tools/build_general_hilbert_source_material_comparison.py",
+      "reference": "tools/build_product_source_material_comparison.py",
       "bootstrap": null,
       "classification": "project_specific_excluded",
-      "rationale": "Hilbert signal source-material comparison is product-specific.",
+      "rationale": "Product signal source-material comparison is project-specific.",
       "required_symbols": []
     },
     {
       "reference": "tools/build_legal_ip_documents.py",
       "bootstrap": null,
       "classification": "project_specific_excluded",
-      "rationale": "Attorney-facing Hilbert Legal IP outputs are a separate domain owner product.",
+      "rationale": "Attorney-facing Legal IP outputs are a separate domain-owner product.",
       "required_symbols": []
     },
     {
@@ -420,38 +420,38 @@
       "required_symbols": []
     },
     {
-      "reference": "tools/hilbert_artifact_refresh.py",
+      "reference": "tools/product_artifact_refresh.py",
       "bootstrap": null,
       "classification": "project_specific_excluded",
-      "rationale": "Hilbert runtime artifact regeneration is product-specific.",
+      "rationale": "Runtime artifact regeneration is product-specific.",
       "required_symbols": []
     },
     {
-      "reference": "tools/maker_hilbert_smoke.py",
+      "reference": "tools/product_execution_substrate_smoke.py",
       "bootstrap": null,
       "classification": "project_specific_excluded",
-      "rationale": "MAKER/MDAP integration is Hilbert runtime behavior.",
+      "rationale": "A selected execution-substrate integration is product runtime behavior.",
       "required_symbols": []
     },
     {
       "reference": "tools/model_provider_smoke.py",
       "bootstrap": null,
       "classification": "project_specific_excluded",
-      "rationale": "Hilbert provider configuration and runtime smoke behavior are product-specific.",
+      "rationale": "Provider configuration and runtime smoke behavior are product-specific.",
       "required_symbols": []
     },
     {
       "reference": "tools/run_graphdb_free_conformance.py",
       "bootstrap": null,
       "classification": "project_specific_excluded",
-      "rationale": "GraphDB is an optional Hilbert adapter, not generic governance infrastructure.",
+      "rationale": "GraphDB is an optional product adapter, not generic governance infrastructure.",
       "required_symbols": []
     },
     {
       "reference": "tools/semantic_embedder_smoke.py",
       "bootstrap": null,
       "classification": "project_specific_excluded",
-      "rationale": "Hilbert semantic embedding runtime is product-specific.",
+      "rationale": "Semantic embedding runtime is product-specific.",
       "required_symbols": []
     },
     {
