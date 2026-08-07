@@ -10,6 +10,17 @@ judgment. It is a repository-native operating system made from Markdown, Git,
 machine-readable policy, deterministic tools, tests, and owner-scoped Codex
 tasks.
 
+It is **convention-driven and batteries-included**. The repository supplies
+the normal structure, prompts, workflows, orchestration contracts, validation,
+testing, reconciliation, and continuity tools so each project does not have to
+invent them again. It is not silently auto-configuring, and it does not put
+convention above authority. Routine mechanics follow established conventions;
+owner activation, dependency installation, external data egress, canonical
+promotion, primary-branch integration, and terminal task archival remain
+explicit, fail-closed user or owner decisions.
+
+In short: **Convention-driven. Batteries included. Authority explicit.**
+
 ### Guide map
 
 Read the guide in order on first setup. Return directly to the relevant
