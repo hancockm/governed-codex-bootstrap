@@ -119,6 +119,7 @@
       "classification": "operational_equivalent",
       "minimum_lines": 75,
       "required_headings": [
+        "## Why Git-Backed Continuity Exists",
         "## Selection Boundary",
         "## Output Contract",
         "## Required Closeout Sequence",

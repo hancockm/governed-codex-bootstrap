@@ -110,6 +110,8 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
         "## Agent-To-Agent Discussions And Owner Direction",
         "### Set Up A2A Coordination From The Bootstrap",
         "## Close A Task Promptly And Rehydrate Correctly",
+        "### Why continuity is stored in Git",
+        "### Rehydrate in a fresh task or on another device",
         "## What Is Unique Here",
         "## How The Architecture Is Opinionated",
         "## Daily Operator Checklist",
@@ -121,6 +123,9 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
         "### Codex capability and plugin preflight",
         "No Codex plugin is required for the initial bootstrap",
         "Sol Advisor is not required or installed",
+        "Responsibility transferred to another employee",
+        "The owner is therefore a durable project role",
+        "Git supplies portability, provenance, integrity history, and distribution",
     ):
         assert phrase in guide
     assert guide.count("```mermaid") >= 7
@@ -155,6 +160,23 @@ def test_root_policy_requires_executable_mathematical_evidence() -> None:
         "Cite the executable witness, repository constant, or",
     ):
         assert phrase in policy
+
+
+def test_continuity_documentation_supports_device_and_custodian_portability() -> None:
+    guide = (ROOT / "docs/AGENT_CONTINUITY_EXPORT.md").read_text(encoding="utf-8")
+    core = (
+        ROOT / "Project_Obsidian_Vault/30_Core/Continuity/README.md"
+    ).read_text(encoding="utf-8")
+    for phrase in (
+        "An owner is a durable project role",
+        "another device",
+        "transfer responsibility to another employee",
+        "Git provides portable and",
+        "versioned evidence",
+    ):
+        assert phrase in guide
+    assert "new task and thread ID" in core
+    assert "same Core" in core
 
 
 def test_folder_readmes_explain_every_registered_maintained_directory() -> None:

@@ -7,6 +7,13 @@
 Core continuity preserves the bounded evidence needed to resume work. It does
 not become a second canonical architecture.
 
+Because the pack is versioned with the repository, an authorized user can
+rehydrate Core on another device or in a fresh Codex task. The organization can
+also transfer human responsibility for Core while preserving the logical
+owner, attributable transcript history, accepted decisions, and unresolved
+obligations. The new custodian uses a new task and thread ID in the same Core
+pack; a personnel change does not create a second owner archive.
+
 ## Components
 
 - the complete Core bootstrap prompt;

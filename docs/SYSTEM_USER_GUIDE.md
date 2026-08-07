@@ -631,6 +631,63 @@ Long-running chats accumulate stale assumptions and make ownership harder to
 see. Close a task after one distinct outcome is delivered, but never archive
 it before its durable evidence is captured.
 
+### Why continuity is stored in Git
+
+Continuity makes an owner role portable. It is not limited to the device,
+Codex task, model process, or employee that performed the earlier work. Once a
+verified continuity closeout is committed and pushed, any authorized custodian
+can clone or update the repository, open it as a Codex project, start a fresh
+owner task, and reconstruct the owner's history from the same evidence.
+
+This supports three ordinary transitions:
+
+| Transition | What continuity provides |
+| --- | --- |
+| New device | The repository clone carries the owner profile, bootstrap, protocols, transcripts, A2A records, receipts, and current Git history |
+| Fresh task after a long conversation | The new task rehydrates the same owner without copying a huge chat prompt or trusting a lossy summary |
+| Responsibility transferred to another employee | The logical owner, its authority, history, and unresolved obligations persist while the authorized human custodian changes |
+
+The owner is therefore a durable project role, not the person or model
+instance currently operating it. A responsibility transfer starts a new Codex
+task and thread ID under the existing owner pack. It does not rename the role,
+copy the archive into a new owner's folder, or discard the earlier employee's
+attributable history. If the actual semantic boundary changes, use the owner
+activation or retirement process instead of treating a personnel change as an
+architecture change.
+
+```mermaid
+flowchart LR
+    DeviceA["Device A<br/>owner task"] --> Closeout["Bounded transcript + receipts + dispositions"]
+    Closeout --> Commit["Commit and push verified continuity"]
+    Commit --> Remote["Authorized shared Git remote"]
+    Remote --> DeviceB["Device B or new employee<br/>clone / fetch / fast-forward"]
+    DeviceB --> Bootstrap["Start fresh owner task<br/>read role + bootstrap + continuity MOC"]
+    Bootstrap --> Reconcile["Verify against canonical docs<br/>source · tests · config · A2A · Git"]
+    Reconcile --> Rehydrated["Rehydrated owner<br/>freshness and discrepancies reported"]
+```
+
+Git supplies portability, provenance, integrity history, and distribution. It
+does not itself decide who should receive repository access. The organization
+must manage accounts, remote permissions, device security, employment
+offboarding, retention, privacy, and any regulated-data restrictions. Never
+store credentials or private model reasoning merely to make continuity seem
+more complete.
+
+In this system, complete owner context consists of:
+
+- every successfully exported, bounded user-visible owner transcript;
+- curated continuity protocols and reorientation notes;
+- canonical documents and the commits that changed them;
+- relevant A2A requests, disagreements, dispositions, and completion evidence;
+- orchestration packets and compact Terra/Luna receipts;
+- branch reconciliation, primary synchronization, and worktree dispositions;
+- explicit gaps for any transcript or evidence that could not be captured.
+
+Hidden instructions, private reasoning, raw tool traffic, detected
+credentials, and another owner's duplicated transcript are intentionally not
+part of continuity. A missing exact transcript is recorded as a gap rather
+than reconstructed from memory.
+
 ### Ask Sol to close the cycle
 
 Use this prompt when the requested outcome is complete:
@@ -681,17 +738,23 @@ Do not archive when:
 - the exact transcript source was unavailable;
 - continuity or archive acknowledgment is incomplete.
 
-### Rehydrate in a fresh task
+### Rehydrate in a fresh task or on another device
 
-1. Start a new task inside the same saved Codex project.
-2. Use the Core Bootstrap prompt at
+1. On another device, clone the repository from the authorized remote. On the
+   current device, fetch and synchronize it under the Git reconciliation
+   policy.
+2. Open the repository root as the primary folder of a saved Codex project.
+3. Start a new task. Use the bootstrap prompt for the owner being resumed; for
+   Core, use
    `Project_Obsidian_Vault/30_Core/Core Bootstrap.md`.
-3. Tell Core which outcome or next decision you want. Do not paste the entire
-   old chat.
-4. Core reads the continuity MOC and only relevant transcript sections.
-5. Core verifies every material claim against current canonical documents,
+4. Identify the outcome, responsibility transfer, or next decision. Do not
+   paste the entire old chat.
+5. The owner reads its continuity MOC and only the relevant transcript,
+   protocol, receipt, and A2A sections.
+6. The owner verifies every material claim against current canonical documents,
    source, tests, configuration, A2A, receipts, and Git history.
-6. Core reports freshness and discrepancies before planning new work.
+7. The owner reports freshness, missing evidence, unresolved obligations, and
+   discrepancies before planning new work.
 
 Continuity is a recovery index, not model memory and not authority. A new task
 is expected to disagree with an old transcript when the repository has moved
@@ -713,6 +776,7 @@ The pieces are familiar; their composition is unusual.
 | Impact-mapped testing plus one final parallel-safe run | Keep iteration fast without weakening final evidence |
 | Core-only primary integration and mandatory reconciliation | Stop branches and local primary state from silently diverging |
 | One task ID per owner continuity pack | Preserve attribution and prevent duplicate or cross-owner memory |
+| Git-backed owner continuity independent of device or employee | Allow authorized responsibility transfer and fresh-task rehydration without losing attributable history |
 | Sol-owned archive acknowledgment after delivery | Prevent completed subordinate tasks from stacking up or disappearing before evidence capture |
 | Functional and state-equivalent recovery assets | Reproduce both behavior and the provenance needed to understand it |
 

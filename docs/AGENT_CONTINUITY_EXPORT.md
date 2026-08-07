@@ -4,6 +4,21 @@
 user-visible task history into exactly one owner continuity pack. Continuity
 is noncanonical source context.
 
+## Why Git-Backed Continuity Exists
+
+An owner is a durable project role rather than one device, task, model
+instance, or employee. Committed and pushed continuity lets an authorized user
+rehydrate that owner from another device, replace an overlong task with a fresh
+one, or transfer responsibility to another employee without losing the
+attributable history and unresolved obligations of the role.
+
+The reconstructable owner record combines bounded user-visible transcripts,
+curated protocols, canonical and A2A history, orchestration receipts, and Git
+delivery evidence. It does not retain hidden reasoning, credentials, raw tool
+traffic, or duplicated cross-owner transcripts. Git provides portable and
+versioned evidence; repository access, personnel authorization, device
+security, privacy, and retention remain organizational responsibilities.
+
 ## Selection Boundary
 
 The exporter reads the exact session JSONL and selects user-visible
