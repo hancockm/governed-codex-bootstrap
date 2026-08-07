@@ -58,7 +58,7 @@ def test_plan_handoff_dry_run_writes_nothing(tmp_path: Path) -> None:
 
 def test_coordination_apply_is_content_addressed_and_idempotent(tmp_path: Path) -> None:
     sample = tmp_path / "sample"
-    shutil.copytree(ROOT, sample, ignore=shutil.ignore_patterns(".git", "tmp", "__pycache__"))
+    shutil.copytree(ROOT, sample, ignore=shutil.ignore_patterns(".git", ".worktrees", "tmp", "__pycache__", "Orchestration Receipts"))
     subprocess.run(["git", "init", "-q"], cwd=sample, check=True)
     subprocess.run(["git", "config", "user.email", "test@example.invalid"], cwd=sample, check=True)
     subprocess.run(["git", "config", "user.name", "Test"], cwd=sample, check=True)
@@ -92,7 +92,7 @@ def test_external_critique_loads_allowlisted_dotenv_and_records_safe_evidence(
     tmp_path: Path,
 ) -> None:
     sample = tmp_path / "sample"
-    shutil.copytree(ROOT, sample, ignore=shutil.ignore_patterns(".git", "tmp", "__pycache__"))
+    shutil.copytree(ROOT, sample, ignore=shutil.ignore_patterns(".git", ".worktrees", "tmp", "__pycache__", "Orchestration Receipts"))
     subprocess.run(["git", "init", "-q"], cwd=sample, check=True)
     subprocess.run(["git", "config", "user.email", "test@example.invalid"], cwd=sample, check=True)
     subprocess.run(["git", "config", "user.name", "Test"], cwd=sample, check=True)
