@@ -428,6 +428,11 @@ future_owners/<owner-id>/
 ├── BOOTSTRAP.md                    exact startup and first-response contract
 ├── owner_profile.json              dependencies and ownership map
 ├── orchestration_profile.json      Sol/Terra/Luna bindings and checks
+├── canonical/
+│   ├── Core Thesis.md              owner purpose and governing claims
+│   ├── ARCHITECTURE.md             components, dependencies, boundaries
+│   ├── SPEC.md                     observable contracts and invariants
+│   └── Implementation Roadmap.md   ordered owner capability gates
 └── continuity/
     ├── README.md                   continuity ownership and maintenance
     └── MOC.md                      transcripts, protocols, and receipts map
@@ -435,6 +440,7 @@ future_owners/<owner-id>/
 Project_Obsidian_Vault/20_Features/<Owner Name>/
 ├── <Owner Name> MOC.md             narrative parent and reading order
 ├── README.md                       public purpose and package boundary
+├── links to the four owner canonical documents
 └── Continuity link or registered owner pack
 
 configs/owners_v1.json              logical owner registration, inactive
@@ -454,6 +460,8 @@ Core fills the scaffold with:
 - lifecycle state `recognized_inactive` or `owner_adoption_required`;
 - owned files, decisions, capabilities, evidence, and maturity claims;
 - prohibited paths and explicit non-ownership;
+- exact paths for the owner Core Thesis, Architecture, Spec, and
+  Implementation Roadmap;
 - public upstream contracts and their owners;
 - downstream consumers and the public outputs they may use;
 - one registered continuity pack and transcript-ownership rule;
@@ -465,6 +473,19 @@ Core fills the scaffold with:
 The scaffold must keep `no_ownership_grant: true`, contain no activation
 evidence, and remain non-dispatchable. Core validates it as an inactive owner;
 it does not run implementation packets for that owner.
+
+### The four owner canonical documents
+
+Every owner has a **Core Thesis**, **Architecture**, **Spec**, and
+**Implementation Roadmap**. The Core Thesis explains why that owner exists and
+which governing claims guide it; “Core” here means the owner's central thesis,
+not project-wide Core authority. Architecture records owned components,
+dependency direction, and boundaries. Spec defines observable behavior and
+invariants. The Implementation Roadmap orders authorized gates, prerequisites,
+and acceptance evidence. Core creates and maps all four during scaffolding,
+the proposed owner challenges and adopts them, and conformance blocks
+activation when any document is missing. They govern only that owner's scope
+and cannot override project-wide canon or another owner's public contract.
 
 ### What Core returns to the user
 
@@ -487,18 +508,23 @@ Read, in order:
 3. future_owners/<owner-id>/ROLE.md
 4. future_owners/<owner-id>/BOOTSTRAP.md
 5. future_owners/<owner-id>/owner_profile.json
-6. future_owners/<owner-id>/orchestration_profile.json
-7. future_owners/<owner-id>/continuity/MOC.md
-8. the relevant canonical documents and A2A adoption request
-9. current source, tests, configuration, capability state, and Git evidence
+6. future_owners/<owner-id>/canonical/Core Thesis.md
+7. future_owners/<owner-id>/canonical/ARCHITECTURE.md
+8. future_owners/<owner-id>/canonical/SPEC.md
+9. future_owners/<owner-id>/canonical/Implementation Roadmap.md
+10. future_owners/<owner-id>/orchestration_profile.json
+11. future_owners/<owner-id>/continuity/MOC.md
+12. the project-wide canonical documents and A2A adoption request
+13. current source, tests, configuration, capability state, and Git evidence
 
-Verify the proposed authority, non-ownership, upstream contracts, downstream
-consumers, Git namespace, continuity ownership, verification profiles, and
-unresolved assumptions. Challenge any overlap or private cross-owner
-dependency. Your first response must report the evidence inspected, freshness,
-verified and unverified assumptions, boundary corrections, and whether you can
-adopt the profile as written. Do not implement product behavior, alter Core
-doctrine, or claim active authority.
+Verify the proposed authority, all four owner canonical documents,
+non-ownership, upstream contracts, downstream consumers, Git namespace,
+continuity ownership, verification profiles, and unresolved assumptions.
+Challenge unsupported doctrine, overlap, or private cross-owner dependency.
+Your first response must report the evidence inspected, freshness, verified
+and unverified assumptions, boundary corrections, and whether you can adopt
+the profile and four documents as written. Do not implement product behavior,
+alter project-wide Core doctrine, or claim active authority.
 
 After I approve your adoption plan, publish only the owner-scoped adoption and
 correction records on <owner-branch-prefix><adoption-slice>, route them to Core,
@@ -516,7 +542,7 @@ the proposed owner's registered continuity pack.
 flowchart TD
     Need["User identifies a durable boundary"] --> Evaluate["Core challenges need and dependency shape"]
     Evaluate --> Plan["Core presents owner-boundary plan"]
-    Plan -->|"user approves"| Scaffold["Core builds inactive scaffold + tests"]
+    Plan -->|"user approves"| Scaffold["Core builds inactive scaffold + four owner documents + tests"]
     Scaffold --> Prompt["Core returns exact fresh-task prompt"]
     Prompt --> OwnerTask["User starts proposed owner adoption task"]
     OwnerTask --> Audit["Owner audits scope, dependencies, Git, continuity"]
@@ -524,7 +550,7 @@ flowchart TD
     Correction -->|"Yes"| AdoptionBranch["Owner publishes bounded corrections + adoption"]
     Correction -->|"No"| AdoptionBranch
     AdoptionBranch --> CoreReview["Core integrates and validates adoption"]
-    CoreReview --> Activate["Core records active state and activation evidence"]
+    CoreReview --> Activate["Core verifies four documents and records activation evidence"]
     Activate --> FirstGoal["User may approve first owner implementation goal"]
 ```
 
@@ -557,6 +583,12 @@ requirements from the owning feature. It may provide adapter capability
 descriptors, migration receipts, conformance results, recovery evidence, and
 operational recommendations. Those outputs do not let it rewrite domain
 semantics.
+
+Its Core Thesis would explain the need for a separate persistence authority;
+Architecture would define adapters and dependency direction; Spec would define
+observable migration, recovery, and conformance behavior; and its
+Implementation Roadmap would order provider evaluation, adapter delivery,
+recovery proof, and production-readiness gates.
 
 A user could ask Core:
 

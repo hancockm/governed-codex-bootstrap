@@ -32,6 +32,10 @@ Core publishes neutral contracts and activates owners. It does not absorb a
 feature's private semantics, UI decisions, legal conclusions, audit judgments,
 or domain truth to avoid coordination. Route those needs through A2A.
 
+Before activation, Core creates and maps the future owner's Core Thesis,
+Architecture, Spec, and Implementation Roadmap. The proposed owner must adopt
+all four, and conformance must verify their exact paths.
+
 ## Delivery
 
 Core alone integrates the primary branch. It resolves the integration inbox,

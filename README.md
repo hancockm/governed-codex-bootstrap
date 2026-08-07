@@ -37,13 +37,13 @@ The cold start is research intake and organization; Core canonicalization; advis
 
 ## Create a new role from Core
 
-Core recognizes a demonstrated boundary; names stable and Git identities plus branch/worktree namespaces; records authority, non-ownership, scopes, public dependencies, and consumers; supplies role/bootstrap/profile/continuity/vault/feature/test assets; obtains owner adoption and activation evidence; integrates and marks the role active before its first task. A template is never dispatch authority.
+Core recognizes a demonstrated boundary; names stable and Git identities plus branch/worktree namespaces; records authority, non-ownership, scopes, public dependencies, and consumers; supplies the owner's Core Thesis, Architecture, Spec, Implementation Roadmap, role/bootstrap/profile/continuity/vault/feature/test assets; obtains owner adoption and activation evidence; integrates and marks the role active before its first task. A template is never dispatch authority.
 
 ```mermaid
 flowchart LR
   Boundary["Demonstrated boundary"] --> Recognition["Core recognition"]
   Recognition --> Map["Dependency and scope map"]
-  Map --> Assets["Role, profile, continuity, tests"]
+  Map --> Assets["Four owner documents, role, profile, continuity, tests"]
   Assets --> Adoption["Owner adoption evidence"]
   Adoption --> Integration["Core integration"]
   Integration --> Active["Active: dispatch authorized"]
@@ -70,7 +70,7 @@ Research is source-only material. It is immutable after intake and never becomes
 3. Start the cold-path evidence lane with `python tools/research_organizer.py scan`, then `python tools/research_organizer.py build`. Markdown, plain text, and captured Git files work with the base install. PDF organization uses the optional exact `pypdf==6.14.2` dependency and extracts native text in page order; it does not perform OCR or open encrypted files. Core must ask the user before downloading or installing it. After approval, install it with `python -m pip install -e ".[pdf]"`. A missing dependency is reported as unavailable rather than silently skipping the PDF.
 4. Review candidates without deleting them: `python tools/research_organizer.py review candidate-id --status superseded --reason "..."`. Permitted statuses are `current`, `candidate`, `superseded`, `deadend_candidate`, `evidence`, and `source`. Dead-end and superseded candidates remain source material and cannot enter canonical documentation automatically.
 5. Read the maintained vault from [Project_Obsidian_Vault/00_Home/Project MOC.md](Project_Obsidian_Vault/00_Home/Project%20MOC.md): research first, then canonical and Core MOCs. Have the Core owner compare immutable records and review decisions, state uncertainties, and write only supported, explicitly accepted claims into [Project_Obsidian_Vault/00_Canonical/](Project_Obsidian_Vault/00_Canonical).
-6. Update [configs/capability_registry_v1.json](configs/capability_registry_v1.json) with the accepted capability state. Then activate a future owner only by changing the owner registry and adding its role, bootstrap, and continuity material.
+6. Update [configs/capability_registry_v1.json](configs/capability_registry_v1.json) with the accepted capability state. Then activate a future owner only after adding and mapping its Core Thesis, Architecture, Spec, Implementation Roadmap, role, bootstrap, dependency profile, and continuity material.
 7. Run `python tools/architecture_conformance.py`, focused tests, and finally `python tools/test_runner.py full` before an integration candidate is accepted.
 
 ## Authority hierarchy and canonical truth
@@ -127,7 +127,12 @@ Branch dispositions are `landed`, `superseded`, or `awaiting_named_integrator`; 
 
 One thread belongs to one owning continuity pack. Core uses [tools/export_agent_thread_continuity.py](tools/export_agent_thread_continuity.py) to retain a stable full-line source prefix, exact safe user/assistant records, credential-redacted exceptions, display-safe Markdown parts, chronological MOCs, source and selected-record hashes, and a post-navigation output inventory. It never reconstructs unavailable source history from summaries. Terra and Luna emit bounded receipts into Core's pack; they do not become separate continuity owners. Follow [docs/AGENT_CONTINUITY_EXPORT.md](docs/AGENT_CONTINUITY_EXPORT.md) for the dry-run, apply, navigation, manifest-refresh, and idempotence sequence.
 
-To create a future owner, Core must accept the boundary, add a role and bootstrap document, create its continuity root, assign scoped registry authority, add packet/check policy, and update tests. An inactive template is not permission to edit or decide.
+To create a future owner, Core must accept the boundary; create and map the
+owner's Core Thesis, Architecture, Spec, and Implementation Roadmap; add a role
+and bootstrap document; create its continuity root; assign scoped registry
+authority; add packet/check policy; and update tests. The proposed owner must
+adopt all four documents before Core activates it. An inactive template is not
+permission to edit or decide.
 
 ## Recovery and definition of complete
 

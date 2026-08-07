@@ -11,6 +11,7 @@ namespace, capability, or write authority.
 - [BOOTSTRAP.md](BOOTSTRAP.md) defines its cold-start sequence.
 - [owner_profile.json](owner_profile.json) maps dependencies, public contracts, and owned paths.
 - [orchestration_profile.json](orchestration_profile.json) binds owner-scoped development lanes.
+- [canonical/](canonical) contains the required owner Core Thesis, Architecture, Spec, and Implementation Roadmap.
 - [continuity/](continuity) contains the required continuity MOC scaffold.
 
 ## Change Discipline

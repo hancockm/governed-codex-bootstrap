@@ -65,6 +65,11 @@ Only Core is active in a new bootstrap. Future owner material remains a
 non-authorizing template until recognition, adoption, integration, and a Core
 activation commit are complete.
 
+Every recognized owner has its own mapped Core Thesis, Architecture, Spec, and
+Implementation Roadmap. Those documents become canonical only within the
+owner's accepted scope after adoption and activation; project-wide Core canon
+and other owners' public contracts remain authoritative at their boundaries.
+
 ## Maintenance
 
 Use:

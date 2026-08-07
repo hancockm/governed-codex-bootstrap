@@ -16,5 +16,5 @@ activates them.
 ## Change Discipline
 
 Do not create authority merely by adding a folder. Owner recognition requires
-a unique registry identity, namespace, continuity pack, dependency profile,
-validation, adoption, and Core activation.
+a unique registry identity, namespace, four mapped owner canonical documents,
+continuity pack, dependency profile, validation, adoption, and Core activation.

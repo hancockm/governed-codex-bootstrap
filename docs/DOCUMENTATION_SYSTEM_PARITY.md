@@ -60,13 +60,16 @@ defines the complete dependency architecture for creating them:
 
 ```text
 recognized boundary
+→ inactive owner Core Thesis, Architecture, Spec, and Implementation Roadmap
 → inactive role, bootstrap, profile, continuity, vault, and test assets
 → owner adoption
 → Core integration and activation
 → active owner-specific workflow
 ```
 
-The inactive template proves the structure without preselecting domains.
+The inactive template proves the structure without preselecting domains. Its
+four owner documents are placeholder-only and non-authorizing until a
+recognized owner derives content from project evidence and adopts it.
 
 ## Vault README And Instruction Equivalence
 

@@ -257,6 +257,13 @@ public imports, test expectations, and vault/role links before more source is
 added. Feature owners consume public Core contracts and request missing
 boundaries through A2A rather than recreating them.
 
+Every registered owner profile maps exactly four owner canonical documents:
+Core Thesis, Architecture, Spec, and Implementation Roadmap. Core creates all
+four in the inactive scaffold; the proposed owner challenges and adopts them;
+and repository conformance blocks activation if any path is missing. These
+documents govern only the accepted owner scope and cannot override project-
+wide Core canon or another owner's public contract.
+
 ## Owner-Scoped Orchestration
 
 Owner Orchestrator (Sol) controls authority, scope, review, publication, and

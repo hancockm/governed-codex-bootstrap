@@ -11,6 +11,13 @@
   "public_contracts": [],
   "upstream_owners": [],
   "downstream_consumers": [],
+  "canonical_documents": {
+    "core_thesis": "future_owners/owner-template/canonical/Core Thesis.md",
+    "architecture": "future_owners/owner-template/canonical/ARCHITECTURE.md",
+    "spec": "future_owners/owner-template/canonical/SPEC.md",
+    "implementation_roadmap": "future_owners/owner-template/canonical/Implementation Roadmap.md"
+  },
+  "canonical_document_adoption_evidence": [],
   "continuity": {"moc": "future_owners/owner-template/continuity/MOC.md", "protocol": "", "receipts": "", "transcripts": ""},
   "verification_profiles": [],
   "orchestration": {"reference": "configs/owner_scoped_orchestration_v1.json", "lanes": []},

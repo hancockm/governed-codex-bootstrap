@@ -11,6 +11,13 @@
   "public_contracts": [],
   "upstream_owners": [],
   "downstream_consumers": [],
+  "canonical_documents": {
+    "core_thesis": "Project_Obsidian_Vault/00_Canonical/Core Thesis.md",
+    "architecture": "Project_Obsidian_Vault/00_Canonical/ARCHITECTURE.md",
+    "spec": "Project_Obsidian_Vault/00_Canonical/SPEC.md",
+    "implementation_roadmap": "Project_Obsidian_Vault/00_Canonical/ROADMAP.md"
+  },
+  "canonical_document_adoption_evidence": ["bootstrap-initialization"],
   "continuity": {"moc": "Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md", "protocol": "continuity/core/README.md", "receipts": "coordination/receipts", "transcripts": "continuity/core/transcripts"},
   "verification_profiles": ["focused", "affected", "broad", "full"],
   "orchestration": {"reference": "configs/owner_scoped_orchestration_v1.json", "lanes": ["sol", "terra", "luna"]},

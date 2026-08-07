@@ -112,6 +112,16 @@ Before editing, answer:
 Core may publish neutral contracts and boundary stubs. It must not implement a
 future owner's private semantics merely to unblock the project.
 
+## Future-Owner Canonical Scaffold
+
+Before Core requests adoption or activation, it creates and maps the future
+owner's four canonical documents: Core Thesis, Architecture, Spec, and
+Implementation Roadmap. The documents remain inactive candidate doctrine until
+the proposed owner challenges and adopts them. Conformance must prove every
+registered owner profile maps all four existing files; Core activation also
+requires adoption and integration evidence. Owner-local canon cannot override
+project-wide Core doctrine or another owner's public contract.
+
 ## Implementation Routine
 
 After explicit approval:

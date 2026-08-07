@@ -32,6 +32,12 @@ another owner's private semantics to avoid a handoff. Route missing or disputed
 boundaries through A2A. Preserve research, continuity, and historical records
 as evidence rather than current doctrine.
 
+When Core scaffolds a recognized owner, it must create and map that owner's
+Core Thesis, Architecture, Spec, and Implementation Roadmap before adoption.
+Core validates their existence and authority boundary but does not invent the
+future owner's private doctrine. Activation remains blocked until the proposed
+owner adopts the four documents and Core integrates the activation evidence.
+
 ## Owner-Scoped Orchestration
 
 Approved Core implementation uses the active Core orchestration profile. Sol

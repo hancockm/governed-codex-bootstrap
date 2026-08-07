@@ -22,26 +22,28 @@ An inactive owner package contains:
 
 1. role instructions;
 2. bootstrap prompt and exact startup order;
-3. continuity MOC, protocols, transcript and receipt roots;
-4. dependency profile;
-5. strict Git namespaces;
-6. orchestration bindings and checks;
-7. vault parentage;
-8. feature/package documentation;
-9. focused and conformance tests;
-10. activation and retirement evidence.
+3. owner Core Thesis, Architecture, Spec, and Implementation Roadmap;
+4. continuity MOC, protocols, transcript and receipt roots;
+5. dependency profile mapping the four exact document paths;
+6. strict Git namespaces;
+7. orchestration bindings and checks;
+8. vault parentage;
+9. feature/package documentation;
+10. focused and conformance tests;
+11. activation and retirement evidence.
 
 ## Adoption
 
-The proposed owner reviews the assets, challenges scope and dependencies, and
-publishes an adoption record. Adoption confirms acceptance but does not make
-the profile active.
+The proposed owner reviews the assets, challenges all four owner documents,
+scope, and dependencies, and publishes an adoption record. Adoption confirms
+acceptance but does not make the profile active.
 
 ## Activation
 
-Core verifies the profile, no private cross-owner dependencies, registered
-continuity, orchestration, tests, integration, and terminal reconciliation.
-Only the canonical Core activation commit permits dispatch.
+Core verifies the profile, all four mapped documents, no private cross-owner
+dependencies, registered continuity, orchestration, tests, integration, and
+terminal reconciliation. Only the canonical Core activation commit permits
+dispatch.
 
 ## Retirement
 

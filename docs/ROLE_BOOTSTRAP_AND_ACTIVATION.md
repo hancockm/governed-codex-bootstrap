@@ -37,14 +37,15 @@ Core supplies an inactive, connected set:
 
 1. role instruction document;
 2. bootstrap prompt with exact startup order;
-3. continuity MOC, protocols, transcript root, and receipt root;
-4. owner dependency profile;
-5. strict Git branch/worktree namespace;
-6. owner-scoped orchestration profile and verification commands;
-7. vault scope and narrative parentage;
-8. feature/package README and source-documentation entry points;
-9. focused and conformance tests;
-10. activation and retirement evidence fields.
+3. owner Core Thesis, Architecture, Spec, and Implementation Roadmap;
+4. continuity MOC, protocols, transcript root, and receipt root;
+5. owner dependency profile with exact canonical-document paths;
+6. strict Git branch/worktree namespace;
+7. owner-scoped orchestration profile and verification commands;
+8. vault scope and narrative parentage;
+9. feature/package README and source-documentation entry points;
+10. focused and conformance tests;
+11. activation and retirement evidence fields.
 
 Assets reference shared instructions rather than copying mutable repository-
 wide policy into each role.
@@ -53,9 +54,20 @@ wide policy into each role.
 
 After the user approves the owner-boundary plan, Core creates the complete
 inactive scaffold. Core registers the proposed identity and namespaces,
-connects the role and bootstrap, establishes exactly one continuity pack,
-binds the shared orchestration prompts, records public dependencies and
-non-ownership, adds focused/conformance tests, and publishes an adoption A2A.
+connects the role and bootstrap, creates the four owner canonical documents,
+maps their exact paths in the dependency profile, establishes exactly one
+continuity pack, binds the shared orchestration prompts, records public
+dependencies and non-ownership, adds focused/conformance tests, and publishes
+an adoption A2A.
+
+The owner's **Core Thesis** states why that owner exists and its governing
+claims; it does not grant project-wide Core authority. **Architecture** fixes
+the owner's components, dependency direction, and boundaries. **Spec** defines
+observable contracts and invariants. **Implementation Roadmap** sequences
+authorized capability gates and acceptance evidence. Before activation these
+documents are candidate, non-authorizing doctrine. After activation the owner
+maintains their meaning within its scope, while project-wide conflicts return
+to Core for disposition.
 
 Core then returns the scaffold paths, validation and Git evidence, unresolved
 questions, and a complete fresh-task prompt. The prompt identifies the role as
@@ -76,6 +88,7 @@ owner identity
 ├── Git identity and namespaces
 ├── authority and prohibited boundaries
 ├── owned/consumed capabilities
+├── owner canonical quartet and exact paths
 ├── public upstream contracts
 ├── downstream consumers
 ├── continuity ownership
@@ -90,16 +103,18 @@ validated parent/child design; accidental overlap fails closed.
 ## Owner Adoption
 
 The proposed owner reads the role/bootstrap/profile, challenges ownership and
-dependency assumptions, and publishes an adoption record. Adoption confirms
-the owner accepts its authority, non-ownership, public dependencies,
-continuity responsibilities, tests, and Git rules. It does not activate the
-profile by itself.
+dependency assumptions, reconciles all four owner canonical documents, and
+publishes an adoption record. Adoption confirms the owner accepts its thesis,
+architecture, spec, implementation sequence, authority, non-ownership, public
+dependencies, continuity responsibilities, tests, and Git rules. It does not
+activate the profile by itself.
 
 ## First Owner Task
 
 The first task is adoption-only. The proposed owner verifies current canonical
-and runtime evidence, challenges overlaps and private dependencies, confirms
-Git and continuity uniqueness, and reports whether it accepts the boundary.
+and runtime evidence, challenges the four owner documents, overlaps, and
+private dependencies, confirms Git and continuity uniqueness, and reports
+whether it accepts the boundary.
 After user approval, it publishes only adoption records and authorized
 corrections on its registered adoption branch. It remains inactive while Core
 integrates and validates that branch.
@@ -110,6 +125,7 @@ Core verifies:
 
 - boundary and user/Core recognition evidence;
 - complete adopted profile;
+- all four mapped owner canonical documents exist and were adopted;
 - registered continuity/vault assets;
 - no private cross-owner dependency;
 - exact orchestration bindings and checks;

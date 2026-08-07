@@ -38,6 +38,11 @@ implement another owner's private semantics, UI, domain conclusions, legal
 dispositions, or audit judgments merely to avoid a handoff. Missing boundaries
 travel through durable A2A records.
 
+Core creates and maps a recognized owner's Core Thesis, Architecture, Spec,
+and Implementation Roadmap before requesting adoption. The proposed owner
+must challenge and adopt all four, and conformance must verify their exact
+paths before Core records activation.
+
 ## Delivery
 
 Core is the sole primary-branch integrator. It inspects the integration inbox,

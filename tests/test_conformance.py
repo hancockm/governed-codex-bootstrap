@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -132,12 +133,41 @@ def test_orchestration_has_exact_model_bindings_and_separate_sol_finalization() 
 
 def test_owner_dependency_profiles_keep_examples_inactive_and_non_authorizing() -> None:
     owners = json.loads((ROOT / "configs/owners_v1.json").read_text(encoding="utf-8"))["owners"]
-    for name in ("future-owner-template", "example-feature-owner"):
+    required_canonical_documents = {
+        "core_thesis",
+        "architecture",
+        "spec",
+        "implementation_roadmap",
+    }
+    for name, owner in owners.items():
         profile = json.loads((ROOT / owners[name]["profile"]).read_text(encoding="utf-8"))
-        assert owners[name]["active"] is False
-        assert profile["lifecycle_state"] != "active"
-        assert profile["no_ownership_grant"] is True
+        assert set(profile["canonical_documents"]) == required_canonical_documents
+        assert all((ROOT / path).is_file() for path in profile["canonical_documents"].values())
         assert profile["branch_prefix"] and profile["worktree_prefix"]
+        if name != "core":
+            assert owner["active"] is False
+            assert profile["lifecycle_state"] != "active"
+            assert profile["no_ownership_grant"] is True
+            assert profile["canonical_document_adoption_evidence"] == []
+        else:
+            assert profile["canonical_document_adoption_evidence"]
+
+
+def test_owner_activation_conformance_fails_when_a_canonical_document_is_missing(
+    tmp_path: Path,
+) -> None:
+    sample = tmp_path / "repository"
+    shutil.copytree(
+        ROOT,
+        sample,
+        ignore=shutil.ignore_patterns(".git", ".worktrees", "social", "tmp", "__pycache__"),
+    )
+    missing = sample / "future_owners/owner-template/canonical/SPEC.md"
+    missing.unlink()
+
+    failures = check_repository(sample)
+
+    assert "owner: missing spec canonical document for future-owner-template" in failures
 
 
 def test_no_project_specific_markers_or_absolute_paths() -> None:
@@ -294,6 +324,9 @@ def test_system_user_guide_explains_new_owner_scaffold_and_prompt_handoff() -> N
     for phrase in (
         "## Create And Activate A New Owner",
         "### What Core builds",
+        "### The four owner canonical documents",
+        "Core Thesis",
+        "Implementation Roadmap",
         "### What Core returns to the user",
         "This is an adoption task",
         "The user should paste that prompt into a **new task",

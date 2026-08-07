@@ -183,10 +183,12 @@ Before a new owner may use this workflow, Core must:
 2. assign stable owner and Git identities;
 3. define branch/worktree namespaces and ownership/non-ownership;
 4. create role instructions and bootstrap prompt;
-5. initialize continuity, vault scope, tests, and public dependencies;
-6. create an inactive owner profile referencing those assets;
-7. obtain owner adoption evidence;
-8. integrate and activate the registry entry.
+5. create the owner Core Thesis, Architecture, Spec, and Implementation Roadmap;
+6. map their exact paths in the owner profile;
+7. initialize continuity, vault scope, tests, and public dependencies;
+8. create an inactive owner profile referencing those assets;
+9. obtain adoption evidence covering the four documents and owner boundary;
+10. integrate and activate the registry entry.
 
 A generated template or complete-looking profile is non-authorizing until the
 entry is active.

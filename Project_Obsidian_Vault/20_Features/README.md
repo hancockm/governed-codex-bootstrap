@@ -21,11 +21,17 @@ create inactive connected assets, obtain owner adoption, validate dependency
 architecture, integrate, and publish an activation commit. Only then may the
 owner dispatch work.
 
+The connected assets include the owner's Core Thesis, Architecture, Spec, and
+Implementation Roadmap. Core creates and maps all four before adoption; the
+proposed owner challenges their meaning; conformance blocks activation if any
+document is missing or unmapped.
+
 ## Feature Documentation
 
 An active feature maintains purpose, maturity, owned and prohibited paths,
-public contracts, module/folder map, canonical imports, tests, vault MOC,
-role instructions, bootstrap prompt, continuity pack, and retirement evidence.
+public contracts, owner Core Thesis, Architecture, Spec, Implementation
+Roadmap, module/folder map, canonical imports, tests, vault MOC, role
+instructions, bootstrap prompt, continuity pack, and retirement evidence.
 Follow [docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md](../../docs/FEATURE_AGENT_DOCUMENTATION_STANDARD.md).
 
 ## Cross-Owner Changes

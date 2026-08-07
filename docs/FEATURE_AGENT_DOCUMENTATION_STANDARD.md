@@ -13,6 +13,7 @@ Before planning or implementation, inspect:
 - [docs/SOURCE_DOCUMENTATION_STYLE.md](SOURCE_DOCUMENTATION_STYLE.md);
 - [docs/VAULT_INFORMATION_ARCHITECTURE_STANDARD.md](VAULT_INFORMATION_ARCHITECTURE_STANDARD.md);
 - the feature README and vault MOC;
+- the owner's Core Thesis, Architecture, Spec, and Implementation Roadmap;
 - the active owner's role, bootstrap, continuity MOC, and profile;
 - public upstream contracts and relevant A2A requests.
 
@@ -33,7 +34,8 @@ An active feature README includes:
 - consumed Core/public contracts;
 - persistence/external-service boundaries;
 - focused and broader test commands;
-- links to feature vault, role, bootstrap, and A2A material.
+- links to feature vault, role, bootstrap, A2A material, and the four owner
+  canonical documents with their current lifecycle state.
 
 Future stubs may be shorter but must remain explicitly inactive and
 non-authorizing.
@@ -70,6 +72,7 @@ check.
 ## Activation And Retirement
 
 A feature scaffold does not activate an owner. Core must integrate adopted
-role/profile/continuity evidence and mark the owner active. Retirement marks
-the owner or feature superseded while preserving canonical history,
-continuity, A2A dispositions, and branch evidence.
+role/profile/continuity evidence plus the adopted owner Core Thesis,
+Architecture, Spec, and Implementation Roadmap, then mark the owner active.
+Retirement marks the owner or feature superseded while preserving canonical
+history, continuity, A2A dispositions, and branch evidence.

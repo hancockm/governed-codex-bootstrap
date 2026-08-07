@@ -22,7 +22,10 @@ inbox before selecting a new gate.
 
 Core may promote accepted decisions into Thesis, Architecture, Spec, Roadmap,
 Current State, and capability records. It does not own another owner's private
-feature semantics, UI, legal conclusion, audit judgment, or domain truth.
+feature semantics, UI, legal conclusion, audit judgment, or domain truth. When
+Core scaffolds a separate owner, it creates and maps that owner's Core Thesis,
+Architecture, Spec, and Implementation Roadmap, then requires owner adoption
+and conformance evidence before activation.
 
 ## Planning
 
