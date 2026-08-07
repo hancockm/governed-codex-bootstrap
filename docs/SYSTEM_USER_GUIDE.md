@@ -353,6 +353,15 @@ workflow.
 Important decisions must become reviewed files, tests, or receipts. Chat alone
 is insufficient. This adds closeout work but makes context loss survivable.
 
+### It requires executable mathematical evidence
+
+Numerical and algebraic claims cannot come from memory or mental arithmetic.
+Use SymPy for exact symbolic constants, identities, rational comparisons, and
+exponents. Use NumPy for the finite floating-point behavior the project
+actually executes. Every material claim cites an executable witness,
+repository constant, or test result. If the required tool or runtime evidence
+is unavailable, the claim remains unverified rather than being estimated.
+
 ### It separates knowledge levels
 
 Research, candidate interpretation, accepted doctrine, implemented behavior,
@@ -420,6 +429,8 @@ make the architecture recoverable.
 - Freeze the planning baseline.
 - Ask for explicit plan approval before mutation.
 - Use the required Sol/Terra/Luna tier.
+- Use SymPy and NumPy witnesses for material mathematical claims; never rely
+  on mental arithmetic.
 - Keep temporary artifacts under `tmp/` and implementation worktrees under
   `.worktrees/`.
 - Iterate with focused testing; reserve the full profile for the final

@@ -76,9 +76,11 @@ owner's pack; they do not become independent continuity owners.
 ## Mathematical Evidence And Verification
 
 Mathematical audits are findings-only unless correction is explicitly
-authorized. Use executable symbolic computation for exact identities and the
-project's numerical runtime for finite behavior. Do not rely on mental
-arithmetic for material numerical claims.
+authorized. Do not supply numerical or algebraic claims from memory or mental
+arithmetic. Use SymPy for exact symbolic constants, identities, rational
+comparisons, and exponents; use NumPy for the finite floating-point behavior
+the project executes. Cite the executable witness, repository constant, or
+test output for each material claim.
 
 For each accepted mathematical change, reconcile the active implementation,
 configuration, tests, and canonical description. Distinguish analytic

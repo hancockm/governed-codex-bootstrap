@@ -92,9 +92,22 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
         "Project_Obsidian_Vault/30_Core/Core Bootstrap.md",
         "roles/shared/",
         "archive the completed owner task",
+        "Use SymPy for exact symbolic constants",
+        "Use NumPy for the finite floating-point behavior",
     ):
         assert phrase in guide
     assert guide.count("```mermaid") >= 5
+
+
+def test_root_policy_requires_executable_mathematical_evidence() -> None:
+    policy = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    for phrase in (
+        "Do not supply numerical or algebraic claims from memory or mental",
+        "Use SymPy for exact symbolic constants, identities, rational",
+        "use NumPy for the finite floating-point behavior",
+        "Cite the executable witness, repository constant, or",
+    ):
+        assert phrase in policy
 
 
 def test_folder_readmes_explain_every_registered_maintained_directory() -> None:
