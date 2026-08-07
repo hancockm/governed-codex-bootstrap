@@ -42,6 +42,7 @@ Core supplies an inactive, connected set:
 5. owner dependency profile with exact canonical-document paths;
 6. strict Git branch/worktree namespace;
 7. owner-scoped orchestration profile and verification commands;
+8. concrete proposed path rules in the owner profile;
 8. vault scope and narrative parentage;
 9. feature/package README and source-documentation entry points;
 10. focused and conformance tests;
@@ -132,7 +133,7 @@ Core verifies:
 - conformance tests;
 - branch integration and terminal reconciliation.
 
-Core then changes the registry state to `active`, records the activation
+Core then adds the owner to the active path-ownership registry, changes the registry state to `active`, records the activation
 commit, and assigns the first bounded task. Until that commit is canonical,
 dispatch remains forbidden.
 

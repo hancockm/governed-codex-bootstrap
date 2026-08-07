@@ -6,9 +6,34 @@
   "continuity_moc_path": "Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md",
   "continuity_receipts_root": "Project_Obsidian_Vault/30_Core/Continuity/Orchestration Receipts",
   "branch_prefix": "core/",
+  "path_rules": [
+    ".env.example",
+    ".gitignore",
+    "AGENTS.md",
+    "README.md",
+    "pyproject.toml",
+    "Project_Obsidian_Vault/README.md",
+    "assets",
+    "configs",
+    "continuity",
+    "docs",
+    "future_owners",
+    "governance_bootstrap",
+    "research",
+    "roles",
+    "tests",
+    "third_party",
+    "tools",
+    "Project_Obsidian_Vault/00_Canonical",
+    "Project_Obsidian_Vault/00_Home",
+    "Project_Obsidian_Vault/10_Research",
+    "Project_Obsidian_Vault/20_Features",
+    "Project_Obsidian_Vault/30_Core",
+    "Project_Obsidian_Vault/90_Archive"
+  ],
   "verification_profiles": {
     "focused": ["python tools/test_runner.py affected --base origin/master"],
     "broad": ["python tools/test_runner.py full"]
   },
-  "ownership_notice": "References Core authority only; it does not grant new file ownership."
+  "ownership_notice": "Profile and branch metadata do not grant file ownership; active packet paths resolve through configs/path_ownership_v1.json."
 }

@@ -1,0 +1,13 @@
+{
+  "schema_version": "runner_channel_workaround_v1",
+  "issue_watch": [
+    {"url": "https://github.com/openai/codex/issues/36965", "observed_on": "2026-08-07", "state": "closed_duplicate", "relationship": "duplicate_redirect"},
+    {"url": "https://github.com/openai/codex/issues/36673", "observed_on": "2026-08-07", "state": "open", "relationship": "redirected_cross_platform_handler_issue"},
+    {"url": "https://github.com/openai/codex/issues/28080", "observed_on": "2026-08-07", "state": "open", "relationship": "redirected_windows_handler_issue"}
+  ],
+  "locally_verified_resolved": false,
+  "required_runner_channel": "saved_project_reusable_chat",
+  "continuation_requirements": ["same_runner_task_id", "repeat_model_and_reasoning_effort"],
+  "route_mismatch_outcome": "route_integrity_failed",
+  "removal_requires": ["upstream_recheck", "local_cross_route_handler_and_model_verification"]
+}

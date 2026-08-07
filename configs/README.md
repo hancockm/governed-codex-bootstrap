@@ -17,6 +17,8 @@ tools validate.
 | [documentation_system_v1.json](documentation_system_v1.json) | Registers required operational documents, folder READMEs, and adaptation dispositions. |
 | [git_reconciliation_v1.json](git_reconciliation_v1.json) | Defines the primary branch, remote, owners, namespaces, and worktree root. |
 | [owner_scoped_orchestration_v1.json](owner_scoped_orchestration_v1.json) | Defines lane models, owner profiles, Git authority, and subordinate-task lifecycle. |
+| [path_ownership_v1.json](path_ownership_v1.json) | Defines exact-file and directory-prefix authority rules, including shared routed coordination paths. |
+| [runner_channel_workaround_v1.json](runner_channel_workaround_v1.json) | Records the active saved-project runner-channel workaround and its strict removal evidence. |
 | [owners_v1.json](owners_v1.json) | Registers active and inactive owners and their dependency profiles. |
 | [risk_classification_v1.json](risk_classification_v1.json) | Maps change triggers to required orchestration tiers. |
 | [tool_parity_v1.json](tool_parity_v1.json) | Records the disposition of each reference and bootstrap tool. |

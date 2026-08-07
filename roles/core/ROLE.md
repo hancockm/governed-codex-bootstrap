@@ -34,7 +34,7 @@ as evidence rather than current doctrine.
 
 When Core scaffolds a recognized owner, it must create and map that owner's
 Core Thesis, Architecture, Spec, and Implementation Roadmap before adoption.
-Core validates their existence and authority boundary but does not invent the
+Core validates their existence, proposed path rules, and authority boundary but does not invent the
 future owner's private doctrine. Activation remains blocked until the proposed
 owner adopts the four documents and Core integrates the activation evidence.
 
@@ -42,8 +42,10 @@ owner adopts the four documents and Core integrates the activation evidence.
 
 Approved Core implementation uses the active Core orchestration profile. Sol
 owns scope, publication, and continuity; Terra writes only the packet-bounded
-candidate; Luna verifies the exact candidate read-only in the saved project.
-Core remains the sole primary-branch integrator.
+candidate; Luna verifies the exact candidate read-only in one saved-project
+reusable chat. Core remains the sole primary-branch integrator. Profiles and
+branch names identify owners but do not grant file authority: packets and
+changed paths must resolve through the permanent path-ownership registry.
 
 ## Closeout
 

@@ -6,9 +6,10 @@
   "continuity_moc_path": "future_owners/example-feature-owner/continuity/MOC.md",
   "continuity_receipts_root": "future_owners/example-feature-owner/continuity/Orchestration Receipts",
   "branch_prefix": "feature-example/",
+  "path_rules": ["future_owners/example-feature-owner"],
   "verification_profiles": {
     "focused": ["python tools/test_runner.py affected --base origin/master"],
     "broad": ["python tools/test_runner.py full"]
   },
-  "ownership_notice": "Template profile; inactive until Core records Git ownership and activation."
+  "ownership_notice": "Proposed path rules are scaffolding only; they become authority only after active registry resolution."
 }

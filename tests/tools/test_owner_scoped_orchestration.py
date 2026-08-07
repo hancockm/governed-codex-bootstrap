@@ -23,6 +23,8 @@ def _repo(tmp_path: Path) -> Path:
         PROJECT_ROOT / "configs/owner_scoped_orchestration_v1.json",
         root / "configs/owner_scoped_orchestration_v1.json",
     )
+    for source in ("configs/owners_v1.json", "configs/path_ownership_v1.json", "configs/runner_channel_workaround_v1.json"):
+        shutil.copy2(PROJECT_ROOT / source, root / source)
     for source in (
         "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
         "roles/shared/IMPLEMENTER_PROMPT.md",
@@ -87,7 +89,7 @@ def _implementer(packet: dict[str, object], candidate: str = "b" * 40) -> dict[s
 
 
 def _runner(packet: dict[str, object], binding: dict[str, object], candidate: str = "b" * 40) -> dict[str, object]:
-    return {"schema_version": orchestration.RUNNER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "runner_binding_hash": binding["canonical_hash"], "model": {"model": "gpt-5.6-luna", "reasoning_effort": "max"}, "candidate_commit": candidate, "actions": ["inspect", "test"], "checks": _checks("broad"), "environment_preflight": {"candidate_commit_verified": True, "model_binding_verified": True, "initial_worktree_clean": True}, "git_status": {"initial": "clean", "final": "clean"}, "reconciler_evidence": {"target": "origin/master", "candidate_commit": candidate, "state": "pre_publication_unlanded"}, "diagnostics": [], "residual_issues": [], "outcome": "passed"}
+    return {"schema_version": orchestration.RUNNER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "runner_binding_hash": binding["canonical_hash"], "model": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}, "candidate_commit": candidate, "actions": ["inspect", "test"], "checks": _checks("broad"), "environment_preflight": {"candidate_commit_verified": True, "model_binding_verified": True, "initial_worktree_clean": True}, "git_status": {"initial": "clean", "final": "clean"}, "reconciler_evidence": {"target": "origin/master", "candidate_commit": candidate, "state": "pre_publication_unlanded"}, "diagnostics": [], "residual_issues": [], "outcome": "passed"}
 
 
 def _sol(packet: dict[str, object]) -> dict[str, object]:
@@ -191,10 +193,12 @@ def test_registry_allows_future_owner_profile_before_activation(tmp_path: Path) 
     root = _repo(tmp_path); registry_path = root / "configs/owner_scoped_orchestration_v1.json"; registry = json.loads(registry_path.read_text(encoding="utf-8"))
     registry["owners"]["future"] = {"status": "owner_adoption_required", "git_owner": "future", "branch_prefix": "future/", "profile_path": "future_owners/future-owner/orchestration_profile.json"}
     registry_path.write_text(json.dumps(registry), encoding="utf-8")
-    profile = json.loads((root / "roles/core/orchestration_profile.json").read_text(encoding="utf-8")); profile["owner"] = "future"; profile["branch_prefix"] = "future/"
+    profile = json.loads((root / "roles/core/orchestration_profile.json").read_text(encoding="utf-8")); profile["owner"] = "future"; profile["branch_prefix"] = "future/"; profile["path_rules"] = ["future_owners/future-owner"]
     profile_path = root / "future_owners/future-owner/orchestration_profile.json"; profile_path.parent.mkdir(parents=True); profile_path.write_text(json.dumps(profile), encoding="utf-8")
     assert orchestration.load_owner_profile("future", root)["owner"] == "future"
     with pytest.raises(orchestration.InactiveOwnerError): orchestration.load_owner_profile("future", root, require_active=True)
+    owners_path = root / "configs/owners_v1.json"; owners = json.loads(owners_path.read_text(encoding="utf-8")); owners["owners"]["future"] = {"active": True}; owners_path.write_text(json.dumps(owners), encoding="utf-8")
+    paths_path = root / "configs/path_ownership_v1.json"; paths = json.loads(paths_path.read_text(encoding="utf-8")); paths["rules"].append({"kind": "directory_prefix", "path": "future_owners/future-owner", "authority": "owner", "owner": "future"}); paths_path.write_text(json.dumps(paths), encoding="utf-8")
     registry["owners"]["future"]["status"] = "active"; registry_path.write_text(json.dumps(registry), encoding="utf-8")
     assert orchestration.load_owner_profile("future", root, require_active=True)["owner"] == "future"
 
@@ -273,6 +277,55 @@ def test_path_scope_overlap_and_changed_scope_rejection(tmp_path: Path) -> None:
         orchestration.validate_receipts(packet, receipt, repo=root)
 
 
+def test_path_ownership_nested_override_duplicate_rejection_and_shared_routing(tmp_path: Path) -> None:
+    root = _repo(tmp_path)
+    owners_path = root / "configs/owners_v1.json"
+    owners = json.loads(owners_path.read_text(encoding="utf-8"))
+    owners["owners"]["feature"] = {"active": True}
+    owners_path.write_text(json.dumps(owners), encoding="utf-8")
+    orchestration_path = root / "configs/owner_scoped_orchestration_v1.json"
+    registry = json.loads(orchestration_path.read_text(encoding="utf-8"))
+    registry["owners"]["feature"] = {"status": "active", "git_owner": "feature", "branch_prefix": "feature/", "profile_path": "future_owners/feature/orchestration_profile.json"}
+    orchestration_path.write_text(json.dumps(registry), encoding="utf-8")
+    paths_path = root / "configs/path_ownership_v1.json"
+    paths = json.loads(paths_path.read_text(encoding="utf-8"))
+    paths["rules"].append({"kind": "directory_prefix", "path": "tools/feature", "authority": "owner", "owner": "feature"})
+    paths_path.write_text(json.dumps(paths), encoding="utf-8")
+    assert orchestration.resolve_path_ownership("tools/feature/worker.py", root)["owner"] == "feature"
+    assert orchestration.resolve_path_ownership("AGENTS.md", root)["kind"] == "exact_file"
+    assert orchestration.resolve_path_ownership("coordination/request.md", root)["authority"] == "shared_routed"
+    paths["rules"].append({"kind": "directory_prefix", "path": "tools/feature", "authority": "owner", "owner": "feature"})
+    paths_path.write_text(json.dumps(paths), encoding="utf-8")
+    with pytest.raises(orchestration.OrchestrationError, match="ambiguously"):
+        orchestration.load_path_ownership_registry(root)
+
+
+def test_path_ownership_rejects_unknown_shared_and_inactive_owner_packet_paths(tmp_path: Path) -> None:
+    root = _repo(tmp_path)
+    with pytest.raises(orchestration.OrchestrationError, match="unknown path ownership"):
+        _packet(root, allowed=["unregistered/path.py"])
+    with pytest.raises(orchestration.OrchestrationError, match="shared and routed"):
+        _packet(root, allowed=["coordination/request.md"])
+    owners_path = root / "configs/owners_v1.json"; owners = json.loads(owners_path.read_text(encoding="utf-8")); owners["owners"]["core"]["active"] = False; owners_path.write_text(json.dumps(owners), encoding="utf-8")
+    with pytest.raises(orchestration.OrchestrationError, match="exist and be active"):
+        orchestration.load_path_ownership_registry(root)
+
+
+def test_every_tracked_path_has_exactly_one_owner_or_shared_route() -> None:
+    tracked = subprocess.run(["git", "ls-files"], cwd=PROJECT_ROOT, capture_output=True, text=True, check=True).stdout.splitlines()
+    resolutions = [orchestration.resolve_path_ownership(path, PROJECT_ROOT) for path in tracked]
+    assert len(resolutions) == len(tracked)
+    assert all(rule["authority"] in {"owner", "shared_routed"} for rule in resolutions)
+
+
+def test_runner_channel_workaround_requires_reusable_saved_project_route(tmp_path: Path) -> None:
+    root = _repo(tmp_path)
+    assert orchestration.load_runner_channel_workaround(root)["locally_verified_resolved"] is False
+    orchestration.validate_runner_channel("saved_project_reusable_chat", "runner-1", "runner-1", root)
+    with pytest.raises(orchestration.OrchestrationError, match="route_integrity_failed"):
+        orchestration.validate_runner_channel("projectless_task", "runner-1", "runner-1", root)
+
+
 def test_implementer_receipt_exact_shape_actions_and_checks(tmp_path: Path) -> None:
     root = _repo(tmp_path); packet = _packet(root); receipt = _implementer(packet)
     orchestration.validate_receipts(packet, receipt, repo=root)
@@ -292,6 +345,8 @@ def test_full_team_hashes_runner_actions_and_broad_checks(tmp_path: Path) -> Non
     orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
     binding["implementer_receipt_hash"] = "0" * 64; binding["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in binding.items() if key != "canonical_hash"})
     with pytest.raises(orchestration.OrchestrationError, match="implementer receipt hash"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
+    binding = orchestration.bind_runner(packet, implementer, "b" * 40, root); binding["runner_channel"] = "projectless_task"; binding["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in binding.items() if key != "canonical_hash"})
+    with pytest.raises(orchestration.OrchestrationError, match="route_integrity_failed"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
     binding = orchestration.bind_runner(packet, implementer, "b" * 40, root); runner = _runner(packet, binding); runner["runner_binding_hash"] = "0" * 64
     with pytest.raises(orchestration.OrchestrationError, match="binding hash"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
     runner = _runner(packet, binding); runner["actions"] = ["commit"]

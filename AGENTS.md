@@ -277,7 +277,14 @@ composed with the exact owner profile and task packet. Shared prompts cannot
 grant ownership or relax the root policy, and a missing lane template is a
 fail-closed orchestration configuration error.
 
-One saved-project Luna task is reused through every correction in an
+Permanent file authority resolves only through
+[configs/path_ownership_v1.json](configs/path_ownership_v1.json). Exact-file
+and directory-prefix rules must resolve to an active registered owner; unknown
+paths fail closed. A branch prefix, packet, or owner profile never grants file
+ownership. Shared coordination and A2A routes remain routed records rather
+than Core-owned paths.
+
+One saved-project reusable Luna chat is reused through every correction in an
 implementation cycle. A projectless runner task is invalid. Luna's accepted
 receipt is not archive acknowledgment. Sol archives accepted or superseded
 subordinate tasks only after receipt capture, no pending correction, delivery,
@@ -291,6 +298,11 @@ those facts in an immutable finalization record before the cycle may be called
 closed. Failed, blocked, or user-input-needed tasks remain visible. The tool
 records host archival evidence but cannot perform the host archive operation;
 that action remains Sol's runtime responsibility.
+
+Until [configs/runner_channel_workaround_v1.json](configs/runner_channel_workaround_v1.json)
+is retired with its recorded evidence, every Luna continuation reasserts its
+configured model and reasoning effort. A runner-channel or task-ID mismatch is
+`route_integrity_failed`; archive only after `finalize-closeout`.
 
 ## Git Staging, Commit, and Push Discipline
 

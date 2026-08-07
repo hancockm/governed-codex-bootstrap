@@ -117,7 +117,7 @@ native Codex and repository capabilities:
 | Git and repository-local worktrees | Implementation and delivery |
 | Sol / `xhigh` owner binding | Owner orchestration |
 | Terra / `high` binding | Any tier that uses the Implementer |
-| Luna / `max` binding | Full-team verification |
+| Luna / `xhigh` binding | Full-team verification |
 | Saved-project subordinate-task coordination | Delegated implementation and reverification |
 | Subordinate-task archival | Successful orchestration closeout |
 
@@ -321,7 +321,7 @@ Every active owner receives a logical development team:
 | --- | --- | --- |
 | Owner Orchestrator | Sol / `xhigh` | Rehydrate, plan, protect authority, review, publish, integrate when Core, and close continuity |
 | Implementer | Terra / `high` | Make one packet-bounded candidate commit and run focused checks |
-| Verification Runner | Luna / `max` | Independently verify the exact candidate without repository writes |
+| Verification Runner | Luna / `xhigh` | Independently verify the exact candidate without repository writes |
 
 This is related to the advisor/worker pattern demonstrated by
 [Sol Advisor](https://sol-advisor.space/getting-started.html), which uses a
@@ -457,6 +457,7 @@ substantial.
 Core fills the scaffold with:
 
 - a stable owner ID, Git owner, branch prefix, and `.worktrees/` prefix;
+- concrete proposed path rules, which Core promotes to active registry rules only at activation;
 - lifecycle state `recognized_inactive` or `owner_adoption_required`;
 - owned files, decisions, capabilities, evidence, and maturity claims;
 - prohibited paths and explicit non-ownership;

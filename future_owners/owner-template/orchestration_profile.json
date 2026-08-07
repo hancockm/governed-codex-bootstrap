@@ -6,9 +6,10 @@
   "continuity_moc_path": "future_owners/owner-template/continuity/MOC.md",
   "continuity_receipts_root": "future_owners/owner-template/continuity/Orchestration Receipts",
   "branch_prefix": "replace-owner/",
+  "path_rules": ["replace-with-owner-path"],
   "verification_profiles": {
     "focused": ["replace-with-owner-focused-check"],
     "broad": ["python tools/test_runner.py full"]
   },
-  "ownership_notice": "Non-authorizing skeleton; replace every placeholder before Core activation."
+  "ownership_notice": "Non-authorizing skeleton; add concrete path rules and register active authority before activation."
 }

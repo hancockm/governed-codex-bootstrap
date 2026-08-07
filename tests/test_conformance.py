@@ -111,7 +111,7 @@ def test_orchestration_has_exact_model_bindings_and_separate_sol_finalization() 
     bindings = orchestration["model_binding"]
     assert bindings["owner_orchestrator"] == {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"}
     assert bindings["implementer"] == {"model": "gpt-5.6-terra", "reasoning_effort": "high"}
-    assert bindings["runner"] == {"model": "gpt-5.6-luna", "reasoning_effort": "max"}
+    assert bindings["runner"] == {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}
     assert orchestration["prompt_templates"] == {
         "owner_orchestrator": "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
         "implementer": "roles/shared/IMPLEMENTER_PROMPT.md",

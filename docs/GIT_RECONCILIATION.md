@@ -187,6 +187,12 @@ git diff --cached --name-status
 git diff --cached --check
 ```
 
+Before staging, resolve every task path through
+`python tools/owner_scoped_orchestration.py ownership --path <path> --owner <owner>`.
+The packet's allowed paths and Terra's receipt are validated the same way;
+branch naming and owner profiles do not grant file authority. Shared/routed
+coordination paths require their route's publication process.
+
 Do not absorb editor state, generated attachments, concurrent changes, or
 another owner's files. A push is transport only. After a Core push changes the
 remote primary branch, the same integration cycle must run `sync-main`, verify

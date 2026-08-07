@@ -6,7 +6,7 @@
     "enforcement": "fail_closed",
     "owner_orchestrator": {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"},
     "implementer": {"model": "gpt-5.6-terra", "reasoning_effort": "high"},
-    "runner": {"model": "gpt-5.6-luna", "reasoning_effort": "max"}
+    "runner": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}
   },
   "prompt_templates": {
     "owner_orchestrator": "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",

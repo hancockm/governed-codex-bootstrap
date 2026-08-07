@@ -30,11 +30,12 @@ from governance_bootstrap.common import (
 
 
 REGISTRY_SCHEMA = "owner_scoped_orchestration_v1"
+PATH_OWNERSHIP_SCHEMA = "path_ownership_registry_v1"
 PROFILE_SCHEMA = "owner_scoped_orchestration_owner_profile_v1"
 PACKET_SCHEMA = "owner_scoped_task_packet_v2"
 LEGACY_PACKET_SCHEMA = "owner_scoped_task_packet_v1"
 IMPLEMENTER_RECEIPT_SCHEMA = "owner_scoped_implementer_receipt_v1"
-RUNNER_BINDING_SCHEMA = "owner_scoped_runner_binding_v2"
+RUNNER_BINDING_SCHEMA = "owner_scoped_runner_binding_v3"
 RUNNER_RECEIPT_SCHEMA = "owner_scoped_runner_receipt_v1"
 SOL_DISPOSITION_SCHEMA = "owner_scoped_sol_disposition_v1"
 RECORD_SCHEMA = "owner_scoped_orchestration_record_v2"
@@ -43,6 +44,9 @@ ARCHIVE_ACKNOWLEDGMENT_SCHEMA = "owner_scoped_subordinate_archive_acknowledgment
 CLOSEOUT_DELIVERY_EVIDENCE_SCHEMA = "owner_scoped_closeout_delivery_evidence_v1"
 CLOSEOUT_FINALIZATION_SCHEMA = "owner_scoped_closeout_finalization_v2"
 DEFAULT_REGISTRY = Path("configs/owner_scoped_orchestration_v1.json")
+DEFAULT_OWNER_REGISTRY = Path("configs/owners_v1.json")
+DEFAULT_PATH_OWNERSHIP_REGISTRY = Path("configs/path_ownership_v1.json")
+DEFAULT_RUNNER_CHANNEL_WORKAROUND = Path("configs/runner_channel_workaround_v1.json")
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
 TASK_ID_PATTERN = re.compile(r"^[a-z0-9]+(?:[-_][a-z0-9]+)*$")
 BRANCH_SEGMENT_PATTERN = re.compile(r"^[a-z0-9]+(?:[-_][a-z0-9]+)*$")
@@ -128,14 +132,147 @@ def load_registry(repo: str | Path | None = None) -> dict[str, Any]:
     _require_lane_bindings(value)
     _require_prompt_templates(value, root)
     _require_subordinate_lifecycle(value)
+    load_runner_channel_workaround(root)
     return value
+
+
+def load_runner_channel_workaround(repo: str | Path | None = None) -> dict[str, Any]:
+    """Load the temporary, explicit runner-channel reliability workaround."""
+
+    root = repository_root(repo)
+    try:
+        value = json.loads((root / DEFAULT_RUNNER_CHANNEL_WORKAROUND).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise OrchestrationError("cannot load runner channel workaround") from exc
+    expected = {
+        "schema_version", "issue_watch", "locally_verified_resolved",
+        "required_runner_channel", "continuation_requirements", "route_mismatch_outcome", "removal_requires",
+    }
+    if not isinstance(value, dict) or set(value) != expected or value.get("schema_version") != "runner_channel_workaround_v1":
+        raise OrchestrationError("runner channel workaround has an invalid shape")
+    expected_watch = [
+        {"url": "https://github.com/openai/codex/issues/36965", "observed_on": "2026-08-07", "state": "closed_duplicate", "relationship": "duplicate_redirect"},
+        {"url": "https://github.com/openai/codex/issues/36673", "observed_on": "2026-08-07", "state": "open", "relationship": "redirected_cross_platform_handler_issue"},
+        {"url": "https://github.com/openai/codex/issues/28080", "observed_on": "2026-08-07", "state": "open", "relationship": "redirected_windows_handler_issue"},
+    ]
+    if value["issue_watch"] != expected_watch:
+        raise OrchestrationError("runner channel workaround must preserve the upstream issue disposition")
+    if value["locally_verified_resolved"] is not False or value["required_runner_channel"] != "saved_project_reusable_chat":
+        raise OrchestrationError("runner channel workaround must remain active until locally verified resolved")
+    if value["continuation_requirements"] != ["same_runner_task_id", "repeat_model_and_reasoning_effort"] or value["route_mismatch_outcome"] != "route_integrity_failed":
+        raise OrchestrationError("runner channel workaround continuation contract is invalid")
+    if value["removal_requires"] != ["upstream_recheck", "local_cross_route_handler_and_model_verification"]:
+        raise OrchestrationError("runner channel workaround removal contract is invalid")
+    return value
+
+
+def validate_runner_channel(channel: str, runner_task_id: str, expected_runner_task_id: str, repo: str | Path | None = None) -> None:
+    """Fail closed with ``route_integrity_failed`` for a runner-route mismatch."""
+
+    requirement = load_runner_channel_workaround(repo)
+    if channel != requirement["required_runner_channel"] or runner_task_id != expected_runner_task_id:
+        raise OrchestrationError("route_integrity_failed")
+
+
+def load_path_ownership_registry(repo: str | Path | None = None) -> dict[str, Any]:
+    """Load and validate the permanent repository path-authority registry.
+
+    Rules are either an exact file or a directory prefix.  An owner rule names
+    an owner that is registered and active in both owner registries; a shared
+    route deliberately grants no direct owner authority.
+    """
+
+    root = repository_root(repo)
+    try:
+        value = json.loads((root / DEFAULT_PATH_OWNERSHIP_REGISTRY).read_text(encoding="utf-8"))
+        owner_registry = json.loads((root / DEFAULT_OWNER_REGISTRY).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise OrchestrationError("cannot load path ownership registry") from exc
+    if not isinstance(value, dict) or value.get("schema_version") != PATH_OWNERSHIP_SCHEMA:
+        raise OrchestrationError(f"path ownership registry must use {PATH_OWNERSHIP_SCHEMA}")
+    if not isinstance(owner_registry, dict) or not isinstance(owner_registry.get("owners"), dict):
+        raise OrchestrationError("owner registry must define owners")
+    rules = value.get("rules")
+    if not isinstance(rules, list) or not rules:
+        raise OrchestrationError("path ownership registry requires rules")
+    orchestration_owners = load_registry(root)["owners"]
+    seen: dict[tuple[str, str], Mapping[str, Any]] = {}
+    normalized_rules: list[dict[str, str]] = []
+    for raw in rules:
+        if not isinstance(raw, dict) or set(raw) not in ({"kind", "path", "authority", "owner"}, {"kind", "path", "authority", "route"}):
+            raise OrchestrationError("path ownership rule has an invalid shape")
+        kind = raw.get("kind")
+        raw_path = raw.get("path")
+        if not isinstance(raw_path, str) or raw_path.endswith("/"):
+            raise OrchestrationError("path ownership rule path must be a normalized repository path")
+        path = _safe_path(raw_path, "path ownership rule")
+        authority = raw.get("authority")
+        if kind not in {"exact_file", "directory_prefix"}:
+            raise OrchestrationError("path ownership rule kind is invalid")
+        key = (kind, path)
+        if key in seen:
+            raise OrchestrationError("path ownership rules overlap ambiguously")
+        if authority == "owner":
+            owner = raw.get("owner")
+            owner_entry = orchestration_owners.get(owner) if isinstance(owner, str) else None
+            legacy_entry = owner_registry["owners"].get(owner) if isinstance(owner, str) else None
+            if not isinstance(owner_entry, dict) or owner_entry.get("status") != "active" or not isinstance(legacy_entry, dict) or legacy_entry.get("active") is not True:
+                raise OrchestrationError("path ownership rule owner must exist and be active")
+            normalized = {"kind": kind, "path": path, "authority": authority, "owner": owner}
+        elif authority == "shared_routed":
+            route = raw.get("route")
+            if not isinstance(route, str) or not route.strip() or not TASK_ID_PATTERN.fullmatch(route):
+                raise OrchestrationError("shared routed ownership rule requires a safe route")
+            normalized = {"kind": kind, "path": path, "authority": authority, "route": route}
+        else:
+            raise OrchestrationError("path ownership rule authority is invalid")
+        seen[key] = raw
+        normalized_rules.append(normalized)
+    _validate_path_rule_overlaps(normalized_rules)
+    return {"schema_version": PATH_OWNERSHIP_SCHEMA, "rules": normalized_rules}
+
+
+def resolve_path_ownership(path: str, repo: str | Path | None = None) -> dict[str, str]:
+    """Resolve one repository path to its single most-specific authority rule."""
+
+    normalized = _safe_path(path, "ownership path")
+    registry = load_path_ownership_registry(repo)
+    matches = [
+        rule for rule in registry["rules"]
+        if rule["kind"] == "exact_file" and rule["path"] == normalized
+    ]
+    matches.extend(
+        rule for rule in registry["rules"]
+        if rule["kind"] == "directory_prefix" and _path_prefix(normalized, rule["path"])
+    )
+    if not matches:
+        raise OrchestrationError(f"unknown path ownership: {normalized}")
+    matches.sort(key=lambda rule: (len(Path(rule["path"]).parts), rule["kind"] == "exact_file"), reverse=True)
+    best = matches[0]
+    tied = [rule for rule in matches if (len(Path(rule["path"]).parts), rule["kind"] == "exact_file") == (len(Path(best["path"]).parts), best["kind"] == "exact_file")]
+    if len(tied) != 1:
+        raise OrchestrationError("path ownership resolves ambiguously")
+    return dict(best)
+
+
+def validate_owner_path_authority(owner: str, paths: Iterable[str], repo: str | Path | None = None) -> tuple[dict[str, str], ...]:
+    """Require every path to resolve to the active owner, never a shared route."""
+
+    config = owner_config(owner, repo, active=True)
+    resolved = tuple(resolve_path_ownership(path, repo) for path in paths)
+    for rule in resolved:
+        if rule["authority"] != "owner":
+            raise OrchestrationError(f"path ownership is shared and routed through {rule['route']}")
+        if rule["owner"] != config["name"]:
+            raise OrchestrationError("path ownership belongs to another active owner")
+    return resolved
 
 
 def _require_lane_bindings(registry: Mapping[str, Any]) -> None:
     expected = {
         "owner_orchestrator": ("gpt-5.6-sol", "xhigh"),
         "implementer": ("gpt-5.6-terra", "high"),
-        "runner": ("gpt-5.6-luna", "max"),
+        "runner": ("gpt-5.6-luna", "xhigh"),
     }
     bindings = registry.get("model_binding", {})
     for lane, (model, effort) in expected.items():
@@ -223,7 +360,7 @@ def load_owner_profile(owner: str, repo: str | Path | None = None, *, require_ac
         raise OrchestrationError(f"missing or invalid owner profile: {path}") from exc
     if profile.get("schema_version") != PROFILE_SCHEMA or profile.get("owner") != config["name"]:
         raise OrchestrationError("owner profile schema or owner does not match registry")
-    for field in ("role_instruction_path", "bootstrap_prompt_path", "continuity_moc_path", "continuity_receipts_root", "branch_prefix", "verification_profiles"):
+    for field in ("role_instruction_path", "bootstrap_prompt_path", "continuity_moc_path", "continuity_receipts_root", "branch_prefix", "verification_profiles", "path_rules"):
         if not profile.get(field):
             raise OrchestrationError(f"owner profile requires {field}")
     if profile["branch_prefix"] != config["branch_prefix"]:
@@ -239,6 +376,16 @@ def load_owner_profile(owner: str, repo: str | Path | None = None, *, require_ac
     for name, checks in verification.items():
         if not isinstance(checks, list) or not checks or any(not isinstance(item, str) or not item for item in checks):
             raise OrchestrationError(f"owner profile {name} verification checks are required")
+    profile_paths = _safe_paths(profile["path_rules"], "owner profile path rule")
+    if not profile_paths:
+        raise OrchestrationError("owner profile path_rules must be non-empty")
+    if require_active:
+        actual = sorted(
+            rule["path"] for rule in load_path_ownership_registry(root)["rules"]
+            if rule["authority"] == "owner" and rule["owner"] == config["name"]
+        )
+        if sorted(profile_paths) != actual:
+            raise OrchestrationError("active owner profile path_rules must match the path ownership registry")
     return profile
 
 
@@ -307,6 +454,7 @@ def make_packet(*, owner: str, task_id: str, approval_ref: str, baseline: str, b
     prohibited = _safe_paths(list(prohibited_paths), "prohibited path")
     if _path_scopes_overlap(allowed, prohibited):
         raise OrchestrationError("allowed and prohibited paths overlap")
+    validate_owner_path_authority(config["name"], allowed, root)
     worktree = _safe_worktree(worktree)
     evidence = list(evidence_refs)
     focused = list(focused_checks)
@@ -367,6 +515,7 @@ def validate_packet(packet: Mapping[str, Any], repo: str | Path | None = None) -
     prohibited = _safe_paths(packet.get("prohibited_paths", ()), "prohibited path")
     if _path_scopes_overlap(allowed, prohibited):
         raise OrchestrationError("allowed and prohibited paths overlap")
+    validate_owner_path_authority(config["name"], allowed, repo)
     _safe_worktree(str(packet.get("worktree", "")))
     _require_safe_string_list(packet.get("evidence_refs"), "packet evidence_refs")
     _require_safe_string_list(packet.get("focused_checks"), "packet focused_checks")
@@ -398,7 +547,7 @@ def bind_runner(packet: Mapping[str, Any], implementer_receipt: Mapping[str, Any
         raise OrchestrationError("candidate commit must be exact lowercase 40-hex")
     if implementer_receipt.get("candidate_commit") != candidate_commit:
         raise OrchestrationError("implementer receipt candidate mismatch")
-    payload = {"schema_version": RUNNER_BINDING_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_receipt_hash": _payload_hash(implementer_receipt), "candidate_commit": candidate_commit, "runner_model": _lane_binding(load_registry(repo), "runner"), "runner_task_id": packet["subordinate_task_ids"]["runner"]}
+    payload = {"schema_version": RUNNER_BINDING_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_receipt_hash": _payload_hash(implementer_receipt), "candidate_commit": candidate_commit, "runner_model": _lane_binding(load_registry(repo), "runner"), "runner_task_id": packet["subordinate_task_ids"]["runner"], "runner_channel": load_runner_channel_workaround(repo)["required_runner_channel"]}
     return {**payload, "canonical_hash": sha256_canonical(payload)}
 
 
@@ -425,7 +574,7 @@ def validate_receipts(packet: Mapping[str, Any], implementer_receipt: Mapping[st
     if runner_binding is None or runner_receipt is None:
         raise OrchestrationError("full-team packet requires runner binding and receipt")
     if runner_binding is not None:
-        binding_keys = {"schema_version", "owner", "task_id", "packet_hash", "implementer_receipt_hash", "candidate_commit", "runner_model", "runner_task_id", "canonical_hash"}
+        binding_keys = {"schema_version", "owner", "task_id", "packet_hash", "implementer_receipt_hash", "candidate_commit", "runner_model", "runner_task_id", "runner_channel", "canonical_hash"}
         if set(runner_binding) != binding_keys:
             raise OrchestrationError("runner binding has missing or forbidden fields")
         expected = {key: value for key, value in runner_binding.items() if key != "canonical_hash"}
@@ -440,8 +589,7 @@ def validate_receipts(packet: Mapping[str, Any], implementer_receipt: Mapping[st
             raise OrchestrationError("runner binding implementer receipt hash mismatch")
         if runner_binding.get("runner_model") != _lane_binding(load_registry(repo), "runner"):
             raise OrchestrationError("runner binding model mismatch")
-        if runner_binding.get("runner_task_id") != packet["subordinate_task_ids"]["runner"]:
-            raise OrchestrationError("runner binding task ID must match the packet-bound runner task")
+        validate_runner_channel(runner_binding.get("runner_channel"), runner_binding.get("runner_task_id"), packet["subordinate_task_ids"]["runner"], repo)
     if runner_receipt is not None:
         if runner_binding is None:
             raise OrchestrationError("runner receipt requires runner binding")
@@ -782,6 +930,7 @@ def _validate_implementer_receipt(receipt: Mapping[str, Any], packet: Mapping[st
     changed = _safe_paths(receipt.get("changed_paths", ()), "changed path")
     if not changed or any(not _path_is_within(path, packet["allowed_paths"]) for path in changed):
         raise OrchestrationError("implementer changed path is outside packet allowed scope")
+    validate_owner_path_authority(packet["owner"], changed, repo)
     if any(_path_is_within(path, packet["prohibited_paths"]) for path in changed):
         raise OrchestrationError("implementer changed path is prohibited")
     actions = _string_list(receipt.get("actions"), "implementer actions")
@@ -983,12 +1132,29 @@ def _safe_paths(values: Iterable[Any], label: str) -> tuple[str, ...]:
         raise OrchestrationError(f"{label}s must be a list")
     normalized: list[str] = []
     for value in values:
-        normalized_value = value.replace("\\", "/") if isinstance(value, str) else value
-        parts = Path(normalized_value).parts if isinstance(normalized_value, str) else ()
-        if not isinstance(value, str) or not value or Path(normalized_value).is_absolute() or ".." in parts or ".git" in parts:
-            raise OrchestrationError(f"unsafe {label}: {value!r}")
-        normalized.append(normalized_value)
+        normalized.append(_safe_path(value, label))
     return tuple(normalized)
+
+
+def _safe_path(value: Any, label: str) -> str:
+    """Normalize one safe non-root repository-relative path."""
+
+    normalized = value.replace("\\", "/").rstrip("/") if isinstance(value, str) else value
+    parts = Path(normalized).parts if isinstance(normalized, str) else ()
+    if not isinstance(value, str) or not normalized or Path(normalized).is_absolute() or ".." in parts or ".git" in parts:
+        raise OrchestrationError(f"unsafe {label}: {value!r}")
+    return normalized
+
+
+def _validate_path_rule_overlaps(rules: Iterable[Mapping[str, str]]) -> None:
+    """Reject only true selector ambiguity; nested rules resolve by specificity."""
+
+    selectors: set[tuple[str, str]] = set()
+    for rule in rules:
+        selector = (rule["kind"], rule["path"])
+        if selector in selectors:
+            raise OrchestrationError("path ownership rules overlap ambiguously")
+        selectors.add(selector)
 
 
 def _safe_worktree(value: str) -> str:
@@ -1171,6 +1337,8 @@ def _parser() -> argparse.ArgumentParser:
     commands = parser.add_subparsers(dest="command", required=True)
     owner = commands.add_parser("check-owner"); owner.add_argument("--owner", required=True); owner.add_argument("--active", action="store_true")
     classify = commands.add_parser("classify"); classify.add_argument("--owner", required=True); classify.add_argument("--description", required=True); classify.add_argument("--path", action="append", default=[]); classify.add_argument("--requested-tier")
+    ownership = commands.add_parser("ownership"); ownership.add_argument("--path", action="append", required=True); ownership.add_argument("--owner")
+    runner_channel = commands.add_parser("check-runner-channel"); runner_channel.add_argument("--channel", required=True); runner_channel.add_argument("--runner-task-id", required=True); runner_channel.add_argument("--expected-runner-task-id", required=True)
     prepare = commands.add_parser("prepare")
     for argument in ("owner", "task-id", "approval-ref", "baseline", "branch", "worktree", "description", "output"):
         prepare.add_argument(f"--{argument}", required=True)
@@ -1202,6 +1370,13 @@ def main(argv: list[str] | None = None) -> int:
                 tiers = ("orchestrator_only", "orchestrator_plus_implementer", "full_team")
                 if args.requested_tier not in tiers: raise OrchestrationError("unknown requested tier")
                 result["tier"] = max((result["tier"], args.requested_tier), key=tiers.index)
+        elif args.command == "ownership":
+            paths = _safe_paths(args.path, "ownership path")
+            resolved = validate_owner_path_authority(args.owner, paths, root) if args.owner else tuple(resolve_path_ownership(path, root) for path in paths)
+            result = {"paths": [{"path": path, "resolution": rule} for path, rule in zip(paths, resolved)]}
+        elif args.command == "check-runner-channel":
+            validate_runner_channel(args.channel, args.runner_task_id, args.expected_runner_task_id, root)
+            result = {"outcome": "passed", "channel": args.channel}
         elif args.command == "prepare":
             subordinate_task_ids = {lane: value for lane, value in (("implementer", args.implementer_task_id), ("runner", args.runner_task_id)) if value}
             result = make_packet(owner=args.owner, task_id=args.task_id, approval_ref=args.approval_ref, baseline=args.baseline, branch=args.branch, worktree=args.worktree, allowed_paths=args.allowed_path, prohibited_paths=args.prohibited_path, evidence_refs=args.evidence_ref, focused_checks=args.focused_check, broad_checks=args.broad_check, description=args.description, requested_tier=args.requested_tier, subordinate_task_ids=subordinate_task_ids, repo=root); _write_tmp(root, args.output, result)

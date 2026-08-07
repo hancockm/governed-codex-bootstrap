@@ -9,7 +9,7 @@ active owner. It is distinct from any runtime application orchestrator.
 | --- | --- | --- | --- |
 | Owner Orchestrator | Sol / `xhigh` | Authority, scope, review, publication, continuity | Owner publication and closeout |
 | Implementer | Terra / `high` | Packet-bounded implementation and focused checks | Candidate worktree and local commit |
-| Verification Runner | Luna / `max` | Independent exact-candidate verification | None |
+| Verification Runner | Luna / `xhigh` | Independent exact-candidate verification | None |
 
 Bindings are exact and fail-closed. No lane silently substitutes a different
 model or reasoning tier. Sol remains user-facing and owns the transcript.
@@ -56,8 +56,11 @@ Each immutable packet binds:
 - Git, continuity, and archival requirements;
 - canonical packet hash.
 
-A packet does not expand file ownership. A mismatched packet hash, owner,
-task, candidate commit, worktree, or model binding fails closed.
+A packet does not expand file ownership. Its allowed paths and Terra's actual
+changed paths must resolve through [path_ownership_v1.json](../configs/path_ownership_v1.json)
+to the active packet owner; unknown, shared/routed, and other-owner paths fail
+closed. A branch prefix or owner profile is identity evidence only. A mismatched
+packet hash, owner, task, candidate commit, worktree, or model binding fails closed.
 
 ## Packet And Receipt Flow
 
@@ -96,6 +99,7 @@ Classify and prepare:
 
 ```text
 python tools/owner_scoped_orchestration.py classify --owner <owner> --description "..." --path <path>
+python tools/owner_scoped_orchestration.py ownership --path <path> [--owner <owner>]
 python tools/owner_scoped_orchestration.py prepare --owner <owner> --task-id <id> ...
 ```
 
@@ -114,11 +118,12 @@ used by those actions.
 
 ## Saved-Project Runner Rule
 
-Luna must operate inside the same saved project so it sees the same repository
-and worktree. One runner task ID is reused for all corrections in a cycle.
-Creating a new runner task for each retry fragments evidence and leaves stale
-active tasks. A projectless task is invalid even when it can read a copied
-checkout.
+Luna must operate in one saved-project reusable chat so it sees the same
+repository and worktree. One runner task ID is reused for all corrections in a
+cycle, and every continuation explicitly repeats the configured model and
+reasoning effort. Creating a projectless task, fork, or replacement runner for
+each retry fragments evidence and leaves stale active tasks. A channel or task
+identity mismatch is `route_integrity_failed`, not a successful verification.
 
 Luna is read-only: it may inspect source/diffs/Git state, run tests, and run
 read-only reconciliation checks. It may not edit, stage, commit, push, merge,
@@ -168,6 +173,20 @@ closeout.
 Failed, blocked, and user-input-needed tasks remain visible. Keep only the
 owner-facing Sol task active after successful closeout.
 
+## Change Notes
+
+The temporary runner-channel rule is recorded in
+[runner_channel_workaround_v1.json](../configs/runner_channel_workaround_v1.json).
+Its issue watch records [Codex issue 36965](https://github.com/openai/codex/issues/36965)
+as `closed_duplicate`, redirecting to [issue 36673](https://github.com/openai/codex/issues/36673)
+(`open`, cross-platform advertised-thread handler loss) and
+[issue 28080](https://github.com/openai/codex/issues/28080) (`open`, Windows
+handler loss). All states were observed on 2026-08-07. Upstream state is not
+local resolution: `locally_verified_resolved` remains false because the local
+cross-route handler failure is reproducible. Recheck all three upstream issues
+and local cross-route handler/model behavior before removing the explicit
+model/effort and saved-project-chat workaround.
+
 ## Continuity
 
 One continuity pack exists per owner, not per lane. Sol receives the full
@@ -186,9 +205,9 @@ Before a new owner may use this workflow, Core must:
 5. create the owner Core Thesis, Architecture, Spec, and Implementation Roadmap;
 6. map their exact paths in the owner profile;
 7. initialize continuity, vault scope, tests, and public dependencies;
-8. create an inactive owner profile referencing those assets;
+8. create an inactive owner profile with concrete proposed path rules;
 9. obtain adoption evidence covering the four documents and owner boundary;
-10. integrate and activate the registry entry.
+10. add the owner's active path-ownership rules, integrate, and activate the registry entry.
 
 A generated template or complete-looking profile is non-authorizing until the
 entry is active.

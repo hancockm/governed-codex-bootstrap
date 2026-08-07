@@ -41,7 +41,7 @@
       "id": "verification_runner_model_binding",
       "required_for": "full_team_tier",
       "failure_posture": "blocked_when_invoked",
-      "purpose": "Provide the exact Luna/max independent verification lane."
+      "purpose": "Provide the exact Luna/xhigh independent verification lane."
     },
     {
       "id": "subordinate_task_coordination",

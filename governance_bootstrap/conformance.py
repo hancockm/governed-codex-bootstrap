@@ -345,7 +345,7 @@ def check_repository(root: Path) -> list[str]:
     if template.get("active") or any(not (root / template.get(key, "")).exists() for key in ("role", "bootstrap", "continuity", "profile")):
         failures.append("future-owner: inactive template prerequisites are incomplete")
     orchestration = _load(root, "configs/owner_scoped_orchestration_v1.json")
-    expected_bindings = {"owner_orchestrator": ("gpt-5.6-sol", "xhigh"), "implementer": ("gpt-5.6-terra", "high"), "runner": ("gpt-5.6-luna", "max")}
+    expected_bindings = {"owner_orchestrator": ("gpt-5.6-sol", "xhigh"), "implementer": ("gpt-5.6-terra", "high"), "runner": ("gpt-5.6-luna", "xhigh")}
     for lane, (model, reasoning) in expected_bindings.items():
         binding = orchestration.get("model_binding", {}).get(lane, {})
         if binding.get("model") != model or binding.get("reasoning_effort") != reasoning:

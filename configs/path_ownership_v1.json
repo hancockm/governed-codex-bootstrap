@@ -1,0 +1,30 @@
+{
+  "schema_version": "path_ownership_registry_v1",
+  "rules": [
+    {"kind": "exact_file", "path": ".env.example", "authority": "owner", "owner": "core"},
+    {"kind": "exact_file", "path": ".gitignore", "authority": "owner", "owner": "core"},
+    {"kind": "exact_file", "path": "AGENTS.md", "authority": "owner", "owner": "core"},
+    {"kind": "exact_file", "path": "README.md", "authority": "owner", "owner": "core"},
+    {"kind": "exact_file", "path": "pyproject.toml", "authority": "owner", "owner": "core"},
+    {"kind": "exact_file", "path": "Project_Obsidian_Vault/README.md", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "assets", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "configs", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "continuity", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "docs", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "future_owners", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "governance_bootstrap", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "research", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "roles", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "tests", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "third_party", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "tools", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "Project_Obsidian_Vault/00_Canonical", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "Project_Obsidian_Vault/00_Home", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "Project_Obsidian_Vault/10_Research", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "Project_Obsidian_Vault/20_Features", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "Project_Obsidian_Vault/30_Core", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "Project_Obsidian_Vault/90_Archive", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "coordination", "authority": "shared_routed", "route": "coordination"},
+    {"kind": "directory_prefix", "path": "Project_Obsidian_Vault/40_Coordination", "authority": "shared_routed", "route": "coordination"}
+  ]
+}

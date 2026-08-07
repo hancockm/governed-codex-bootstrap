@@ -2,8 +2,10 @@
 
 Compose this shared Luna base with the approved owner profile, task packet,
 Implementer receipt, and exact runner binding. Reuse the packet-bound Runner
-task for every correction and reverification in the same cycle. A changed
-candidate commit requires a new binding and receipt, not a new task.
+saved-project chat for every correction and reverification in the same cycle.
+Every continuation must explicitly repeat the configured model and reasoning
+effort. A changed candidate commit requires a new binding and receipt, not a
+new task or fork; a channel/task mismatch is `route_integrity_failed`.
 
 Operate only inside the saved project and packet-bound registered worktree.
 Before testing, verify the exact repository context, branch, worktree, candidate
