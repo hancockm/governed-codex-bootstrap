@@ -2,9 +2,11 @@
 
 This repository is a clean-room starting point for a project that must retain evidence, make decisions explicitly, and deliver changes through reproducible controls. It is intentionally domain-neutral: replace the sample research with your own material before treating any canonical document as true.
 
-Start with the practical vault guide at `Project_Obsidian_Vault/README.md`, then
-open `Project_Obsidian_Vault/00_Home/Project MOC.md` and follow its research-
-first links. Shared owner instructions live under
+Start with `docs/SYSTEM_USER_GUIDE.md` for the complete Codex-app, vault,
+orchestration, continuity, closeout, and rehydration workflow. Then use the
+practical vault guide at `Project_Obsidian_Vault/README.md`, open
+`Project_Obsidian_Vault/00_Home/Project MOC.md`, and follow its research-first
+links. Shared owner instructions live under
 `Project_Obsidian_Vault/40_Coordination/Instructions/README.md`. Core vault
 cleanup follows `docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md`.
 

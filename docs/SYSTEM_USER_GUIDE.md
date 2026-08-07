@@ -1,0 +1,445 @@
+# Governed Project System User Guide
+
+This guide explains how to operate the complete development-governance system
+from the Codex desktop app. It is written for a project that begins with
+research, has only Core active, and later grows into separately owned product
+or domain areas.
+
+The system is not a plugin, an autonomous manager, or a substitute for user
+judgment. It is a repository-native operating system made from Markdown, Git,
+machine-readable policy, deterministic tools, tests, and owner-scoped Codex
+tasks.
+
+## The System In One View
+
+Six planes keep authority, knowledge, work, delivery, and memory from being
+collapsed into one chat transcript.
+
+```mermaid
+flowchart TB
+    User["User goals and approvals"] --> Authority["Authority plane<br/>AGENTS.md · owner profiles"]
+    Research["Immutable research sources"] --> Knowledge["Knowledge plane<br/>reviewed canonical documents"]
+    Authority --> Coordination["Coordination plane<br/>plans · critique · A2A"]
+    Knowledge --> Coordination
+    Coordination --> Execution["Execution plane<br/>Sol · Terra · Luna"]
+    Execution --> Delivery["Delivery plane<br/>tests · commits · reconciliation"]
+    Delivery --> Continuity["Continuity plane<br/>transcripts · receipts · protocols"]
+    Continuity -. "rehydrates later tasks" .-> Coordination
+    Delivery -. "verified implementation evidence" .-> Knowledge
+```
+
+The six planes answer different questions:
+
+| Plane | Question | Main artifacts |
+| --- | --- | --- |
+| Authority | Who may decide or change this? | `AGENTS.md`, owner registry, role profiles |
+| Knowledge | What is currently accepted? | Thesis, Architecture, Spec, Roadmap, capability registry |
+| Coordination | What is proposed, disputed, or waiting? | plans, work-selection audits, A2A records |
+| Execution | Who plans, implements, and independently checks? | Sol/Terra/Luna packets and receipts |
+| Delivery | Did the exact change pass and land safely? | tests, Git commits, reconciliation evidence |
+| Continuity | How can a fresh task recover the important history? | bounded transcripts, curated protocols, receipt links |
+
+No plane silently grants authority to another. A research note is not a
+decision. A passing test is not product approval. A useful chat answer is not
+canonical documentation. A pushed branch is not integrated delivery.
+
+## Start In The Codex Desktop App
+
+The current Codex app supports local projects connected to folders. The
+project's primary folder is the default working directory for Git and for
+discovering repository `AGENTS.md` instructions. See the official
+[Projects and chats guide](https://learn.chatgpt.com/docs/projects) and
+[Codex app quickstart](https://learn.chatgpt.com/docs/quickstart?setup=app).
+
+### First opening
+
+1. Install Git and Python. Install Node.js if the project will need JavaScript
+   or frontend tooling.
+2. Open Codex and create or edit a local project.
+3. Add the repository root as a folder and make it the **primary** folder.
+4. Start the task from that saved project, not from a projectless chat. A task
+   outside the project may not receive the repository root, `AGENTS.md`, Git
+   context, or expected worktree environment.
+5. Use the local checkout for Core reorientation and planning. Use a
+   repository-local `.worktrees/<owner>-<slice>` checkout for implementation
+   when the approved packet requires isolation.
+6. Confirm the terminal is at the repository root and run:
+
+   ```powershell
+   git status --short --untracked-files=all --ignore-submodules=all
+   python tools/architecture_conformance.py
+   ```
+
+7. Open `Project_Obsidian_Vault/00_Home/Project MOC.md` in Obsidian or a
+   Markdown viewer. Obsidian is the preferred human navigation surface, while
+   the files remain ordinary Git-versioned Markdown.
+
+### First Core task
+
+Start one clearly named Core task and use this prompt:
+
+```text
+You are the Core Owner for this governed project. Read AGENTS.md,
+roles/core/ROLE.md, roles/core/BOOTSTRAP.md, and the complete Core Bootstrap
+prompt in Project_Obsidian_Vault/30_Core/Core Bootstrap.md. Rehydrate from
+current repository evidence. Report the current baseline, evidence inspected,
+continuity freshness, assumptions, owner boundaries, and the smallest next
+Core-owned step. Do not implement until I approve a plan.
+```
+
+The task should first report what it found. It should not infer product truth
+from the template or treat sample research as accepted doctrine.
+
+### Bring in your research
+
+Put source material in `research/inbox/` and register it rather than copying
+claims directly into canonical documents:
+
+```powershell
+python tools/research_intake.py research/inbox/example.md --title "Example" --origin "Source description"
+python tools/research_organizer.py scan
+python tools/research_organizer.py build
+```
+
+Review the source map and candidate relationships. Core then proposes the
+minimum supported Thesis, Architecture, Spec, Roadmap, and capability state.
+The user approves promotion; the organizer never promotes material by itself.
+
+```mermaid
+flowchart LR
+    Raw["research/inbox<br/>raw material"] --> Intake["Content-addressed intake"]
+    Intake --> Records["Immutable research records"]
+    Records --> Organize["Maps · duplicates · candidate relations"]
+    Organize --> Review["Core analysis + user decision"]
+    Review -->|accepted| Canonical["Canonical vault"]
+    Review -->|not accepted| Evidence["Retained source, candidate, or dead end"]
+```
+
+## The Vault And The LLM Wiki Pattern
+
+The vault adapts Andrej Karpathy's
+[LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f):
+immutable raw sources, an interlinked Markdown knowledge layer, and a schema
+that tells the agent how to maintain it. The original pattern emphasizes a
+persistent, compounding wiki instead of re-deriving every synthesis from raw
+documents for every question.
+
+This system deliberately adds governance that a personal wiki does not need.
+
+| LLM Wiki idea | Governed adaptation |
+| --- | --- |
+| Raw sources are immutable | Research intake preserves source identity, hashes, provenance, and review state |
+| The LLM maintains a wiki | Owners maintain bounded narrative areas; generated navigation is tool-owned |
+| One schema instructs the LLM | Root policy, owner profiles, machine configuration, and conformance tests divide responsibilities |
+| Ingest updates the wiki | Intake creates source records; promotion to canonical knowledge requires Core and user disposition |
+| Query uses compiled pages | Tasks read MOCs first, then only the relevant canonical, research, coordination, or continuity notes |
+| Lint finds stale or orphaned pages | Vault checks enforce parentage, links, breadcrumbs, size diagnostics, and idempotent navigation |
+| Index and log support navigation | Narrative MOCs provide meaning; immutable receipts and records preserve chronology |
+
+The most important departure is that the agent does **not** own every vault
+page. Canonical documents have explicit promotion authority. Feature areas
+belong to activated owners. Coordination and continuity retain useful history
+without becoming truth merely because an agent wrote them.
+
+```mermaid
+flowchart TB
+    Sources["10 Research<br/>source-only evidence"] --> Decision["Core + user promotion boundary"]
+    Decision --> Canonical["00 Canonical<br/>accepted current doctrine"]
+    Canonical --> Features["20 Features<br/>activated owner semantics"]
+    Coordination["40 Coordination<br/>requests and convergence"] --> Decision
+    Continuity["30 Core / owner continuity<br/>rehydration context"] -. "context, never authority" .-> Decision
+    Superseded["90 Archive<br/>superseded with provenance"]
+    Canonical --> Superseded
+    Features --> Superseded
+```
+
+Obsidian is useful because MOCs, backlinks, and graph navigation expose the
+shape of the system to a person. Obsidian is not the database of record and no
+plugin is required for correctness. Git stores the files; conformance tools
+validate their structure; owner decisions supply their meaning.
+
+## Owner-Scoped Orchestration
+
+Every active owner receives a logical development team:
+
+| Lane | Binding | Job |
+| --- | --- | --- |
+| Owner Orchestrator | Sol / `xhigh` | Rehydrate, plan, protect authority, review, publish, integrate when Core, and close continuity |
+| Implementer | Terra / `high` | Make one packet-bounded candidate commit and run focused checks |
+| Verification Runner | Luna / `max` | Independently verify the exact candidate without repository writes |
+
+This is related to the advisor/worker pattern demonstrated by
+[Sol Advisor](https://sol-advisor.space/getting-started.html), which uses a
+primary Sol task and companion implementation or Luna task lanes. This
+bootstrap does not install, copy, or depend on that plugin.
+
+Its application is intentionally different:
+
+| Advisor pattern | This repository's application |
+| --- | --- |
+| Plugin supplies orchestration behavior | Repository policy, prompts, configuration, and tests define behavior locally |
+| A primary advisor delegates implementation | Each separately activated owner has its own Sol authority boundary |
+| Native and Luna lanes are alternative routes | Terra implements; Luna independently verifies the exact candidate |
+| Lane availability drives routing | Risk classification and exact model bindings are fail-closed |
+| The primary task reviews a worker | Sol must validate immutable packet/receipt hashes and exact commit identity |
+| Completion is primarily task-level | Completion also requires tests, publication, integration, primary sync, reconciliation, worktree cleanup, continuity, and archive acknowledgment |
+
+The shared prompt templates live in `roles/shared/`. They provide lane
+behavior but grant no ownership. The owner profile and immutable work packet
+supply the exact authority, paths, tests, and candidate identity.
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Sol as Owner Orchestrator
+    participant Terra as Implementer
+    participant Luna as Verification Runner
+    participant Core as Core Integrator
+    User->>Sol: Approve bounded plan
+    Sol->>Sol: Classify risk and seal packet
+    Sol->>Terra: Implement packet in registered worktree
+    Terra-->>Sol: Candidate commit + receipt
+    Sol->>Luna: Bind exact candidate in saved project
+    Luna-->>Sol: Read-only verification receipt
+    alt correction required
+        Sol->>Terra: Bounded correction
+        Terra-->>Sol: Replacement candidate
+        Sol->>Luna: New binding, same Luna task
+        Luna-->>Sol: Replacement verification receipt
+    end
+    Sol->>Core: Publish owner branch / integration request
+    Core-->>Sol: Landing and primary-sync evidence
+    Sol->>Sol: Reconcile, clean worktree, record continuity
+    Sol->>Terra: Archive accepted or superseded task
+    Sol->>Luna: Archive accepted or superseded task
+```
+
+Sol remains the only user-facing lane. Terra cannot push or expand scope.
+Luna cannot edit, commit, push, integrate, delete, or archive itself. A failed,
+blocked, or user-input-needed subordinate task remains visible.
+
+## One Complete Work Cycle
+
+### Discovery and planning
+
+1. Sol reads current evidence and freezes the planning baseline.
+2. Sol classifies verified, invalidated, unverified, and owner-dependent
+   assumptions.
+3. Sol identifies the smallest owned and unblocked step.
+4. Work-selection and critique records remain advisory.
+5. Sol presents a plan and waits for explicit user approval.
+
+### Implementation and verification
+
+1. Sol creates the immutable packet after approval.
+2. Terra changes only authorized paths and creates one local candidate commit.
+3. Terra runs focused, failed, affected, and broad test profiles as assigned.
+4. Sol reviews the diff and receipt.
+5. Luna runs the final exact-candidate verification once. A correction reuses
+   the same Luna task with a new candidate binding.
+6. Sol publishes only after acceptance. Core alone integrates the primary
+   branch.
+
+### Integrated closeout
+
+Documentation, A2A dispositions, capability evidence, Git delivery,
+continuity, and subordinate archival are part of the implementation cycle.
+They are not separate roadmap gates and should not consume an extra user turn
+unless a genuine blocker exists.
+
+## Close A Task Promptly And Rehydrate Correctly
+
+Long-running chats accumulate stale assumptions and make ownership harder to
+see. Close a task after one distinct outcome is delivered, but never archive
+it before its durable evidence is captured.
+
+### Ask Sol to close the cycle
+
+Use this prompt when the requested outcome is complete:
+
+```text
+Close this implementation cycle now. Do not select the next roadmap step.
+Complete scoped verification, commit/publication, terminal reconciliation,
+primary synchronization when Core, worktree cleanup, bounded continuity
+export, vault navigation and manifest verification, finalization evidence,
+and archival of accepted or superseded Terra/Luna tasks. Report any genuine
+blocker instead of calling the cycle complete.
+```
+
+Sol should then produce a final summary containing the exact commit or branch,
+checks, reconciliation state, worktree disposition, continuity result, and any
+remaining owner action.
+
+### Archive only after durable closeout
+
+The order is strict:
+
+```mermaid
+stateDiagram-v2
+    [*] --> OutcomeReady
+    OutcomeReady --> ReceiptsCaptured
+    ReceiptsCaptured --> Delivered
+    Delivered --> Reconciled
+    Reconciled --> WorktreeRemoved
+    WorktreeRemoved --> ContinuityExported
+    ContinuityExported --> SubordinatesArchived
+    SubordinatesArchived --> SolFinal
+    SolFinal --> OwnerTaskArchived
+    OwnerTaskArchived --> [*]
+```
+
+After Sol reports successful closeout, archive the finished owner task from
+the Codex project. The official app guidance recommends archiving completed
+chats and allows restoration from **Settings > Archived chats**. Archival is
+sidebar hygiene, not continuity: the repository continuity pack is what lets a
+new task reconstruct the decision context.
+
+Do not archive when:
+
+- a correction is pending;
+- a task is failed, blocked, or waiting for user input;
+- commits are unpushed or awaiting unnamed integration;
+- primary synchronization or worktree cleanup failed;
+- the exact transcript source was unavailable;
+- continuity or archive acknowledgment is incomplete.
+
+### Rehydrate in a fresh task
+
+1. Start a new task inside the same saved Codex project.
+2. Use the Core Bootstrap prompt at
+   `Project_Obsidian_Vault/30_Core/Core Bootstrap.md`.
+3. Tell Core which outcome or next decision you want. Do not paste the entire
+   old chat.
+4. Core reads the continuity MOC and only relevant transcript sections.
+5. Core verifies every material claim against current canonical documents,
+   source, tests, configuration, A2A, receipts, and Git history.
+6. Core reports freshness and discrepancies before planning new work.
+
+Continuity is a recovery index, not model memory and not authority. A new task
+is expected to disagree with an old transcript when the repository has moved
+on.
+
+## What Is Unique Here
+
+The pieces are familiar; their composition is unusual.
+
+| Unique composition | Intended effect |
+| --- | --- |
+| Research-first cold start with no inferred product doctrine | Prevent a polished template from pretending it already knows the project |
+| Compiled Markdown vault plus explicit authority layers | Preserve the usefulness of an LLM wiki without letting generated synthesis self-promote |
+| Only Core active initially | Force ownership boundaries to be demonstrated before specialization |
+| One Sol/Terra/Luna team per owner | Scale implementation without losing semantic or publication authority |
+| Exact, immutable packets and receipts | Make scope, model, candidate, checks, and outcomes replayable and mismatch-resistant |
+| Read-only independent Runner | Separate creation from verification and prevent the verifier from repairing its own evidence |
+| A2A convergence records with explicit dispositions | Preserve disagreement while forcing decisions to become narrower over time |
+| Impact-mapped testing plus one final parallel-safe run | Keep iteration fast without weakening final evidence |
+| Core-only primary integration and mandatory reconciliation | Stop branches and local primary state from silently diverging |
+| One task ID per owner continuity pack | Preserve attribution and prevent duplicate or cross-owner memory |
+| Sol-owned archive acknowledgment after delivery | Prevent completed subordinate tasks from stacking up or disappearing before evidence capture |
+| Functional and state-equivalent recovery assets | Reproduce both behavior and the provenance needed to understand it |
+
+The architecture treats the repository as the durable coordination medium.
+Agents are replaceable processes. Chats are temporary working contexts. The
+files, hashes, tests, receipts, ownership records, and Git history are the
+recoverable system.
+
+## How The Architecture Is Opinionated
+
+The bootstrap makes deliberate choices rather than supporting every possible
+workflow.
+
+### It prefers evidence over conversational convenience
+
+Important decisions must become reviewed files, tests, or receipts. Chat alone
+is insufficient. This adds closeout work but makes context loss survivable.
+
+### It separates knowledge levels
+
+Research, candidate interpretation, accepted doctrine, implemented behavior,
+and historical continuity are different states. Promotion is explicit and
+human-governed. This is slower than allowing an agent to continuously rewrite
+one wiki, but safer for shared or high-stakes work.
+
+### It prefers bounded ownership over a universal super-agent
+
+Core owns shared policy and integration, not every feature's meaning. New
+owners are inactive until their dependencies and non-ownership are explicit.
+This creates coordination overhead in exchange for preventing silent
+cross-domain rewrites.
+
+### It prefers fail-closed orchestration
+
+Missing model bindings, prompts, project context, exact candidate identity,
+test evidence, or reconciliation do not silently degrade. The cycle reports a
+blocker. This can stop work that a looser system would attempt, but it keeps
+the evidence honest.
+
+### It prefers one complete cycle over partial delivery
+
+Implementation includes documentation, tests, integration evidence,
+continuity, and cleanup. A branch push is not success. This is intentionally
+stricter than ordinary prototype development.
+
+### It prefers visible local artifacts over hidden memory
+
+The vault, configuration, receipts, and transcripts are inspectable and
+versioned. They can be audited without trusting one model instance. The cost
+is more repository structure and maintenance.
+
+### It preserves failed and superseded reasoning
+
+Rejected candidates and old doctrine are archived with provenance rather than
+silently erased. This costs storage and requires good MOCs, but prevents the
+same dead end from being rediscovered without context.
+
+## When To Simplify
+
+For a one-person throwaway experiment, the full system may be excessive. Keep
+the research/source boundary, root policy, focused tests, Git safety, and a
+minimal continuity note; activate additional owners and full-team
+orchestration only when the project develops real semantic boundaries or
+delivery risk.
+
+Do not simplify by collapsing source into truth, allowing the verifier to edit
+the candidate, sharing one continuity archive across owners, or letting every
+agent integrate the primary branch. Those choices remove the controls that
+make the architecture recoverable.
+
+## Daily Operator Checklist
+
+### Start
+
+- Open the repository as the primary folder of a saved Codex project.
+- Start one task for one outcome.
+- Rehydrate from `AGENTS.md`, the owner bootstrap, continuity MOC, current
+  canonical documents, and live Git evidence.
+- Check pending integration and owner requests before selecting new work.
+
+### Work
+
+- Freeze the planning baseline.
+- Ask for explicit plan approval before mutation.
+- Use the required Sol/Terra/Luna tier.
+- Keep temporary artifacts under `tmp/` and implementation worktrees under
+  `.worktrees/`.
+- Iterate with focused testing; reserve the full profile for the final
+  candidate.
+
+### Finish
+
+- Prove the exact candidate and required checks.
+- Publish and integrate through the authorized owner.
+- Synchronize and reconcile Git.
+- Remove verified-clean temporary worktrees.
+- Export bounded continuity and verify vault navigation.
+- Record finalization and archive accepted/superseded subordinate tasks.
+- Read Sol's final summary, then archive the completed owner task.
+
+### Resume later
+
+- Start a fresh task inside the same project.
+- Use the complete owner bootstrap prompt.
+- Let continuity locate history, then verify it against current repository
+  evidence.
+- Continue only after the rehydration report identifies freshness, assumptions,
+  and unresolved ownership.

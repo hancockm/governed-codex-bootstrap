@@ -20,6 +20,7 @@ these guides explain how to carry it out.
 | `POWERSHELL_AGENT_INSTRUCTIONS.md` | Safe PowerShell syntax, status handling, paths, and mutation discipline. |
 | `ROLE_BOOTSTRAP_AND_ACTIVATION.md` | Dependency architecture for recognizing and activating a future owner. |
 | `SOURCE_DOCUMENTATION_STYLE.md` | Project-owned source and public API documentation rules. |
+| `SYSTEM_USER_GUIDE.md` | End-to-end Codex app startup, research, vault, orchestration, task closeout, rehydration, and architectural rationale. |
 | `TOOL_PARITY.md` | How reference-tool capabilities are classified and verified generically. |
 | `VAULT_INFORMATION_ARCHITECTURE_STANDARD.md` | Vault hierarchy, MOCs, breadcrumbs, ownership, migration, and acceptance. |
 

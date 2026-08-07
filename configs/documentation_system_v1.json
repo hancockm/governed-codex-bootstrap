@@ -54,6 +54,20 @@
       ]
     },
     {
+      "path": "docs/SYSTEM_USER_GUIDE.md",
+      "classification": "generic_adaptation",
+      "minimum_lines": 300,
+      "required_headings": [
+        "## Start In The Codex Desktop App",
+        "## The Vault And The LLM Wiki Pattern",
+        "## Owner-Scoped Orchestration",
+        "## Close A Task Promptly And Rehydrate Correctly",
+        "## What Is Unique Here",
+        "## How The Architecture Is Opinionated",
+        "## Daily Operator Checklist"
+      ]
+    },
+    {
       "path": "docs/VAULT_INFORMATION_ARCHITECTURE_STANDARD.md",
       "classification": "operational_equivalent",
       "minimum_lines": 120,
@@ -357,7 +371,7 @@
     {"directory": "continuity/core/transcripts", "readme": "continuity/core/transcripts/README.md", "required_entries": ["export_agent_thread_continuity.py"], "required_headings": ["## Purpose", "## Contents", "## Change Discipline"]},
     {"directory": "coordination", "readme": "coordination/README.md", "required_entries": []},
     {"directory": "coordination/receipts", "readme": "coordination/receipts/README.md", "required_entries": ["agent_to_agent_plan_handoff.py"], "required_headings": ["## Purpose", "## Contents", "## Change Discipline"]},
-    {"directory": "docs", "readme": "docs/README.md", "required_entries": ["AGENT_CONTINUITY_EXPORT.md", "CORE_AGENT_WORKFLOW.md", "GIT_RECONCILIATION.md", "OWNER_SCOPED_ORCHESTRATION.md", "VAULT_INFORMATION_ARCHITECTURE_STANDARD.md"], "required_headings": ["## Purpose", "## Contents", "## Change Discipline"]},
+    {"directory": "docs", "readme": "docs/README.md", "required_entries": ["AGENT_CONTINUITY_EXPORT.md", "CORE_AGENT_WORKFLOW.md", "GIT_RECONCILIATION.md", "OWNER_SCOPED_ORCHESTRATION.md", "SYSTEM_USER_GUIDE.md", "VAULT_INFORMATION_ARCHITECTURE_STANDARD.md"], "required_headings": ["## Purpose", "## Contents", "## Change Discipline"]},
     {"directory": "future_owners", "readme": "future_owners/README.md", "required_entries": []},
     {"directory": "future_owners/example-feature-owner", "readme": "future_owners/example-feature-owner/README.md", "required_entries": []},
     {"directory": "future_owners/example-feature-owner/continuity", "readme": "future_owners/example-feature-owner/continuity/README.md", "required_entries": ["MOC.md"], "required_headings": ["## Purpose", "## Contents", "## Change Discipline"]},

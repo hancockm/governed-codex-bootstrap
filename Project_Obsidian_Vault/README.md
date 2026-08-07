@@ -7,6 +7,10 @@ historical archives without collapsing them into one authority level.
 
 ## Start Here
 
+New operators should first read the repository-level
+[System User Guide](../docs/SYSTEM_USER_GUIDE.md) for Codex project setup,
+task closeout, continuity rehydration, and the architectural rationale.
+
 1. Open [[00_Home/Project MOC.md]].
 2. Read [[10_Research/Research Sources MOC.md]] before accepting derived
    canonical claims.

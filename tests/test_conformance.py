@@ -79,6 +79,24 @@ def test_documentation_system_preserves_operational_equivalence() -> None:
     } <= {item["path"] for item in manifest["surfaces"]}
 
 
+def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -> None:
+    guide = (ROOT / "docs/SYSTEM_USER_GUIDE.md").read_text(encoding="utf-8")
+    for phrase in (
+        "## Start In The Codex Desktop App",
+        "## The Vault And The LLM Wiki Pattern",
+        "## Owner-Scoped Orchestration",
+        "## Close A Task Promptly And Rehydrate Correctly",
+        "## What Is Unique Here",
+        "## How The Architecture Is Opinionated",
+        "## Daily Operator Checklist",
+        "Project_Obsidian_Vault/30_Core/Core Bootstrap.md",
+        "roles/shared/",
+        "archive the completed owner task",
+    ):
+        assert phrase in guide
+    assert guide.count("```mermaid") >= 5
+
+
 def test_folder_readmes_explain_every_registered_maintained_directory() -> None:
     manifest = json.loads(
         (ROOT / "configs/documentation_system_v1.json").read_text(encoding="utf-8")
