@@ -6,7 +6,7 @@
   "entries": [
     {
       "id": "governance.bootstrap_foundation",
-      "name": "Governed project bootstrap foundation",
+      "name": "Governed Codex bootstrap foundation",
       "owner": "Core",
       "delivery_scope": "tooling",
       "status": "implemented",

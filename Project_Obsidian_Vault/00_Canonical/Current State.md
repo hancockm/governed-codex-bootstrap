@@ -10,7 +10,7 @@ Active gate: `governance.future_owner_activation` — First separate owner activ
 
 | Capability | Owner | Delivery scope | Status | Evidence-backed reading |
 | --- | --- | --- | --- | --- |
-| `governance.bootstrap_foundation` — Governed project bootstrap foundation | Core | `tooling` | `implemented` | The repository provides research-first canonicalization, maintained knowledge navigation, owner-scoped orchestration, bounded coordination, evidence-based testing, reconciliation, and continuity tooling. |
+| `governance.bootstrap_foundation` — Governed Codex bootstrap foundation | Core | `tooling` | `implemented` | The repository provides research-first canonicalization, maintained knowledge navigation, owner-scoped orchestration, bounded coordination, evidence-based testing, reconciliation, and continuity tooling. |
 | `governance.future_owner_activation` — First separate owner activation | Core | `documentation` | `specified_future` | Core must recognize a demonstrated boundary and complete owner-authored adoption, dependency mapping, continuity initialization, verification, and activation before dispatching a separate role. |
 
 Owner disposition record: `Project_Obsidian_Vault/30_Core/Core Protocols.md`

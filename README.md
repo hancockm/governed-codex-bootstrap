@@ -1,4 +1,4 @@
-# Governed Project Bootstrap
+# Governed Codex Bootstrap
 
 This repository is a clean-room starting point for a project that must retain evidence, make decisions explicitly, and deliver changes through reproducible controls. It is intentionally domain-neutral: replace the sample research with your own material before treating any canonical document as true.
 
