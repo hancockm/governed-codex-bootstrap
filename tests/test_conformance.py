@@ -9,6 +9,7 @@ from urllib.parse import unquote
 from governance_bootstrap.conformance import (
     check_repository,
     validate_documentation_system,
+    validate_owner_profiles,
     validate_project_license,
 )
 
@@ -184,17 +185,65 @@ def test_owner_activation_conformance_fails_when_a_canonical_document_is_missing
     tmp_path: Path,
 ) -> None:
     sample = tmp_path / "repository"
-    shutil.copytree(
-        ROOT,
-        sample,
-        ignore=shutil.ignore_patterns(".git", ".worktrees", "social", "tmp", "__pycache__", "Orchestration Receipts"),
-    )
-    missing = sample / "future_owners/owner-template/canonical/SPEC.md"
-    missing.unlink()
+    config_root = sample / "configs"
+    owner_root = sample / "owner"
+    canonical_root = owner_root / "canonical"
+    config_root.mkdir(parents=True)
+    canonical_root.mkdir(parents=True)
 
-    failures = check_repository(sample)
+    canonical_documents = {
+        "core_thesis": "owner/canonical/Core Thesis.md",
+        "architecture": "owner/canonical/ARCHITECTURE.md",
+        "spec": "owner/canonical/SPEC.md",
+        "implementation_roadmap": "owner/canonical/ROADMAP.md",
+    }
+    for document_name in ("core_thesis", "architecture", "implementation_roadmap"):
+        (sample / canonical_documents[document_name]).write_text(
+            f"# {document_name}\n",
+            encoding="utf-8",
+        )
 
-    assert "owner: missing spec canonical document for future-owner-template" in failures
+    profile = {
+        "owner_id": "future-owner-template",
+        "git_owner": "future-owner-template",
+        "branch_prefix": "future-owner-template/",
+        "worktree_prefix": "future-owner-template-",
+        "lifecycle_state": "candidate",
+        "owned_paths": ["owner/canonical"],
+        "prohibited_paths": [],
+        "owns_capabilities": [],
+        "consumes_capabilities": [],
+        "public_contracts": [],
+        "upstream_owners": [],
+        "downstream_consumers": [],
+        "canonical_documents": canonical_documents,
+        "canonical_document_adoption_evidence": [],
+        "continuity": {"moc": canonical_documents["core_thesis"]},
+        "verification_profiles": [],
+        "orchestration": {"lanes": []},
+        "activation_evidence": [],
+        "no_ownership_grant": True,
+    }
+    profile_path = owner_root / "profile.json"
+    profile_path.write_text(json.dumps(profile), encoding="utf-8")
+    owners_record = {
+        "owners": {
+            "future-owner-template": {
+                "active": False,
+                "profile": "owner/profile.json",
+                "role": canonical_documents["core_thesis"],
+                "bootstrap": canonical_documents["core_thesis"],
+                "continuity": canonical_documents["core_thesis"],
+            }
+        }
+    }
+    owners_path = config_root / "owners_v1.json"
+    owners_path.write_text(json.dumps(owners_record), encoding="utf-8")
+    owners = json.loads(owners_path.read_text(encoding="utf-8"))["owners"]
+
+    assert validate_owner_profiles(sample, owners) == [
+        "owner: missing spec canonical document for future-owner-template"
+    ]
 
 
 def test_no_project_specific_markers_or_absolute_paths() -> None:

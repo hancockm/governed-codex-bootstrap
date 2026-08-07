@@ -4,6 +4,8 @@
     {"kind": "exact_file", "path": ".env.example", "authority": "owner", "owner": "core"},
     {"kind": "exact_file", "path": ".gitignore", "authority": "owner", "owner": "core"},
     {"kind": "exact_file", "path": "AGENTS.md", "authority": "owner", "owner": "core"},
+    {"kind": "exact_file", "path": "LICENSE", "authority": "owner", "owner": "core"},
+    {"kind": "exact_file", "path": "NOTICE", "authority": "owner", "owner": "core"},
     {"kind": "exact_file", "path": "README.md", "authority": "owner", "owner": "core"},
     {"kind": "exact_file", "path": "pyproject.toml", "authority": "owner", "owner": "core"},
     {"kind": "exact_file", "path": "Project_Obsidian_Vault/README.md", "authority": "owner", "owner": "core"},

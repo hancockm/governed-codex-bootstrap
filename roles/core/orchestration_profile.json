@@ -10,6 +10,8 @@
     ".env.example",
     ".gitignore",
     "AGENTS.md",
+    "LICENSE",
+    "NOTICE",
     "README.md",
     "pyproject.toml",
     "Project_Obsidian_Vault/README.md",
