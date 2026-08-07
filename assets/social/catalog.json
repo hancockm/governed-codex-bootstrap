@@ -21,6 +21,8 @@
       "export": "assets/social/x/architecture-six-planes-1200x628.png",
       "width": 1200,
       "height": 628,
+      "post_copy": "AI coding agents are easy to start and hard to govern over time. Chats grow stale. Branches drift. Decisions lose provenance. Verification gets mixed with implementation. Governed Codex Bootstrap makes the repository—not a conversation—the durable operating system. [REPO_URL]",
+      "post_timing": "Day 1, foundation thread Post 1; pin for the launch sequence.",
       "alt_text": "Six-plane governed development architecture. Authority and canonical knowledge feed coordination, followed by execution, delivery, and continuity, with verified evidence returning to the knowledge layer."
     },
     {
@@ -31,8 +33,8 @@
       "export": "assets/social/x/research-first-lifecycle-1200x628.png",
       "width": 1200,
       "height": 628,
-      "post_copy": "Start with evidence, not a product story.\n\nGoverned Codex accepts Markdown, text, PDFs, or an exact public Git commit. It preserves file hashes or repository/ref/commit/tree/blob lineage before Core reviews candidates and the user approves any canonical claim.",
-      "post_timing": "Publish after the architecture overview and before owner-scoped orchestration.",
+      "post_copy": "Research comes first: exact files or Git commits become evidence before doctrine.\n\nThis layer is inspired by Andrej Karpathy's LLM Wiki pattern—raw sources, a maintained Markdown wiki, and a governing schema:\nhttps://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f",
+      "post_timing": "Day 1, foundation thread Post 2, immediately after the architecture overview.",
       "alt_text": "Markdown, text, PDF, and exact commit-pinned Git sources move through immutable intake, candidate organization, Core review, and user-approved promotion into canonical documents; unaccepted material remains evidence."
     },
     {
@@ -43,6 +45,8 @@
       "export": "assets/social/x/owner-scoped-orchestration-1200x628.png",
       "width": 1200,
       "height": 628,
+      "post_copy": "Sol governs. Terra implements. Luna verifies. Core integrates.\n\nThis lane pattern was inspired by DannyMac180's Sol Advisor, then adapted for explicit owner boundaries, immutable packets, read-only verification, and durable continuity:\nhttps://github.com/DannyMac180/sol-advisor",
+      "post_timing": "Day 1, foundation thread Post 4, after the six-plane distinction.",
       "alt_text": "Owner-scoped development cycle: Sol plans and controls authority, Terra implements the approved packet, Luna independently verifies the exact commit, and Core integrates the primary branch."
     },
     {
@@ -54,7 +58,7 @@
       "width": 1200,
       "height": 628,
       "post_copy": "Multi-agent systems often fail at the boundary, not the model.\n\nGoverned Codex owners do not edit one another's domains. They publish atomic A2A requests with evidence, an exact need, an owner disposition, and completion proof.\n\nDisagreement stays visible. Authority stays scoped.",
-      "post_timing": "Publish immediately after the owner-scoped orchestration post.",
+      "post_timing": "Day 1, foundation thread Post 5, immediately after owner-scoped orchestration.",
       "alt_text": "Agent-to-agent boundary protocol. A requesting owner freezes evidence and asks for a public contract through an immutable A2A record. The responsible owner challenges assumptions and accepts, narrows, defers, or rejects it. Only accepted verified contracts proceed to Core integration."
     },
     {
@@ -65,6 +69,8 @@
       "export": "assets/social/x/governed-pdf-research-1200x628.png",
       "width": 1200,
       "height": 628,
+      "post_copy": "PDF support is deliberately governed. Markdown and text work immediately. PDF extraction is optional, pinned, native-text only, and never auto-installed. Core asks permission first. Scanned, empty, encrypted, and unavailable states remain explicit.",
+      "post_timing": "Day 3, first standalone developer post.",
       "alt_text": "Governed PDF research flow. Exact PDF bytes are preserved, Core asks before installing the pinned parser, native text is extracted page by page, and OCR, encryption, or empty-page limits stay explicit."
     },
     {
@@ -76,7 +82,7 @@
       "width": 1200,
       "height": 628,
       "post_copy": "PDF intake should never blur unsupported states.\n\nsupported → process native text\ndependency_unavailable → ask before install\nno_extractable_text → preserve the empty result\nencrypted → stop without requesting passwords\n\nExact source bytes remain evidence in every case.",
-      "post_timing": "Publish immediately after the conceptual governed-PDF-research post.",
+      "post_timing": "Day 5, standalone terminal follow-up to governed PDF intake.",
       "alt_text": "Terminal PDF intake receipt showing four explicit outcomes. Supported content records an exact source hash. Dependency unavailable reports the missing approved parser and requires approval before installation. No extractable text preserves an empty page diagnostic without OCR. Encrypted input stops processing without requesting or storing passwords."
     },
     {
@@ -87,6 +93,8 @@
       "export": "assets/social/x/test-lifecycle-1200x628.png",
       "width": 1200,
       "height": 628,
+      "post_copy": "Testing follows the work: focused tests while editing, cached failures for triage, Git-affected selection for changed paths, then bounded regression.\n\nOnly the final candidate gets the full parallel-safe phase plus exclusive serial tests.",
+      "post_timing": "Day 8, standalone testing-concept post.",
       "alt_text": "Efficient testing lifecycle. Focused, cached-failure, affected, and broad checks support development, followed by one parallel-safe full phase and one isolated serial phase on the final candidate."
     },
     {
@@ -98,7 +106,7 @@
       "width": 1200,
       "height": 628,
       "post_copy": "Five pytest profiles. One lifecycle.\n\nfocused → current surface\nfailed → cached failures\naffected → Git impact map\nbroad → bounded regression\nfull → parallel-safe + serial isolation\n\nTerra debugs narrowly. Luna verifies the final candidate once.",
-      "post_timing": "Publish immediately after the conceptual test-lifecycle post.",
+      "post_timing": "Day 10, standalone executable follow-up to the testing lifecycle.",
       "alt_text": "Terminal command reference for five governed pytest profiles: focused tests one current surface and stops immediately; failed reruns cached failures; affected maps a Git diff to tests; broad runs conservative regression with a three-failure limit; full runs the registered parallel-safe phase followed by exclusive serial tests."
     },
     {
@@ -109,6 +117,8 @@
       "export": "assets/social/x/portable-continuity-1200x628.png",
       "width": 1200,
       "height": 628,
+      "post_copy": "Continuity lives in Git, not model memory. A fresh task, another device, or a new employee can rehydrate the same owner from bounded transcripts, receipts, decisions, and current evidence—without treating an old conversation as present authority.",
+      "post_timing": "Day 12, standalone organizational-continuity post.",
       "alt_text": "Portable owner continuity. A completed task exports bounded transcripts, receipts, and decisions to Git so another device, fresh task, or authorized employee can rehydrate and verify the same owner role."
     },
     {

@@ -52,3 +52,16 @@ def test_x_exports_respect_registered_upload_size_boundaries() -> None:
         exported = ROOT / asset["export"]
         limit = 2_000_000 if asset["id"] == "x-profile-header" else 5_000_000
         assert exported.stat().st_size <= limit
+
+
+def test_posting_schedule_assigns_every_asset_and_credits_inspirations() -> None:
+    schedule = (ROOT / "assets/social/POSTING_SCHEDULE.md").read_text(encoding="utf-8")
+    catalog = json.loads(
+        (ROOT / "assets/social/catalog.json").read_text(encoding="utf-8")
+    )
+
+    for asset in catalog["assets"]:
+        assert asset["export"] in schedule
+    assert "https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" in schedule
+    assert "https://github.com/DannyMac180/sol-advisor" in schedule
+    assert "independent implementation, not a fork" in schedule

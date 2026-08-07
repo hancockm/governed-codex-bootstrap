@@ -12,6 +12,8 @@ executable test commands, and continuity.
 
 - `catalog.json` binds each asset to its purpose, source, export, dimensions,
   launch position, and alt text.
+- `POSTING_SCHEDULE.md` contains the twelve-post sequence, exact image
+  assignments, ready-to-edit copy, and inspiration attribution.
 - `source/` contains editable SVG masters with exact text.
 - `x/` contains PNG exports ready for X posts and the profile header.
 
@@ -30,6 +32,11 @@ calls for it.
 Do not publish all images at once. Use the catalog's `launch_order`: the
 architecture overview anchors the launch thread; the focused developer assets
 follow as standalone posts.
+
+Use `POSTING_SCHEDULE.md` as the publication source of truth. It credits
+Andrej Karpathy's LLM Wiki beside the research pattern and DannyMac180's Sol
+Advisor beside the orchestration pattern, while identifying the independent
+governance mechanisms added here.
 
 The A2A boundary post follows owner-scoped orchestration because the reader
 first needs to understand independent owner authority. Its registered
