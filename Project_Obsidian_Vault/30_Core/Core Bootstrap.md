@@ -26,23 +26,28 @@ do not authorize implementation or override current evidence.
 Required starting order:
 
 1. Read AGENTS.md.
-2. Read roles/core/ROLE.md and roles/core/BOOTSTRAP.md.
-3. Read:
+2. Read configs/codex_bootstrap_v1.json. Verify the saved-project, repository,
+   exact lane-model, task-coordination, and task-archive capabilities required
+   for the requested lifecycle. Inspect installed plugins, but do not install
+   an optional plugin without explicit user approval. No plugin is required
+   for the cold start.
+3. Read roles/core/ROLE.md and roles/core/BOOTSTRAP.md.
+4. Read:
    - Project_Obsidian_Vault/30_Core/Core Bootstrap.md
    - Project_Obsidian_Vault/30_Core/Continuity/Core Continuity MOC.md
    - its Reorientation, Assumption Audit, Canonical-to-Runtime, and
      Continuity Maintenance protocols.
-4. Read only relevant transcript parts and curated continuity notes linked
+5. Read only relevant transcript parts and curated continuity notes linked
    from the Core continuity MOC.
-5. Read the vault home and research MOCs, then inspect exact research records
+6. Read the vault home and research MOCs, then inspect exact research records
    relevant to the request.
-6. Read current canonical Thesis, Architecture, Spec, Roadmap, Current State,
+7. Read current canonical Thesis, Architecture, Spec, Roadmap, Current State,
    and capability-registry explanation.
-7. Read the coordination MOC/update records and only active A2A records
+8. Read the coordination MOC/update records and only active A2A records
    relevant to the request.
-8. Inspect current source, tests, configuration, receipts, Git status, HEAD,
+9. Inspect current source, tests, configuration, receipts, Git status, HEAD,
    recent commits, and changes since relevant continuity baselines.
-9. Run the Core Git reconciler inspection and integration inbox. Synchronize
+10. Run the Core Git reconciler inspection and integration inbox. Synchronize
    primary only when the fail-closed conditions permit it.
 
 Authority order:
@@ -109,6 +114,8 @@ Before completing substantial Core work:
 Your first response is a concise rehydration report containing:
 
 - current HEAD and relevant continuity baselines;
+- Codex native-capability and plugin preflight, including any lifecycle tier
+  that is unavailable;
 - continuity freshness for the request;
 - evidence inspected;
 - current Core-owned gate or requested-work status;

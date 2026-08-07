@@ -162,6 +162,48 @@ def check_repository(root: Path) -> list[str]:
     active = sorted(name for name, value in owners.items() if value.get("active"))
     if active != research_policy["initial_active_owners"]:
         failures.append("research-first: initial bootstrap may activate only Core")
+    codex_bootstrap = _load(root, "configs/codex_bootstrap_v1.json")
+    plugin_policy = codex_bootstrap.get("plugin_policy", {})
+    if (
+        codex_bootstrap.get("schema_version") != "codex_bootstrap_v1"
+        or plugin_policy.get("required_plugins") != []
+        or plugin_policy.get("automatic_installation") is not False
+        or plugin_policy.get("external_orchestration_plugin_required") is not False
+    ):
+        failures.append("codex-bootstrap: cold start must require no plugins or automatic installation")
+    expected_native = {
+        "saved_local_project_primary_folder",
+        "repository_agents_guidance",
+        "git_and_repository_local_worktrees",
+        "owner_orchestrator_model_binding",
+        "implementer_model_binding",
+        "verification_runner_model_binding",
+        "subordinate_task_coordination",
+        "subordinate_task_archival",
+    }
+    native = codex_bootstrap.get("required_native_capabilities", [])
+    if {item.get("id") for item in native if isinstance(item, dict)} != expected_native:
+        failures.append("codex-bootstrap: required native capability preflight is incomplete")
+    if any(
+        not item.get("required_for") or not item.get("failure_posture") or not item.get("purpose")
+        for item in native
+        if isinstance(item, dict)
+    ):
+        failures.append("codex-bootstrap: native capability dispositions are incomplete")
+    optional_plugins = codex_bootstrap.get("optional_plugins", [])
+    if not optional_plugins or any(
+        item.get("default_state") != "not_required" or not item.get("use_only_when")
+        for item in optional_plugins
+        if isinstance(item, dict)
+    ):
+        failures.append("codex-bootstrap: optional plugin boundaries are incomplete")
+    preflight = codex_bootstrap.get("preflight", {})
+    if (
+        preflight.get("inspect_installed_plugins") is not True
+        or preflight.get("installation_requires_user_approval") is not True
+        or preflight.get("connector_authorization_is_separate") is not True
+    ):
+        failures.append("codex-bootstrap: plugin preflight and authorization are incomplete")
     owner_ids: set[str] = set()
     git_owners: set[str] = set()
     branch_prefixes: set[str] = set()

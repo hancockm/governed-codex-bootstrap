@@ -364,7 +364,7 @@
   ],
   "folder_readmes": [
     {"directory": ".", "readme": "README.md", "required_entries": []},
-    {"directory": "configs", "readme": "configs/README.md", "required_entries": ["capability_registry_v1.json", "documentation_system_v1.json", "testing/"], "required_headings": ["## Purpose", "## Contents", "## Change Discipline"]},
+    {"directory": "configs", "readme": "configs/README.md", "required_entries": ["capability_registry_v1.json", "codex_bootstrap_v1.json", "documentation_system_v1.json", "testing/"], "required_headings": ["## Purpose", "## Contents", "## Change Discipline"]},
     {"directory": "configs/testing", "readme": "configs/testing/README.md", "required_entries": ["execution_v1.json", "test_impact_v1.json"], "required_headings": ["## Purpose", "## Contents", "## Change Discipline"]},
     {"directory": "continuity", "readme": "continuity/README.md", "required_entries": ["core/"], "required_headings": ["## Purpose", "## Contents", "## Change Discipline"]},
     {"directory": "continuity/core", "readme": "continuity/core/README.md", "required_entries": []},

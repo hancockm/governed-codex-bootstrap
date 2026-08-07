@@ -1,0 +1,101 @@
+{
+  "schema_version": "codex_bootstrap_v1",
+  "plugin_policy": {
+    "required_plugins": [],
+    "automatic_installation": false,
+    "external_orchestration_plugin_required": false,
+    "posture": "native_capabilities_first"
+  },
+  "required_native_capabilities": [
+    {
+      "id": "saved_local_project_primary_folder",
+      "required_for": "cold_start",
+      "failure_posture": "blocked",
+      "purpose": "Bind every owner task to the repository root and its durable instructions."
+    },
+    {
+      "id": "repository_agents_guidance",
+      "required_for": "cold_start",
+      "failure_posture": "blocked",
+      "purpose": "Load the root AGENTS.md and owner-scoped repository policy."
+    },
+    {
+      "id": "git_and_repository_local_worktrees",
+      "required_for": "implementation_and_delivery",
+      "failure_posture": "blocked_when_invoked",
+      "purpose": "Isolate candidate work and provide reviewable delivery evidence."
+    },
+    {
+      "id": "owner_orchestrator_model_binding",
+      "required_for": "owner_task",
+      "failure_posture": "blocked",
+      "purpose": "Provide the exact Sol/xhigh authority lane registered by owner orchestration."
+    },
+    {
+      "id": "implementer_model_binding",
+      "required_for": "implementer_tier",
+      "failure_posture": "blocked_when_invoked",
+      "purpose": "Provide the exact Terra/high implementation lane."
+    },
+    {
+      "id": "verification_runner_model_binding",
+      "required_for": "full_team_tier",
+      "failure_posture": "blocked_when_invoked",
+      "purpose": "Provide the exact Luna/max independent verification lane."
+    },
+    {
+      "id": "subordinate_task_coordination",
+      "required_for": "delegated_implementation",
+      "failure_posture": "blocked_when_invoked",
+      "purpose": "Create, reuse, monitor, and correct packet-bound subordinate tasks inside the saved project."
+    },
+    {
+      "id": "subordinate_task_archival",
+      "required_for": "orchestration_closeout",
+      "failure_posture": "blocked_when_invoked",
+      "purpose": "Let Sol archive accepted or superseded subordinate tasks after durable finalization."
+    }
+  ],
+  "optional_plugins": [
+    {
+      "catalog_name": "GitHub",
+      "default_state": "not_required",
+      "use_only_when": "The approved workflow needs GitHub issues, pull requests, or repository data beyond local Git and the configured remote."
+    },
+    {
+      "catalog_name": "OpenAI Developers",
+      "default_state": "not_required",
+      "use_only_when": "The project is building with OpenAI products or needs current official OpenAI developer documentation."
+    },
+    {
+      "catalog_name": "Codex Security",
+      "default_state": "not_required",
+      "use_only_when": "The user authorizes a bounded security scan or remediation workflow."
+    },
+    {
+      "catalog_name": "Zotero",
+      "default_state": "not_required",
+      "use_only_when": "Research intake must read an authorized Zotero library instead of local source files."
+    },
+    {
+      "catalog_name": "Browser",
+      "default_state": "not_required",
+      "use_only_when": "The approved task needs interactive website inspection or local browser-based acceptance testing."
+    },
+    {
+      "catalog_name": "External source connector",
+      "default_state": "not_required",
+      "use_only_when": "An owner approves access to a specific external source such as a document store, messaging system, or project tracker."
+    }
+  ],
+  "preflight": {
+    "inspect_installed_plugins": true,
+    "cli_command": "codex plugin list --json",
+    "desktop_path": "Codex > Plugins > Installed",
+    "report_required_plugins": true,
+    "report_native_capabilities": true,
+    "report_optional_plugins": true,
+    "installation_requires_user_approval": true,
+    "connector_authorization_is_separate": true
+  }
+}

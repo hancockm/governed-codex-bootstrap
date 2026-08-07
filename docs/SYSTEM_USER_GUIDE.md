@@ -74,6 +74,53 @@ discovering repository `AGENTS.md` instructions. See the official
    Markdown viewer. Obsidian is the preferred human navigation surface, while
    the files remain ordinary Git-versioned Markdown.
 
+### Codex capability and plugin preflight
+
+No Codex plugin is required for the initial bootstrap. The system is built on
+native Codex and repository capabilities:
+
+| Native capability | When required |
+| --- | --- |
+| Saved local project with the repository as primary folder | Cold start and every owner task |
+| Repository `AGENTS.md` discovery | Cold start and every owner task |
+| Git and repository-local worktrees | Implementation and delivery |
+| Sol / `xhigh` owner binding | Owner orchestration |
+| Terra / `high` binding | Any tier that uses the Implementer |
+| Luna / `max` binding | Full-team verification |
+| Saved-project subordinate-task coordination | Delegated implementation and reverification |
+| Subordinate-task archival | Successful orchestration closeout |
+
+The first Core task reads `configs/codex_bootstrap_v1.json` and reports which
+capabilities are available. A missing capability blocks only the lifecycle
+stage that requires it; it is never silently replaced by a plugin or different
+model.
+
+Inspect plugins from **Codex > Plugins > Installed** or, when the Codex CLI is
+available:
+
+```powershell
+codex plugin list --json
+```
+
+The initial plugin set is intentionally empty. Plugins can bundle skills,
+connectors, MCP tools, hooks, and other capabilities, so installing one may
+change both workflow and data-access boundaries. Installation therefore needs
+an explicit purpose and user approval. Connector authentication and action
+permissions remain separate decisions.
+
+| Optional plugin | Add only when |
+| --- | --- |
+| GitHub | The approved workflow needs GitHub issues, pull requests, or remote repository data beyond local Git |
+| OpenAI Developers | The project builds against OpenAI products or needs current official developer documentation |
+| Codex Security | The user authorizes a bounded security scan or remediation workflow |
+| Zotero | Authorized research lives in a Zotero library rather than local intake files |
+| Browser | Interactive website inspection or browser acceptance testing is required |
+| Source-system connector | A named owner approves access to a particular document, messaging, or project system |
+
+Sol Advisor is not required or installed. This repository implements its own
+owner-scoped orchestration policy, prompts, packets, receipts, tests, and
+closeout lifecycle.
+
 ### First Core task
 
 Start one clearly named Core task and use this prompt:
@@ -83,8 +130,9 @@ You are the Core Owner for this governed project. Read AGENTS.md,
 roles/core/ROLE.md, roles/core/BOOTSTRAP.md, and the complete Core Bootstrap
 prompt in Project_Obsidian_Vault/30_Core/Core Bootstrap.md. Rehydrate from
 current repository evidence. Report the current baseline, evidence inspected,
-continuity freshness, assumptions, owner boundaries, and the smallest next
-Core-owned step. Do not implement until I approve a plan.
+continuity freshness, Codex native-capability and plugin preflight, assumptions,
+owner boundaries, and the smallest next Core-owned step. Do not implement until
+I approve a plan.
 ```
 
 The task should first report what it found. It should not infer product truth

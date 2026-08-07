@@ -22,6 +22,28 @@ def test_research_is_the_first_cold_start_evidence_lane() -> None:
     assert policy["research_first"]["cold_start_sequence"][:3] == ["research_intake", "research_organization", "core_canonicalization"]
 
 
+def test_first_bootstrap_requires_native_capabilities_and_no_plugins() -> None:
+    bootstrap = json.loads((ROOT / "configs/codex_bootstrap_v1.json").read_text(encoding="utf-8"))
+    assert bootstrap["plugin_policy"] == {
+        "required_plugins": [],
+        "automatic_installation": False,
+        "external_orchestration_plugin_required": False,
+        "posture": "native_capabilities_first",
+    }
+    assert {item["id"] for item in bootstrap["required_native_capabilities"]} == {
+        "saved_local_project_primary_folder",
+        "repository_agents_guidance",
+        "git_and_repository_local_worktrees",
+        "owner_orchestrator_model_binding",
+        "implementer_model_binding",
+        "verification_runner_model_binding",
+        "subordinate_task_coordination",
+        "subordinate_task_archival",
+    }
+    assert all(item["default_state"] == "not_required" for item in bootstrap["optional_plugins"])
+    assert bootstrap["preflight"]["installation_requires_user_approval"] is True
+
+
 def test_orchestration_has_exact_model_bindings_and_separate_sol_finalization() -> None:
     orchestration = json.loads((ROOT / "configs/owner_scoped_orchestration_v1.json").read_text(encoding="utf-8"))
     bindings = orchestration["model_binding"]
@@ -94,6 +116,9 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
         "archive the completed owner task",
         "Use SymPy for exact symbolic constants",
         "Use NumPy for the finite floating-point behavior",
+        "### Codex capability and plugin preflight",
+        "No Codex plugin is required for the initial bootstrap",
+        "Sol Advisor is not required or installed",
     ):
         assert phrase in guide
     assert guide.count("```mermaid") >= 5
