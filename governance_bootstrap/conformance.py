@@ -201,6 +201,16 @@ def check_repository(root: Path) -> list[str]:
         binding = orchestration.get("model_binding", {}).get(lane, {})
         if binding.get("model") != model or binding.get("reasoning_effort") != reasoning:
             failures.append(f"orchestration: exact {lane} model binding is missing")
+    expected_prompts = {
+        "owner_orchestrator": "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
+        "implementer": "roles/shared/IMPLEMENTER_PROMPT.md",
+        "runner": "roles/shared/VERIFICATION_RUNNER_PROMPT.md",
+    }
+    if orchestration.get("prompt_templates") != expected_prompts:
+        failures.append("orchestration: shared lane prompt template registry is incomplete")
+    for lane, prompt_path in expected_prompts.items():
+        if not (root / prompt_path).is_file():
+            failures.append(f"orchestration: shared prompt template is missing for {lane}")
     subordinate = orchestration.get("subordinate_task_lifecycle", {})
     if not subordinate.get("saved_project_required") or not subordinate.get("reuse_runner_thread_per_cycle"):
         failures.append("orchestration: saved-project Luna reuse is incomplete")

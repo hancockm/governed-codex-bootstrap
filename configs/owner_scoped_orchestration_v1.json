@@ -8,6 +8,11 @@
     "implementer": {"model": "gpt-5.6-terra", "reasoning_effort": "high"},
     "runner": {"model": "gpt-5.6-luna", "reasoning_effort": "max"}
   },
+  "prompt_templates": {
+    "owner_orchestrator": "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
+    "implementer": "roles/shared/IMPLEMENTER_PROMPT.md",
+    "runner": "roles/shared/VERIFICATION_RUNNER_PROMPT.md"
+  },
   "git": {
     "canonical_remote": "origin",
     "canonical_branch": "master",

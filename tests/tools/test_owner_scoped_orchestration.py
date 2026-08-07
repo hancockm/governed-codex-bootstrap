@@ -24,6 +24,9 @@ def _repo(tmp_path: Path) -> Path:
         root / "configs/owner_scoped_orchestration_v1.json",
     )
     for source in (
+        "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
+        "roles/shared/IMPLEMENTER_PROMPT.md",
+        "roles/shared/VERIFICATION_RUNNER_PROMPT.md",
         "roles/core/orchestration_profile.json",
         "future_owners/example-feature-owner/orchestration_profile.json",
         "future_owners/owner-template/orchestration_profile.json",
@@ -138,7 +141,17 @@ def test_registry_and_exact_sol_prompt_composition(tmp_path: Path) -> None:
     assert registry["owners"]["owner_template"]["status"] == "owner_adoption_required"
     composition = orchestration.compose_prompt("core", packet, root)
     assert composition["shared_sol_base"] == "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md"
+    assert composition["shared_implementer_base"] == "roles/shared/IMPLEMENTER_PROMPT.md"
+    assert composition["shared_runner_base"] == "roles/shared/VERIFICATION_RUNNER_PROMPT.md"
+    assert composition["shared_prompt_templates"] == registry["prompt_templates"]
     assert (composition["owner"], composition["git_owner"], composition["branch_prefix"]) == ("core", "core", "core/")
+
+
+def test_registry_fails_closed_when_a_shared_lane_prompt_is_missing(tmp_path: Path) -> None:
+    root = _repo(tmp_path)
+    (root / "roles/shared/IMPLEMENTER_PROMPT.md").unlink()
+    with pytest.raises(orchestration.OrchestrationError, match="prompt template is missing for implementer"):
+        orchestration.load_registry(root)
 
 
 def test_packet_binds_description_models_and_active_profile(tmp_path: Path) -> None:

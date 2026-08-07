@@ -28,6 +28,12 @@ def test_orchestration_has_exact_model_bindings_and_separate_sol_finalization() 
     assert bindings["owner_orchestrator"] == {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"}
     assert bindings["implementer"] == {"model": "gpt-5.6-terra", "reasoning_effort": "high"}
     assert bindings["runner"] == {"model": "gpt-5.6-luna", "reasoning_effort": "max"}
+    assert orchestration["prompt_templates"] == {
+        "owner_orchestrator": "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
+        "implementer": "roles/shared/IMPLEMENTER_PROMPT.md",
+        "runner": "roles/shared/VERIFICATION_RUNNER_PROMPT.md",
+    }
+    assert all((ROOT / path).is_file() for path in orchestration["prompt_templates"].values())
     assert orchestration["subordinate_task_lifecycle"]["archive_owner"] == "owner_orchestrator"
     assert orchestration["subordinate_task_lifecycle"]["reuse_runner_thread_per_cycle"] is True
     assert set(orchestration["subordinate_task_lifecycle"]["finalization_requires"]) == {

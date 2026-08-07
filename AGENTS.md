@@ -249,6 +249,11 @@ Verification Runner (Luna) independently verifies the exact candidate without
 repository writes. Required model bindings and risk escalation are fail-
 closed; no silent substitution is allowed.
 
+Each lane uses its owner-neutral shared prompt artifact from `roles/shared/`,
+composed with the exact owner profile and task packet. Shared prompts cannot
+grant ownership or relax the root policy, and a missing lane template is a
+fail-closed orchestration configuration error.
+
 One saved-project Luna task is reused through every correction in an
 implementation cycle. A projectless runner task is invalid. Luna's accepted
 receipt is not archive acknowledgment. Sol archives accepted or superseded

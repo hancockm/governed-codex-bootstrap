@@ -126,6 +126,7 @@ def load_registry(repo: str | Path | None = None) -> dict[str, Any]:
     ):
         raise OrchestrationError("registry aliases must be non-colliding registered-owner aliases")
     _require_lane_bindings(value)
+    _require_prompt_templates(value, root)
     _require_subordinate_lifecycle(value)
     return value
 
@@ -141,6 +142,19 @@ def _require_lane_bindings(registry: Mapping[str, Any]) -> None:
         configured = bindings.get(lane, {})
         if configured.get("model") != model or configured.get("reasoning_effort") != effort:
             raise OrchestrationError(f"invalid fail-closed model binding for {lane}")
+
+
+def _require_prompt_templates(registry: Mapping[str, Any], root: Path) -> None:
+    """Require one reusable shared prompt artifact for every orchestration lane."""
+
+    expected = {"owner_orchestrator", "implementer", "runner"}
+    templates = registry.get("prompt_templates")
+    if not isinstance(templates, dict) or set(templates) != expected:
+        raise OrchestrationError("registry must define one shared prompt template per lane")
+    for lane in sorted(expected):
+        path = _repo_relative_path(root, templates[lane], f"{lane} prompt template")
+        if not path.is_file():
+            raise OrchestrationError(f"shared prompt template is missing for {lane}")
 
 
 def _require_subordinate_lifecycle(registry: Mapping[str, Any]) -> None:
@@ -263,9 +277,13 @@ def compose_prompt(owner: str, task_packet: Mapping[str, Any], repo: str | Path 
     root = repository_root(repo)
     profile = load_active_owner_profile(owner, root)
     config = owner_config(owner, root, active=True)
+    templates = load_registry(root)["prompt_templates"]
     return {
         "schema_version": "owner_scoped_prompt_composition_v1",
-        "shared_sol_base": "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
+        "shared_sol_base": templates["owner_orchestrator"],
+        "shared_implementer_base": templates["implementer"],
+        "shared_runner_base": templates["runner"],
+        "shared_prompt_templates": dict(templates),
         "owner": config["name"], "git_owner": config["git_owner"], "branch_prefix": config["branch_prefix"],
         "owner_profile": str(config["profile_path"]),
         "task_packet_hash": task_packet.get("canonical_hash", ""),

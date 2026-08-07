@@ -9,6 +9,10 @@ reference without copying into each role.
 
 - `OWNER_ORCHESTRATOR_PROMPT.md` defines the common Sol authority, packet,
   review, publication, and closeout posture.
+- `IMPLEMENTER_PROMPT.md` defines Terra's packet-bounded implementation,
+  local-candidate, receipt, and non-publication rules.
+- `VERIFICATION_RUNNER_PROMPT.md` defines Luna's saved-project, exact-candidate,
+  read-only verification and receipt rules.
 
 ## Change Discipline
 
