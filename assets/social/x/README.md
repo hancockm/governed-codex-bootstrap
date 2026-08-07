@@ -8,7 +8,7 @@ text remain authoritative in the parent catalog.
 ## Contents
 
 - `architecture-six-planes-1200x628.png` introduces the complete system.
-- `research-first-lifecycle-1200x628.png` explains research promotion.
+- `research-first-lifecycle-1200x628.png` explains file/Git research promotion.
 - `owner-scoped-orchestration-1200x628.png` explains the owner team.
 - `a2a-owner-boundaries-1200x628.png` explains atomic cross-owner coordination.
 - `governed-pdf-research-1200x628.png` explains PDF consent and limits.

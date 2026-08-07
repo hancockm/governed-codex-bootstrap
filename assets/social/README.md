@@ -34,6 +34,9 @@ follow as standalone posts.
 The A2A boundary post follows owner-scoped orchestration because the reader
 first needs to understand independent owner authority. Its registered
 `post_copy` is ready for X, and `post_timing` records its place in the series.
+The research-first post follows the architecture overview and now shows both
+file intake and exact commit-pinned Git capture. Git is a bounded source
+adapter here, not permission to check out or execute a repository.
 The terminal test-runner post follows the conceptual testing diagram so readers
 see the lifecycle before receiving the five exact commands.
 The PDF-status terminal follows the conceptual PDF post and makes unavailable,

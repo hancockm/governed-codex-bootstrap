@@ -14,10 +14,18 @@ register them with `tools/research_intake.py`. Intake records origin, title,
 content identity, and exact bytes. Never overwrite an existing immutable
 record.
 
+For an authorized public Git repository, use `tools/research_git_adapter.py`
+with a credential-free HTTPS URL, explicit branch or tag ref, full expected
+commit, title, and `--authorize-network`. The adapter creates a bounded
+immutable snapshot with commit, tree, blob, path, byte-size, and SHA-256
+lineage. It never checks out or executes repository code. Source licensing and
+reuse rights remain separate review questions.
+
 ## Organization
 
 `tools/research_organizer.py` builds deterministic maps, extracts Markdown and
-plain text, and extracts native PDF text in page order when the approved
+plain text recursively from file and Git-snapshot records, and extracts native
+PDF text in page order when the approved
 optional `pypdf==6.14.2` dependency is installed. Core asks the user before
 downloading or installing that dependency. The extractor performs no OCR,
 does not open encrypted PDFs, and records pages without extractable text as

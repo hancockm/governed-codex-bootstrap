@@ -2,9 +2,18 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import subprocess
 
 import pytest
 
+from governance_bootstrap.git_research import (
+    GitBlob,
+    GitCliRepositoryAdapter,
+    GitRepositorySnapshot,
+    GitResearchError,
+    capture_git_repository,
+    validate_repository_url,
+)
 from governance_bootstrap.research import intake
 from governance_bootstrap import research_organizer as organizer
 from governance_bootstrap.research_organizer import (
@@ -45,6 +54,234 @@ def test_intake_preserves_exact_pdf_bytes_without_loading_a_parser(tmp_path: Pat
 
     assert (root / "research/records" / f"{record['record_id']}.pdf").read_bytes() == payload
 
+
+def test_git_adapter_publishes_exact_bounded_snapshot_and_organizer_reads_it(
+    tmp_path: Path,
+) -> None:
+    root = research_root(tmp_path)
+    repository_url = "https://github.com/example/reference-project.git"
+    requested_ref = "refs/tags/v1.0.0"
+    commit = "a" * 40
+    snapshot = GitRepositorySnapshot(
+        repository_url=repository_url,
+        requested_ref=requested_ref,
+        commit=commit,
+        tree="b" * 40,
+        tree_entry_count=4,
+        blobs=(
+            GitBlob("README.md", "100644", "c" * 40, b"# Reference\nExact evidence.\n"),
+            GitBlob("docs/guide.txt", "100644", "d" * 40, b"Bounded guide evidence.\n"),
+        ),
+    )
+
+    class StaticAdapter:
+        def snapshot(self, **_: object) -> GitRepositorySnapshot:
+            return snapshot
+
+    first = capture_git_repository(
+        root,
+        StaticAdapter(),
+        repository_url=repository_url,
+        requested_ref=requested_ref,
+        expected_commit=commit,
+        title="Reference project",
+        network_authorized=True,
+    )
+    second = capture_git_repository(
+        root,
+        StaticAdapter(),
+        repository_url=repository_url,
+        requested_ref=requested_ref,
+        expected_commit=commit,
+        title="Reference project",
+        network_authorized=True,
+    )
+
+    assert first == second
+    record = root / "research/records" / str(first["source_id"])
+    assert (record / "README.md").read_bytes() == snapshot.blobs[0].payload
+    assert (record / "docs/guide.txt").read_bytes() == snapshot.blobs[1].payload
+    manifest = json.loads((record / "snapshot.json").read_text(encoding="utf-8"))
+    assert manifest["commit"] == commit
+    assert manifest["tree"] == "b" * 40
+    assert [item["path"] for item in manifest["files"]] == [
+        "README.md",
+        "docs/guide.txt",
+    ]
+    mapped = build(root)
+    assert {item["source"] for item in mapped["candidates"]} == {
+        f"research/records/{first['source_id']}/README.md",
+        f"research/records/{first['source_id']}/docs/guide.txt",
+    }
+
+
+def test_git_adapter_requires_explicit_authorization_and_exact_safe_identity(
+    tmp_path: Path,
+) -> None:
+    root = research_root(tmp_path)
+
+    class UnexpectedAdapter:
+        def snapshot(self, **_: object) -> GitRepositorySnapshot:
+            raise AssertionError("adapter must not run without authorization")
+
+    with pytest.raises(GitResearchError, match="explicit network authorization"):
+        capture_git_repository(
+            root,
+            UnexpectedAdapter(),
+            repository_url="https://github.com/example/reference.git",
+            requested_ref="refs/heads/main",
+            expected_commit="a" * 40,
+            title="Reference",
+        )
+    with pytest.raises(GitResearchError, match="credential-free HTTPS"):
+        validate_repository_url("https://token@github.com/example/reference.git")
+
+
+def test_git_adapter_rejects_identity_drift(tmp_path: Path) -> None:
+    root = research_root(tmp_path)
+    repository_url = "https://github.com/example/reference.git"
+    requested_ref = "refs/heads/main"
+    commit = "a" * 40
+
+    class DriftedAdapter:
+        def snapshot(self, **_: object) -> GitRepositorySnapshot:
+            return GitRepositorySnapshot(
+                repository_url=repository_url,
+                requested_ref=requested_ref,
+                commit="f" * 40,
+                tree="b" * 40,
+                tree_entry_count=1,
+                blobs=(GitBlob("README.md", "100644", "c" * 40, b"evidence"),),
+            )
+
+    with pytest.raises(GitResearchError, match="identity does not match"):
+        capture_git_repository(
+            root,
+            DriftedAdapter(),
+            repository_url=repository_url,
+            requested_ref=requested_ref,
+            expected_commit=commit,
+            title="Reference",
+            network_authorized=True,
+        )
+
+
+def test_git_adapter_rejects_lfs_pointer_as_document_content(tmp_path: Path) -> None:
+    root = research_root(tmp_path)
+    repository_url = "https://github.com/example/reference.git"
+    requested_ref = "refs/heads/main"
+    commit = "a" * 40
+
+    class LfsPointerAdapter:
+        def snapshot(self, **_: object) -> GitRepositorySnapshot:
+            return GitRepositorySnapshot(
+                repository_url=repository_url,
+                requested_ref=requested_ref,
+                commit=commit,
+                tree="b" * 40,
+                tree_entry_count=1,
+                blobs=(
+                    GitBlob(
+                        "report.pdf",
+                        "100644",
+                        "c" * 40,
+                        b"version https://git-lfs.github.com/spec/v1\n"
+                        b"oid sha256:deadbeef\nsize 42\n",
+                    ),
+                ),
+            )
+
+    with pytest.raises(GitResearchError, match="Git LFS pointer"):
+        capture_git_repository(
+            root,
+            LfsPointerAdapter(),
+            repository_url=repository_url,
+            requested_ref=requested_ref,
+            expected_commit=commit,
+            title="Reference",
+            network_authorized=True,
+        )
+
+
+def test_git_adapter_rejects_nonportable_paths(tmp_path: Path) -> None:
+    root = research_root(tmp_path)
+    repository_url = "https://github.com/example/reference.git"
+    requested_ref = "refs/heads/main"
+    commit = "a" * 40
+
+    class UnsafePathAdapter:
+        def snapshot(self, **_: object) -> GitRepositorySnapshot:
+            return GitRepositorySnapshot(
+                repository_url=repository_url,
+                requested_ref=requested_ref,
+                commit=commit,
+                tree="b" * 40,
+                tree_entry_count=1,
+                blobs=(GitBlob("docs/CON.txt", "100644", "c" * 40, b"evidence"),),
+            )
+
+    with pytest.raises(GitResearchError, match="not portable"):
+        capture_git_repository(
+            root,
+            UnsafePathAdapter(),
+            repository_url=repository_url,
+            requested_ref=requested_ref,
+            expected_commit=commit,
+            title="Reference",
+            network_authorized=True,
+        )
+
+
+def test_git_cli_adapter_reads_regular_supported_blobs_without_checkout(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    commit = "a" * 40
+    tree = "b" * 40
+    blob = "c" * 40
+    payload = b"# Exact repository evidence\n"
+    observed: list[tuple[list[str], str]] = []
+
+    def fake_run(
+        _: str, arguments: list[str], operation: str
+    ) -> subprocess.CompletedProcess[bytes]:
+        observed.append((arguments, operation))
+        if "rev-parse" in arguments:
+            output = (commit + "\n").encode()
+        elif "--format=%T" in arguments:
+            output = (tree + "\n").encode()
+        elif "ls-tree" in arguments:
+            output = (
+                f"100644 blob {blob} {len(payload)}\tdocs/README.md\0"
+                f"160000 commit {'d' * 40} -\tvendor/submodule\0"
+                f"100644 blob {'e' * 40} 4\tsrc/code.py\0"
+            ).encode()
+        elif "cat-file" in arguments:
+            output = payload
+        else:
+            output = b""
+        return subprocess.CompletedProcess(arguments, 0, stdout=output, stderr=b"")
+
+    monkeypatch.setattr("shutil.which", lambda _: "git")
+    monkeypatch.setattr(GitCliRepositoryAdapter, "_run", staticmethod(fake_run))
+    adapter = GitCliRepositoryAdapter(tmp_path / "tmp")
+
+    snapshot = adapter.snapshot(
+        repository_url="https://github.com/example/reference.git",
+        requested_ref="refs/heads/main",
+        expected_commit=commit,
+        include_prefixes=("docs",),
+        max_files=10,
+        max_file_bytes=1024,
+        max_total_bytes=2048,
+        network_authorized=True,
+    )
+
+    assert snapshot.commit == commit
+    assert snapshot.tree == tree
+    assert snapshot.tree_entry_count == 3
+    assert snapshot.blobs == (GitBlob("docs/README.md", "100644", blob, payload),)
+    assert any("fetch" in arguments for arguments, _ in observed)
+    assert not list((tmp_path / "tmp").glob("git-research-fetch-*"))
 
 def test_organizer_is_repeatable_and_preserves_exact_duplicate_provenance(tmp_path: Path) -> None:
     root = research_root(tmp_path)

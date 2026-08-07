@@ -13,6 +13,12 @@ doctrine. PDF page text is a derived candidate projection; the exact PDF bytes
 remain authoritative. Empty/image-only pages remain explicit diagnostics and
 are never presented as successfully extracted prose.
 
+Git snapshots use a `git-<identity>` directory containing exact selected file
+bytes and `snapshot.json`. The manifest binds the public repository URL,
+requested ref, full commit, tree, blob IDs, SHA-256 hashes, limits, and known
+omissions. The organizer reads supported files recursively, while the manifest
+remains provenance rather than candidate prose.
+
 ## Change Discipline
 
 Never overwrite an existing content identity. Add a new record for changed

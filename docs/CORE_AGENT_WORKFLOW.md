@@ -57,6 +57,12 @@ vault. For each promotion, retain:
 Research records, organizer candidates, A2A critiques, and transcripts remain
 evidence. They never become canonical by location or repetition.
 
+For a public Git research source, require a credential-free HTTPS URL,
+explicit branch or tag ref, full expected commit, and user-authorized network
+acquisition. Use the bounded adapter rather than a working-tree clone. Preserve
+commit, tree, blob, file-hash, path, selection-limit, and omission evidence;
+never execute repository code or infer that capture grants reuse rights.
+
 ## Reorientation And Next-Step Discovery
 
 For a next-step request:

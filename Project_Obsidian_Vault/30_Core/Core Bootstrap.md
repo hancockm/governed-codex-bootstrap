@@ -42,6 +42,14 @@ Required starting order:
 6. Read the vault home and research MOCs, then inspect exact research records
    relevant to the request.
    - `.md` and `.txt` records use the built-in text organizer.
+   - If a public Git repository is proposed as research, require a
+     credential-free HTTPS URL, explicit branch or tag ref, full expected commit,
+     title, and user authorization for network acquisition. Use
+     `tools/research_git_adapter.py`; do not clone into the inbox. The adapter
+     records commit/tree/blob/path/hash lineage, selects only bounded regular
+     `.md`, `.txt`, and `.pdf` files, and performs no checkout, hooks, code execution,
+     submodule, Git LFS, issue, pull-request, or release acquisition.
+     Repository licensing and reuse remain separate review questions.
    - If `.pdf` records are present or PDF intake is requested, inspect
      `configs/codex_bootstrap_v1.json`, the installed `pypdf` version, and
      `third_party/pypdf-6.14.2.json`.

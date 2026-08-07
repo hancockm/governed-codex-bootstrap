@@ -28,10 +28,14 @@ class ResearchExtractionError(RuntimeError):
 
 
 def _record_sources(root: Path) -> list[Path]:
+    records = root / "research/records"
+    instructions = records / "README.md"
     return sorted(
         path
-        for path in (root / "research/records").iterdir()
-        if path.name != "README.md" and path.suffix.lower() in SUPPORTED_SUFFIXES
+        for path in records.rglob("*")
+        if path.is_file()
+        and path != instructions
+        and path.suffix.lower() in SUPPORTED_SUFFIXES
     )
 
 
@@ -152,7 +156,14 @@ def scan(root: Path) -> dict[str, Any]:
         for path in sources
         if path.suffix.lower() in PDF_SUFFIXES and pdf_error is not None
     ]
-    unsupported = sorted(path.name for path in records.iterdir() if path.is_file() and not path.name.startswith(".") and path.suffix.lower() not in SUPPORTED_SUFFIXES | {".json"})
+    unsupported = sorted(
+        path.relative_to(records).as_posix()
+        for path in records.rglob("*")
+        if path.is_file()
+        and path != records / "README.md"
+        and not path.name.startswith(".")
+        and path.suffix.lower() not in SUPPORTED_SUFFIXES | {".json"}
+    )
     return {
         "supported": [
             {"path": path.relative_to(root).as_posix(), "sha256": sha256_file(path)}

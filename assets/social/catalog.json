@@ -31,7 +31,9 @@
       "export": "assets/social/x/research-first-lifecycle-1200x628.png",
       "width": 1200,
       "height": 628,
-      "alt_text": "Markdown, text, and PDF sources move through immutable intake, candidate organization, Core review, and user-approved promotion into canonical documents; unaccepted material remains evidence."
+      "post_copy": "Start with evidence, not a product story.\n\nGoverned Codex accepts Markdown, text, PDFs, or an exact public Git commit. It preserves file hashes or repository/ref/commit/tree/blob lineage before Core reviews candidates and the user approves any canonical claim.",
+      "post_timing": "Publish after the architecture overview and before owner-scoped orchestration.",
+      "alt_text": "Markdown, text, PDF, and exact commit-pinned Git sources move through immutable intake, candidate organization, Core review, and user-approved promotion into canonical documents; unaccepted material remains evidence."
     },
     {
       "id": "owner-scoped-orchestration",

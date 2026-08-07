@@ -465,6 +465,15 @@
     },
     {
       "reference": null,
+      "bootstrap": "tools/research_git_adapter.py",
+      "classification": "bootstrap_native",
+      "rationale": "Captures an authorized exact public Git commit as bounded immutable research without checkout or execution.",
+      "required_symbols": [
+        "main"
+      ]
+    },
+    {
+      "reference": null,
       "bootstrap": "tools/research_intake.py",
       "classification": "bootstrap_native",
       "rationale": "Creates immutable source intake records during project cold start.",

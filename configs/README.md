@@ -11,7 +11,7 @@ tools validate.
 | File or directory | Significance |
 | --- | --- |
 | `capability_registry_v1.json` | Declares capability maturity and its evidence. |
-| `codex_bootstrap_v1.json` | Separates required native Codex capabilities from optional, user-authorized plugins and exact optional research parsers during cold start. |
+| `codex_bootstrap_v1.json` | Separates required native Codex capabilities from optional plugins, exact optional research parsers, and explicitly authorized bounded source adapters during cold start. |
 | `conformance_v1.json` | Defines the six required governance planes and research-first cold start. |
 | `core_moc_v1.json` | Registers Core vault hierarchy and maintained navigation. |
 | `documentation_system_v1.json` | Registers required operational documents, folder READMEs, and adaptation dispositions. |

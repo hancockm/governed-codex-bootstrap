@@ -15,6 +15,10 @@ dependency after Core obtains user approval; it extracts native text only and
 does not perform OCR. Other formats remain visible rather than being silently
 converted or discarded.
 
+Do not clone a repository into this inbox. Use `research_git_adapter.py` so
+repository URL, explicit ref, full expected commit, tree, blob identities,
+selection limits, and network authorization are recorded together.
+
 ## Change Discipline
 
 Do not edit a source merely to make it easier to ingest. Register exact bytes,

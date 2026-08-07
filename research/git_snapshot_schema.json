@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Immutable Git research snapshot",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "source_id",
+    "title",
+    "repository_url",
+    "requested_ref",
+    "commit",
+    "tree",
+    "captured_at",
+    "selection",
+    "files",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {"const": "git_research_snapshot_v1"},
+    "source_id": {"type": "string", "pattern": "^git-[a-f0-9]{12}$"},
+    "title": {"type": "string", "minLength": 1},
+    "repository_url": {"type": "string", "pattern": "^https://"},
+    "requested_ref": {"type": "string", "pattern": "^refs/(heads|tags)/"},
+    "commit": {"type": "string", "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"},
+    "tree": {"type": "string", "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"},
+    "captured_at": {"type": "string", "format": "date-time"},
+    "selection": {
+      "type": "object",
+      "required": ["include_prefixes", "max_file_bytes", "max_files", "max_total_bytes", "selected_files", "tree_entries"],
+      "properties": {
+        "include_prefixes": {"type": "array", "items": {"type": "string"}},
+        "max_file_bytes": {"type": "integer", "minimum": 1},
+        "max_files": {"type": "integer", "minimum": 1},
+        "max_total_bytes": {"type": "integer", "minimum": 1},
+        "selected_files": {"type": "integer", "minimum": 1},
+        "tree_entries": {"type": "integer", "minimum": 1}
+      },
+      "additionalProperties": false
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["git_blob_oid", "media_type", "mode", "path", "sha256", "size"],
+        "properties": {
+          "git_blob_oid": {"type": "string", "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"},
+          "media_type": {"enum": ["application/pdf", "text/markdown", "text/plain"]},
+          "mode": {"enum": ["100644", "100755"]},
+          "path": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "size": {"type": "integer", "minimum": 0}
+        },
+        "additionalProperties": false
+      }
+    },
+    "limitations": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

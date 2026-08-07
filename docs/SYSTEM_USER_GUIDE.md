@@ -184,6 +184,32 @@ order. It does not perform OCR, infer text from images, or request passwords
 for encrypted PDFs. A scanned or image-only page remains an explicit
 `no_extractable_text` diagnostic.
 
+A public Git repository enters through a separate source adapter rather than
+being copied or cloned into `research/inbox/`. Ask Core to identify the public
+credential-free HTTPS URL, an explicit branch or tag ref, and the full commit
+that is expected. After the user authorizes that network acquisition, Core may
+run:
+
+```powershell
+python tools/research_git_adapter.py `
+  --url "https://github.com/owner/repository.git" `
+  --ref "refs/heads/main" `
+  --commit "<full-expected-commit>" `
+  --title "Repository research" `
+  --include-prefix docs `
+  --authorize-network
+```
+
+The adapter fetches into an ignored temporary bare repository, verifies that
+the requested ref resolves to the supplied full commit, and records commit,
+tree, blob, path, byte-size, and SHA-256 lineage. It publishes only bounded
+regular `.md`, `.txt`, and `.pdf` blobs. It does not check out or execute code,
+run hooks, resolve submodules or Git LFS, or acquire issues, pull requests,
+releases, and other hosting-platform state. The GitHub plugin is not required
+for this public source capture; it remains optional for separately authorized
+GitHub API work. Every repository has its own license and reuse posture, so
+capture as research is not permission to redistribute or embed its contents.
+
 If `scan` reports `pdf_dependency_unavailable`, Core—not the user manually
 following a hidden setup step—must explain the exact artifact and ask:
 
@@ -209,8 +235,10 @@ The user approves promotion; the organizer never promotes material by itself.
 ```mermaid
 flowchart LR
     Raw["research/inbox<br/>.md · .txt · .pdf"] --> Intake["Content-addressed intake<br/>exact bytes"]
+    Git["public Git source<br/>URL · ref · full commit"] --> Snapshot["Bounded bare capture<br/>tree · blobs · hashes"]
+    Snapshot --> Records
     Intake --> Records["Immutable research records"]
-    Records --> Organize["Text sections or PDF pages<br/>maps · duplicates · diagnostics"]
+    Records --> Organize["Text sections · PDF pages · repository paths<br/>maps · duplicates · diagnostics"]
     Organize --> Review["Core analysis + user decision"]
     Review -->|accepted| Canonical["Canonical vault"]
     Review -->|not accepted| Evidence["Retained source, candidate, or dead end"]

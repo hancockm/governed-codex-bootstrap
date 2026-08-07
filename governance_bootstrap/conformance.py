@@ -221,6 +221,26 @@ def check_repository(root: Path) -> list[str]:
             or pdf_dependency.get("extensions") != [".pdf"]
         ):
             failures.append("codex-bootstrap: native-text PDF dependency consent is incomplete")
+    research_adapters = codex_bootstrap.get("research_source_adapters", [])
+    git_adapters = [
+        item
+        for item in research_adapters
+        if item.get("id") == "public_https_git_snapshot"
+    ]
+    if len(git_adapters) != 1:
+        failures.append("codex-bootstrap: public Git research adapter is missing")
+    else:
+        git_adapter = git_adapters[0]
+        if (
+            git_adapter.get("command") != "python tools/research_git_adapter.py"
+            or git_adapter.get("dependency") != "installed Git executable"
+            or git_adapter.get("automatic_download_or_install") is not False
+            or git_adapter.get("network_authorization_required") is not True
+            or git_adapter.get("selected_formats") != [".md", ".txt", ".pdf"]
+            or len(git_adapter.get("identity_requirements", [])) != 4
+            or len(git_adapter.get("limitations", [])) != 4
+        ):
+            failures.append("codex-bootstrap: public Git research boundary is incomplete")
     owner_ids: set[str] = set()
     git_owners: set[str] = set()
     branch_prefixes: set[str] = set()

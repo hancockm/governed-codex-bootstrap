@@ -154,6 +154,10 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
         "PDF research requires optional pypdf 6.14.2",
         "python -m pip install -e \".[pdf]\"",
         "does not perform OCR",
+        "public Git repository enters through a separate source adapter",
+        "python tools/research_git_adapter.py",
+        "does not check out or execute code",
+        "Every repository has its own license and reuse posture",
     ):
         assert phrase in guide
     assert guide.count("```mermaid") >= 7
@@ -299,6 +303,9 @@ def test_core_bootstrap_has_complete_rehydration_and_closeout_contract() -> None
         "Your first response is a concise rehydration report",
         "PDF research requires optional pypdf 6.14.2",
         "Never download or install a PDF",
+        "public Git repository is proposed as research",
+        "full expected commit",
+        "no checkout, hooks, code execution",
     ):
         assert phrase in bootstrap
 

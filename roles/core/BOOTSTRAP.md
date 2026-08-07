@@ -11,7 +11,8 @@ Required order:
 4. Core continuity MOC and relevant protocols;
 5. research MOCs and exact source records; when `.pdf` sources are present or
    requested, inspect the optional PDF dependency state and ask the user before
-   any download or installation;
+   any download or installation; when a public Git source is requested, require
+   its exact URL/ref/commit identity and separate network authorization;
 6. canonical MOCs and capability registry;
 7. coordination records relevant to the request;
 8. source, tests, configuration, receipts, Git status/history;
@@ -28,3 +29,11 @@ different version, explain its BSD-3-Clause record and native-text-only limits,
 then ask the user for explicit approval before running
 `python -m pip install -e ".[pdf]"`. Never install it as a side effect of
 startup, intake, scan, or build.
+
+Public Git research uses the already required local Git executable and needs no
+plugin or Python dependency. Capture only after the user authorizes network
+access and supplies a credential-free HTTPS URL, explicit branch or tag ref,
+and full expected commit. The adapter must verify the commit, preserve tree and
+blob lineage, enforce bounded `.md`/`.txt`/`.pdf` selection, and perform no
+checkout, hooks, code execution, submodule, Git LFS, issue, pull-request, or
+release acquisition.

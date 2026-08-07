@@ -108,6 +108,18 @@
       ]
     }
   ],
+  "research_source_adapters": [
+    {
+      "id": "public_https_git_snapshot",
+      "command": "python tools/research_git_adapter.py",
+      "dependency": "installed Git executable",
+      "automatic_download_or_install": false,
+      "network_authorization_required": true,
+      "identity_requirements": ["credential-free HTTPS URL", "explicit branch or tag ref", "full expected commit", "resolved tree and blob identities"],
+      "selected_formats": [".md", ".txt", ".pdf"],
+      "limitations": ["No checkout or code execution.", "No submodule, Git LFS, release-asset, issue, or pull-request acquisition.", "Only bounded regular files enter immutable research records.", "Source licensing and reuse rights require separate review."]
+    }
+  ],
   "preflight": {
     "inspect_installed_plugins": true,
     "cli_command": "codex plugin list --json",
