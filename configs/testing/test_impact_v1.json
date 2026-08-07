@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "mappings": [
+    {"source_globs": ["LICENSE", "NOTICE", "README.md"], "focused": ["tests/test_conformance.py"], "broad": ["tests/test_conformance.py"]},
     {"source_globs": ["assets/**"], "focused": ["tests/test_conformance.py"], "broad": ["tests"]},
     {"source_globs": ["governance_bootstrap/conformance.py", "configs/conformance_v1.json", "Project_Obsidian_Vault/**"], "focused": ["tests/test_conformance.py", "tests/tools/test_vault_maintainer.py"], "broad": ["tests"]},
     {"source_globs": ["governance_bootstrap/research.py", "governance_bootstrap/git_research.py", "governance_bootstrap/research_organizer.py", "tools/research_*.py", "research/**"], "focused": ["tests/test_research.py"], "broad": ["tests"]},

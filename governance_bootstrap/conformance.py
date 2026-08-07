@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import tomllib
 from pathlib import Path
@@ -11,6 +12,17 @@ from tools.capability_status import CapabilityStatusError, validate_registry
 from tools.source_doc_audit import find_missing_docstrings
 from tools.tool_parity import validate_manifest
 from tools.vault_maintainer import collect_diagnostics, load_registry
+
+
+APACHE_2_0_SPDX_ID = "Apache-2.0"
+APACHE_2_0_LICENSE_SHA256 = (
+    "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+)
+PROJECT_NOTICE = (
+    "Governed Codex Bootstrap\n"
+    "Copyright 2026 Michael E. Hancock\n\n"
+    "This product is licensed under the Apache License, Version 2.0.\n"
+)
 
 
 def _load(root: Path, relative: str) -> Any:
@@ -28,6 +40,50 @@ def _require_artifact(failures: list[str], root: Path, name: str, version: str) 
         failures.append(f"third-party: incomplete exact artifact record {path.name}")
     if len(record.get("sha256", "")) != 64 or not record.get("provenance", "").startswith("https://"):
         failures.append(f"third-party: invalid hash or provenance in {path.name}")
+
+
+def validate_project_license(root: Path) -> list[str]:
+    """Return violations of the root Apache-2.0 licensing contract."""
+    failures: list[str] = []
+    license_path = root / "LICENSE"
+    notice_path = root / "NOTICE"
+    readme_path = root / "README.md"
+    pyproject_path = root / "pyproject.toml"
+
+    if not license_path.is_file():
+        failures.append("missing root LICENSE")
+    else:
+        normalized = (
+            license_path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+        )
+        if hashlib.sha256(normalized).hexdigest() != APACHE_2_0_LICENSE_SHA256:
+            failures.append("root LICENSE is not the unmodified official Apache 2.0 text")
+
+    if not notice_path.is_file():
+        failures.append("missing root NOTICE")
+    elif notice_path.read_text(encoding="utf-8").replace("\r\n", "\n") != PROJECT_NOTICE:
+        failures.append("root NOTICE does not identify the project and copyright holder")
+
+    if not pyproject_path.is_file():
+        failures.append("missing pyproject.toml licensing metadata")
+    else:
+        project = tomllib.loads(pyproject_path.read_text(encoding="utf-8")).get("project", {})
+        if project.get("license") != APACHE_2_0_SPDX_ID:
+            failures.append("pyproject.toml project license must be Apache-2.0")
+
+    if not readme_path.is_file():
+        failures.append("missing README.md licensing declaration")
+    else:
+        readme = readme_path.read_text(encoding="utf-8")
+        required_readme_text = (
+            "## License",
+            "[Apache License 2.0](LICENSE)",
+            "`Apache-2.0`",
+            "[NOTICE](NOTICE)",
+        )
+        if any(item not in readme for item in required_readme_text):
+            failures.append("README.md license section is incomplete")
+    return failures
 
 
 def validate_documentation_system(root: Path) -> list[str]:
@@ -122,6 +178,7 @@ def check_repository(root: Path) -> list[str]:
     """Return deterministic violations of the bootstrap architecture."""
     config = _load(root, "configs/conformance_v1.json")
     failures: list[str] = []
+    failures.extend(f"license: {item}" for item in validate_project_license(root))
     for plane, paths in config["required_planes"].items():
         for item in paths:
             if not (root / item).is_file():

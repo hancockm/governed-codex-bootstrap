@@ -6,7 +6,11 @@ import shutil
 from pathlib import Path
 from urllib.parse import unquote
 
-from governance_bootstrap.conformance import check_repository, validate_documentation_system
+from governance_bootstrap.conformance import (
+    check_repository,
+    validate_documentation_system,
+    validate_project_license,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,6 +58,29 @@ def _existing_reference(path: Path, value: str) -> Path | None:
 
 def test_complete_repository_conforms_to_six_plane_architecture() -> None:
     assert check_repository(ROOT) == []
+
+
+def test_root_license_notice_and_spdx_identity_are_conformant(tmp_path: Path) -> None:
+    assert validate_project_license(ROOT) == []
+
+    sample = tmp_path / "licensing"
+    sample.mkdir()
+    for name in ("LICENSE", "NOTICE", "README.md", "pyproject.toml"):
+        shutil.copy2(ROOT / name, sample / name)
+    (sample / "LICENSE").unlink()
+
+    assert validate_project_license(sample) == ["missing root LICENSE"]
+
+    shutil.copy2(ROOT / "LICENSE", sample / "LICENSE")
+    pyproject = (sample / "pyproject.toml").read_text(encoding="utf-8")
+    (sample / "pyproject.toml").write_text(
+        pyproject.replace('license = "Apache-2.0"', 'license = "MIT"'),
+        encoding="utf-8",
+    )
+
+    assert validate_project_license(sample) == [
+        "pyproject.toml project license must be Apache-2.0"
+    ]
 
 
 def test_research_is_the_first_cold_start_evidence_lane() -> None:

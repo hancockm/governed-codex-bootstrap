@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "governed-codex-bootstrap"
 version = "0.1.0"
 description = "A clean-room bootstrap for evidence-led, governed software projects."
+license = "Apache-2.0"
 requires-python = ">=3.11"
 dependencies = []
 

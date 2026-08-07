@@ -217,3 +217,9 @@ python -m pytest
 python tools/architecture_conformance.py
 python tools/test_runner.py full
 ```
+
+## License
+
+Governed Codex Bootstrap is licensed under the
+[Apache License 2.0](LICENSE) (`Apache-2.0`). Copyright and project attribution
+are recorded in [NOTICE](NOTICE).
