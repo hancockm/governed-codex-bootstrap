@@ -105,6 +105,7 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
     guide = (ROOT / "docs/SYSTEM_USER_GUIDE.md").read_text(encoding="utf-8")
     for phrase in (
         "## Start In The Codex Desktop App",
+        "### Guide map",
         "## The Vault And The LLM Wiki Pattern",
         "## Owner-Scoped Orchestration",
         "## Agent-To-Agent Discussions And Owner Direction",
@@ -129,6 +130,31 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
     ):
         assert phrase in guide
     assert guide.count("```mermaid") >= 7
+
+
+def test_system_user_guide_has_a_clean_ordered_narrative_map() -> None:
+    guide = (ROOT / "docs/SYSTEM_USER_GUIDE.md").read_text(encoding="utf-8")
+    sections = (
+        "The System In One View",
+        "Start In The Codex Desktop App",
+        "The Vault And The LLM Wiki Pattern",
+        "Owner-Scoped Orchestration",
+        "Agent-To-Agent Discussions And Owner Direction",
+        "One Complete Work Cycle",
+        "Close A Task Promptly And Rehydrate Correctly",
+        "What Is Unique Here",
+        "How The Architecture Is Opinionated",
+        "When To Simplify",
+        "Daily Operator Checklist",
+    )
+    positions = [guide.index(f"## {section}") for section in sections]
+    assert positions == sorted(positions)
+    for section in sections:
+        assert f"| [{section}](#" in guide
+    assert guide.index("### Who decides the direction") < guide.index(
+        "### Set Up A2A Coordination From The Bootstrap"
+    )
+    assert "This section shows their\nnormal operating sequence" in guide
 
 
 def test_system_user_guide_defines_a2a_authority_and_owner_direction() -> None:
