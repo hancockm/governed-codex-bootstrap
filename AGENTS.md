@@ -254,7 +254,15 @@ implementation cycle. A projectless runner task is invalid. Luna's accepted
 receipt is not archive acknowledgment. Sol archives accepted or superseded
 subordinate tasks only after receipt capture, no pending correction, delivery,
 primary synchronization, terminal reconciliation, and worktree cleanup.
-Failed, blocked, or user-input-needed tasks remain visible.
+Before closeout, Sol supplies the exact recorded-bundle hash, captured Terra and
+Luna receipt hashes, every packet-bound subordinate task ID and archive
+disposition, terminal `landed` or authorized `superseded` reconciliation,
+verified primary-branch synchronization, verified packet-worktree removal, and
+the host archival acknowledgment. The repository tool must validate and bind
+those facts in an immutable finalization record before the cycle may be called
+closed. Failed, blocked, or user-input-needed tasks remain visible. The tool
+records host archival evidence but cannot perform the host archive operation;
+that action remains Sol's runtime responsibility.
 
 ## Git Staging, Commit, and Push Discipline
 

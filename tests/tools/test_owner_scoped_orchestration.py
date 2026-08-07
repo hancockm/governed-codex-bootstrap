@@ -54,12 +54,24 @@ def _prospective_profile(root: Path, *, malformed: bool = False, mismatched: boo
     return target
 
 
-def _packet(root: Path, *, task_id: str = "task-1", branch: str = "core/task-1", description: str = "bounded source change", worktree: str = ".worktrees/task-1", allowed: list[str] | None = None, prohibited: list[str] | None = None, requested_tier: str | None = None) -> dict[str, object]:
+def _packet(root: Path, *, task_id: str = "task-1", branch: str = "core/task-1", description: str = "bounded source change", worktree: str = ".worktrees/task-1", allowed: list[str] | None = None, prohibited: list[str] | None = None, requested_tier: str | None = None, subordinate_task_ids: dict[str, str] | None = None) -> dict[str, object]:
+    allowed_paths = allowed if allowed is not None else ["tools/"]
+    tiers = ("orchestrator_only", "orchestrator_plus_implementer", "full_team")
+    selected = orchestration.classify_task(description, allowed_paths)["tier"]
+    if requested_tier:
+        selected = max((selected, requested_tier), key=tiers.index)
+    if subordinate_task_ids is None:
+        subordinate_task_ids = {
+            lane: f"host-{lane}-{task_id}"
+            for lane in ("implementer", "runner")
+            if lane == "implementer" and selected != "orchestrator_only" or lane == "runner" and selected == "full_team"
+        }
     return orchestration.make_packet(
         owner="core", task_id=task_id, approval_ref="user:approved", baseline="a" * 40,
-        branch=branch, worktree=worktree, allowed_paths=allowed if allowed is not None else ["tools/"],
+        branch=branch, worktree=worktree, allowed_paths=allowed_paths,
         prohibited_paths=prohibited if prohibited is not None else ["governance_bootstrap/private/"], evidence_refs=["test:evidence"],
-        focused_checks=["focused"], broad_checks=["broad"], description=description, requested_tier=requested_tier, repo=root,
+        focused_checks=["focused"], broad_checks=["broad"], description=description, requested_tier=requested_tier,
+        subordinate_task_ids=subordinate_task_ids, repo=root,
     )
 
 
@@ -77,6 +89,45 @@ def _runner(packet: dict[str, object], binding: dict[str, object], candidate: st
 
 def _sol(packet: dict[str, object]) -> dict[str, object]:
     return {"schema_version": orchestration.SOL_DISPOSITION_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "model": {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"}, "disposition": "analysis complete", "residual_issues": [], "outcome": "passed"}
+
+
+def _archive_acknowledgment(manifest: dict[str, object]) -> dict[str, object]:
+    payload = {
+        "schema_version": orchestration.ARCHIVE_ACKNOWLEDGMENT_SCHEMA,
+        "owner": manifest["owner"],
+        "task_id": manifest["task_id"],
+        "packet_hash": manifest["packet_hash"],
+        "archive_manifest_hash": manifest["canonical_hash"],
+        "acknowledged_by": "owner_orchestrator",
+        "correction_pending": False,
+        "lane_dispositions": [
+            {"lane": lane["lane"], "subordinate_task_id": lane["subordinate_task_id"], "disposition": "archived", "supersession_ref": ""}
+            for lane in manifest["lanes"]
+        ],
+    }
+    return {**payload, "canonical_hash": orchestration.sha256_canonical(payload)}
+
+
+def _delivery_evidence(packet: dict[str, object], implementer: dict[str, object], binding: dict[str, object], runner: dict[str, object], record: dict[str, object]) -> dict[str, object]:
+    payload = {
+        "schema_version": orchestration.CLOSEOUT_DELIVERY_EVIDENCE_SCHEMA,
+        "owner": packet["owner"],
+        "task_id": packet["task_id"],
+        "packet_hash": packet["canonical_hash"],
+        "branch": packet["branch"],
+        "candidate_commit": implementer["candidate_commit"],
+        "receipt_record_hash": record["canonical_hash"],
+        "captured_receipt_hashes": {
+            "implementer": orchestration._payload_hash(implementer),
+            "runner_binding": binding["canonical_hash"],
+            "runner": orchestration._payload_hash(runner),
+        },
+        "terminal_reconciliation": {"target": "origin/master", "disposition": "landed", "evidence_ref": "reconciler:landed"},
+        "primary_branch_sync": {"verified": True, "evidence_ref": "reconciler:sync-main"},
+        "worktree_removal": {"worktree": packet["worktree"], "removed": True, "evidence_ref": "git:worktree-list"},
+        "acknowledged_by": "owner_orchestrator",
+    }
+    return {**payload, "canonical_hash": orchestration.sha256_canonical(payload)}
 
 
 def test_registry_and_exact_sol_prompt_composition(tmp_path: Path) -> None:
@@ -258,7 +309,58 @@ def test_tier_correct_records_and_new_candidate_rebinding(tmp_path: Path) -> Non
     second_binding = orchestration.bind_runner(full, second, "c" * 40, root); runner = _runner(full, second_binding, "c" * 40); orchestration.validate_receipts(full, second, second_binding, runner, repo=root)
     orchestration.record_bundle(full, second, second_binding, runner, repo=root)
     full_bundle = root / "receipts/full" / full["canonical_hash"]
-    assert {path.name for path in full_bundle.iterdir()} == {"packet.json", "implementer_receipt.json", "runner_binding.json", "runner_receipt.json", "record.json"}
+    assert {path.name for path in full_bundle.iterdir()} == {"packet.json", "implementer_receipt.json", "runner_binding.json", "runner_receipt.json", "subordinate_archive_manifest.json", "record.json"}
+
+
+def test_closeout_requires_exact_receipts_reconciliation_cleanup_and_archival(tmp_path: Path) -> None:
+    root = _repo(tmp_path)
+    packet = _packet(root, task_id="finalize", description="runtime change")
+    implementer = _implementer(packet)
+    binding = orchestration.bind_runner(packet, implementer, "b" * 40, root)
+    runner = _runner(packet, binding)
+    record = orchestration.record_bundle(packet, implementer, binding, runner, repo=root)
+    bundle = root / "receipts/finalize" / packet["canonical_hash"]
+    manifest = json.loads((bundle / "subordinate_archive_manifest.json").read_text(encoding="utf-8"))
+    acknowledgment = _archive_acknowledgment(manifest)
+    evidence = _delivery_evidence(packet, implementer, binding, runner, record)
+
+    finalization = orchestration.finalize_closeout(packet, implementer, binding, runner, manifest, acknowledgment, record, evidence, root)
+
+    assert finalization["outcome"] == "closed"
+    assert finalization["captured_receipt_hashes"] == evidence["captured_receipt_hashes"]
+    assert finalization["subordinate_task_dispositions"] == [
+        {"lane": "implementer", "subordinate_task_id": packet["subordinate_task_ids"]["implementer"], "disposition": "archived"},
+        {"lane": "runner", "subordinate_task_id": packet["subordinate_task_ids"]["runner"], "disposition": "archived"},
+    ]
+    assert finalization["terminal_reconciliation"]["disposition"] == "landed"
+    assert finalization["primary_branch_sync"]["verified"] is True
+    assert finalization["worktree_removal"]["removed"] is True
+
+
+@pytest.mark.parametrize(
+    ("field", "replacement", "message"),
+    [
+        ("terminal_reconciliation", {"target": "origin/master", "disposition": "awaiting_named_integrator", "evidence_ref": "reconciler:pending"}, "terminal branch reconciliation"),
+        ("primary_branch_sync", {"verified": False, "evidence_ref": "reconciler:dirty"}, "primary-branch synchronization"),
+        ("worktree_removal", {"worktree": ".worktrees/finalize", "removed": False, "evidence_ref": "git:retained"}, "worktree removal"),
+    ],
+)
+def test_closeout_rejects_nonterminal_delivery_state(tmp_path: Path, field: str, replacement: object, message: str) -> None:
+    root = _repo(tmp_path)
+    packet = _packet(root, task_id="finalize", description="runtime change")
+    implementer = _implementer(packet)
+    binding = orchestration.bind_runner(packet, implementer, "b" * 40, root)
+    runner = _runner(packet, binding)
+    record = orchestration.record_bundle(packet, implementer, binding, runner, repo=root)
+    bundle = root / "receipts/finalize" / packet["canonical_hash"]
+    manifest = json.loads((bundle / "subordinate_archive_manifest.json").read_text(encoding="utf-8"))
+    acknowledgment = _archive_acknowledgment(manifest)
+    evidence = _delivery_evidence(packet, implementer, binding, runner, record)
+    evidence[field] = replacement
+    evidence["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in evidence.items() if key != "canonical_hash"})
+
+    with pytest.raises(orchestration.OrchestrationError, match=message):
+        orchestration.finalize_closeout(packet, implementer, binding, runner, manifest, acknowledgment, record, evidence, root)
 
 
 def test_record_failure_cleans_exact_temp_directory(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

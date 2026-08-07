@@ -31,17 +31,24 @@ from governance_bootstrap.common import (
 
 REGISTRY_SCHEMA = "owner_scoped_orchestration_v1"
 PROFILE_SCHEMA = "owner_scoped_orchestration_owner_profile_v1"
-PACKET_SCHEMA = "owner_scoped_task_packet_v1"
+PACKET_SCHEMA = "owner_scoped_task_packet_v2"
+LEGACY_PACKET_SCHEMA = "owner_scoped_task_packet_v1"
 IMPLEMENTER_RECEIPT_SCHEMA = "owner_scoped_implementer_receipt_v1"
-RUNNER_BINDING_SCHEMA = "owner_scoped_runner_binding_v1"
+RUNNER_BINDING_SCHEMA = "owner_scoped_runner_binding_v2"
 RUNNER_RECEIPT_SCHEMA = "owner_scoped_runner_receipt_v1"
 SOL_DISPOSITION_SCHEMA = "owner_scoped_sol_disposition_v1"
-RECORD_SCHEMA = "owner_scoped_orchestration_record_v1"
+RECORD_SCHEMA = "owner_scoped_orchestration_record_v2"
+ARCHIVE_MANIFEST_SCHEMA = "owner_scoped_subordinate_archive_manifest_v2"
+ARCHIVE_ACKNOWLEDGMENT_SCHEMA = "owner_scoped_subordinate_archive_acknowledgment_v1"
+CLOSEOUT_DELIVERY_EVIDENCE_SCHEMA = "owner_scoped_closeout_delivery_evidence_v1"
+CLOSEOUT_FINALIZATION_SCHEMA = "owner_scoped_closeout_finalization_v2"
 DEFAULT_REGISTRY = Path("configs/owner_scoped_orchestration_v1.json")
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
 TASK_ID_PATTERN = re.compile(r"^[a-z0-9]+(?:[-_][a-z0-9]+)*$")
 BRANCH_SEGMENT_PATTERN = re.compile(r"^[a-z0-9]+(?:[-_][a-z0-9]+)*$")
 MAX_TASK_ID_LENGTH = 128
+MAX_SUBORDINATE_TASK_ID_LENGTH = 256
+OPAQUE_TASK_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$")
 RISK_TRIGGERS = {
     "runtime": ("runtime", "execution loop", "provider"),
     "public_contract": ("public contract", "public api", "public symbol"),
@@ -61,7 +68,7 @@ IMPLEMENTER_FORBIDDEN_ACTIONS = frozenset({"push", "merge", "rebase", "reset", "
 IMPLEMENTER_KEYS = frozenset({"schema_version", "owner", "task_id", "packet_hash", "model", "candidate_commit", "changed_paths", "actions", "checks", "residual_issues", "outcome"})
 RUNNER_KEYS = frozenset({"schema_version", "owner", "task_id", "packet_hash", "runner_binding_hash", "model", "candidate_commit", "actions", "checks", "environment_preflight", "git_status", "reconciler_evidence", "diagnostics", "residual_issues", "outcome"})
 SOL_KEYS = frozenset({"schema_version", "owner", "task_id", "packet_hash", "model", "disposition", "residual_issues", "outcome"})
-PACKET_KEYS = frozenset({"schema_version", "owner", "task_id", "user_approval_ref", "task_description", "baseline", "branch", "worktree", "allowed_paths", "prohibited_paths", "lane_models", "owner_profile_ref", "owner_profile_hash", "evidence_refs", "focused_checks", "broad_checks", "responsibilities", "git_requirements", "continuity_requirements", "classification", "canonical_hash"})
+PACKET_KEYS = frozenset({"schema_version", "owner", "task_id", "user_approval_ref", "task_description", "baseline", "branch", "worktree", "allowed_paths", "prohibited_paths", "lane_models", "owner_profile_ref", "owner_profile_hash", "evidence_refs", "focused_checks", "broad_checks", "responsibilities", "git_requirements", "continuity_requirements", "classification", "subordinate_task_ids", "canonical_hash"})
 PACKET_RESPONSIBILITIES = {"owner_orchestrator": "classify and publish", "implementer": "bounded candidate only", "runner": "inspect and test only"}
 
 
@@ -119,6 +126,7 @@ def load_registry(repo: str | Path | None = None) -> dict[str, Any]:
     ):
         raise OrchestrationError("registry aliases must be non-colliding registered-owner aliases")
     _require_lane_bindings(value)
+    _require_subordinate_lifecycle(value)
     return value
 
 
@@ -133,6 +141,38 @@ def _require_lane_bindings(registry: Mapping[str, Any]) -> None:
         configured = bindings.get(lane, {})
         if configured.get("model") != model or configured.get("reasoning_effort") != effort:
             raise OrchestrationError(f"invalid fail-closed model binding for {lane}")
+
+
+def _require_subordinate_lifecycle(registry: Mapping[str, Any]) -> None:
+    """Require the complete Sol-owned subordinate finalization lifecycle."""
+
+    lifecycle = registry.get("subordinate_task_lifecycle", {})
+    expected_archive_after = {
+        "accepted_exact_candidate_receipt",
+        "no_correction_pending",
+        "commit_push_integration",
+        "primary_branch_sync",
+        "terminal_reconciliation",
+        "worktree_cleanup",
+    }
+    expected_finalization = {
+        "recorded_receipt_hashes",
+        "subordinate_task_dispositions",
+        "terminal_reconciliation",
+        "primary_branch_sync",
+        "worktree_removal",
+        "archive_acknowledgment",
+    }
+    if (
+        lifecycle.get("saved_project_required") is not True
+        or lifecycle.get("reuse_runner_thread_per_cycle") is not True
+        or lifecycle.get("archive_owner") != "owner_orchestrator"
+        or set(lifecycle.get("archive_after", ())) != expected_archive_after
+        or set(lifecycle.get("finalization_requires", ())) != expected_finalization
+        or lifecycle.get("visible_nonterminal_statuses")
+        != ["failed", "blocked", "user_input_needed"]
+    ):
+        raise OrchestrationError("registry subordinate-task lifecycle is incomplete")
 
 
 def owner_config(owner: str, repo: str | Path | None = None, *, active: bool = False) -> dict[str, Any]:
@@ -233,7 +273,7 @@ def compose_prompt(owner: str, task_packet: Mapping[str, Any], repo: str | Path 
     }
 
 
-def make_packet(*, owner: str, task_id: str, approval_ref: str, baseline: str, branch: str, worktree: str, allowed_paths: Iterable[str], prohibited_paths: Iterable[str], evidence_refs: Iterable[str], focused_checks: Iterable[str], broad_checks: Iterable[str], description: str, requested_tier: str | None = None, repo: str | Path | None = None) -> dict[str, Any]:
+def make_packet(*, owner: str, task_id: str, approval_ref: str, baseline: str, branch: str, worktree: str, allowed_paths: Iterable[str], prohibited_paths: Iterable[str], evidence_refs: Iterable[str], focused_checks: Iterable[str], broad_checks: Iterable[str], description: str, requested_tier: str | None = None, subordinate_task_ids: Mapping[str, str] | None = None, repo: str | Path | None = None) -> dict[str, Any]:
     """Build a self-hashing active-owner packet from explicit public inputs."""
 
     root = repository_root(repo)
@@ -261,6 +301,7 @@ def make_packet(*, owner: str, task_id: str, approval_ref: str, baseline: str, b
     if requested_tier and requested_tier not in tiers:
         raise OrchestrationError("unknown requested tier")
     effective = max((classification["tier"], requested_tier or classification["tier"]), key=tiers.index)
+    subordinate_tasks = _validate_subordinate_task_ids(subordinate_task_ids, effective)
     payload = {
         "schema_version": PACKET_SCHEMA, "owner": config["name"], "task_id": task_id, "user_approval_ref": approval_ref, "task_description": description,
         "baseline": baseline, "branch": branch, "worktree": worktree, "allowed_paths": list(allowed), "prohibited_paths": list(prohibited),
@@ -269,8 +310,9 @@ def make_packet(*, owner: str, task_id: str, approval_ref: str, baseline: str, b
         "evidence_refs": evidence, "focused_checks": focused, "broad_checks": broad,
         "responsibilities": PACKET_RESPONSIBILITIES,
         "git_requirements": "Implementer may create a local candidate commit; Sol publishes and cleans owner worktrees; Core alone integrates master.",
-        "continuity_requirements": "Owner orchestrator exports the full transcript; subordinate lanes provide structured receipts in the same owner pack.",
+        "continuity_requirements": "Owner orchestrator exports the full transcript; one packet-bound Terra/Luna host task is reused through every correction attempt and acknowledged before final closeout.",
         "classification": {**classification, "tier": effective},
+        "subordinate_task_ids": subordinate_tasks,
     }
     return {**payload, "canonical_hash": sha256_canonical(payload)}
 
@@ -278,6 +320,8 @@ def make_packet(*, owner: str, task_id: str, approval_ref: str, baseline: str, b
 def validate_packet(packet: Mapping[str, Any], repo: str | Path | None = None) -> None:
     """Fail closed unless a packet is internally and registry-consistent."""
 
+    if packet.get("schema_version") == LEGACY_PACKET_SCHEMA:
+        raise OrchestrationError("legacy packet lacks required stable subordinate task IDs; issue a v2 packet")
     if set(packet) != PACKET_KEYS:
         raise OrchestrationError("packet has missing or forbidden fields")
     if packet.get("schema_version") != PACKET_SCHEMA:
@@ -322,6 +366,7 @@ def validate_packet(packet: Mapping[str, Any], repo: str | Path | None = None) -
     tiers = ("orchestrator_only", "orchestrator_plus_implementer", "full_team")
     if classification.get("tier") not in tiers or tiers.index(classification["tier"]) < tiers.index(static["tier"]):
         raise OrchestrationError("packet classification tier downgrades static risk")
+    _validate_subordinate_task_ids(packet.get("subordinate_task_ids"), classification["tier"])
 
 
 def bind_runner(packet: Mapping[str, Any], implementer_receipt: Mapping[str, Any], candidate_commit: str, repo: str | Path | None = None) -> dict[str, Any]:
@@ -335,7 +380,7 @@ def bind_runner(packet: Mapping[str, Any], implementer_receipt: Mapping[str, Any
         raise OrchestrationError("candidate commit must be exact lowercase 40-hex")
     if implementer_receipt.get("candidate_commit") != candidate_commit:
         raise OrchestrationError("implementer receipt candidate mismatch")
-    payload = {"schema_version": RUNNER_BINDING_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_receipt_hash": _payload_hash(implementer_receipt), "candidate_commit": candidate_commit, "runner_model": _lane_binding(load_registry(repo), "runner")}
+    payload = {"schema_version": RUNNER_BINDING_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_receipt_hash": _payload_hash(implementer_receipt), "candidate_commit": candidate_commit, "runner_model": _lane_binding(load_registry(repo), "runner"), "runner_task_id": packet["subordinate_task_ids"]["runner"]}
     return {**payload, "canonical_hash": sha256_canonical(payload)}
 
 
@@ -362,7 +407,7 @@ def validate_receipts(packet: Mapping[str, Any], implementer_receipt: Mapping[st
     if runner_binding is None or runner_receipt is None:
         raise OrchestrationError("full-team packet requires runner binding and receipt")
     if runner_binding is not None:
-        binding_keys = {"schema_version", "owner", "task_id", "packet_hash", "implementer_receipt_hash", "candidate_commit", "runner_model", "canonical_hash"}
+        binding_keys = {"schema_version", "owner", "task_id", "packet_hash", "implementer_receipt_hash", "candidate_commit", "runner_model", "runner_task_id", "canonical_hash"}
         if set(runner_binding) != binding_keys:
             raise OrchestrationError("runner binding has missing or forbidden fields")
         expected = {key: value for key, value in runner_binding.items() if key != "canonical_hash"}
@@ -377,6 +422,8 @@ def validate_receipts(packet: Mapping[str, Any], implementer_receipt: Mapping[st
             raise OrchestrationError("runner binding implementer receipt hash mismatch")
         if runner_binding.get("runner_model") != _lane_binding(load_registry(repo), "runner"):
             raise OrchestrationError("runner binding model mismatch")
+        if runner_binding.get("runner_task_id") != packet["subordinate_task_ids"]["runner"]:
+            raise OrchestrationError("runner binding task ID must match the packet-bound runner task")
     if runner_receipt is not None:
         if runner_binding is None:
             raise OrchestrationError("runner receipt requires runner binding")
@@ -388,6 +435,77 @@ def validate_receipts(packet: Mapping[str, Any], implementer_receipt: Mapping[st
             raise OrchestrationError("runner receipt declares a forbidden write action")
         if runner_receipt.get("outcome") != "passed":
             raise InactiveOwnerError("runner lane outcome failed")
+
+
+def build_subordinate_archive_manifest(
+    packet: Mapping[str, Any],
+    implementer_receipt: Mapping[str, Any] | None,
+    runner_binding: Mapping[str, Any] | None,
+    runner_receipt: Mapping[str, Any] | None,
+    repo: str | Path | None = None,
+) -> dict[str, Any] | None:
+    """Build a transport-neutral request to archive completed lane tasks."""
+
+    validate_receipts(packet, implementer_receipt, runner_binding, runner_receipt, repo=repo)
+    tier = packet["classification"]["tier"]
+    expected: dict[str, Mapping[str, Any]] = {}
+    if tier in {"orchestrator_plus_implementer", "full_team"}:
+        if implementer_receipt is None:
+            raise OrchestrationError("successful implementer receipt is required for archival")
+        expected["implementer"] = implementer_receipt
+    if tier == "full_team":
+        if runner_receipt is None:
+            raise OrchestrationError("successful runner receipt is required for archival")
+        expected["runner"] = runner_receipt
+    if not expected:
+        return None
+    lanes = [
+        {
+            "lane": lane,
+            "subordinate_task_id": packet["subordinate_task_ids"][lane],
+            "receipt_hash": _payload_hash(expected[lane]),
+            "action": "archive",
+            "status": "ready_after_owner_receipt_capture",
+        }
+        for lane in ("implementer", "runner")
+        if lane in expected
+    ]
+    payload = {
+        "schema_version": ARCHIVE_MANIFEST_SCHEMA,
+        "owner": packet["owner"],
+        "task_id": packet["task_id"],
+        "packet_hash": packet["canonical_hash"],
+        "authority": "owner_orchestrator",
+        "transport": "host_task_management_surface",
+        "runner_binding_hash": runner_binding["canonical_hash"] if runner_binding else "",
+        "lanes": lanes,
+    }
+    return {**payload, "canonical_hash": sha256_canonical(payload)}
+
+
+def _build_orchestration_record(
+    packet: Mapping[str, Any],
+    implementer_receipt: Mapping[str, Any] | None,
+    runner_binding: Mapping[str, Any] | None,
+    runner_receipt: Mapping[str, Any] | None,
+    sol_disposition: Mapping[str, Any] | None,
+    archive_manifest: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    """Build the exact bounded record that anchors later closeout evidence."""
+
+    payload = {
+        "schema_version": RECORD_SCHEMA,
+        "owner": packet["owner"],
+        "task_id": packet["task_id"],
+        "packet_hash": packet["canonical_hash"],
+        "tier": packet["classification"]["tier"],
+        "implementer_receipt_hash": _payload_hash(implementer_receipt) if implementer_receipt else "",
+        "runner_binding_hash": runner_binding["canonical_hash"] if runner_binding else "",
+        "runner_receipt_hash": _payload_hash(runner_receipt) if runner_receipt else "",
+        "sol_disposition_hash": _payload_hash(sol_disposition) if sol_disposition else "",
+        "archive_manifest_hash": archive_manifest["canonical_hash"] if archive_manifest else "",
+    }
+    return {**payload, "canonical_hash": sha256_canonical(payload)}
 
 
 def record_bundle(packet: Mapping[str, Any], implementer_receipt: Mapping[str, Any] | None = None, runner_binding: Mapping[str, Any] | None = None, runner_receipt: Mapping[str, Any] | None = None, sol_disposition: Mapping[str, Any] | None = None, repo: str | Path | None = None) -> dict[str, Any]:
@@ -403,12 +521,12 @@ def record_bundle(packet: Mapping[str, Any], implementer_receipt: Mapping[str, A
     task_root = directory.parent
     if task_root.exists() and (_path_exists(directory) or any(path.is_dir() and not path.name.startswith(".") for path in task_root.iterdir())):
         raise OrchestrationError(f"task receipt already exists and task IDs are unique: {packet['task_id']}")
-    bundle = {"schema_version": RECORD_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet_hash, "tier": packet["classification"]["tier"], "implementer_receipt_hash": _payload_hash(implementer_receipt) if implementer_receipt else "", "runner_binding_hash": runner_binding["canonical_hash"] if runner_binding else "", "runner_receipt_hash": _payload_hash(runner_receipt) if runner_receipt else "", "sol_disposition_hash": _payload_hash(sol_disposition) if sol_disposition else ""}
-    record = {**bundle, "canonical_hash": sha256_canonical(bundle)}
+    archive_manifest = build_subordinate_archive_manifest(packet, implementer_receipt, runner_binding, runner_receipt, root)
+    record = _build_orchestration_record(packet, implementer_receipt, runner_binding, runner_receipt, sol_disposition, archive_manifest)
     temporary = root / "tmp" / "owner_scoped_orchestration_receipts" / f"{packet_hash}.tmp-{os.getpid()}"
     try:
-        task_root.mkdir(parents=True, exist_ok=True)
-        temporary.mkdir(parents=True, exist_ok=False)
+        os.makedirs(_filesystem_path(task_root), exist_ok=True)
+        os.makedirs(_filesystem_path(temporary), exist_ok=False)
         _exclusive_write(temporary / "packet.json", packet)
         if implementer_receipt:
             _exclusive_write(temporary / "implementer_receipt.json", implementer_receipt)
@@ -418,15 +536,205 @@ def record_bundle(packet: Mapping[str, Any], implementer_receipt: Mapping[str, A
             _exclusive_write(temporary / "runner_receipt.json", runner_receipt)
         if sol_disposition:
             _exclusive_write(temporary / "sol_disposition.json", sol_disposition)
+        if archive_manifest:
+            _exclusive_write(temporary / "subordinate_archive_manifest.json", archive_manifest)
         _exclusive_write(temporary / "record.json", record)
         if _path_exists(directory):
             raise OrchestrationError("no-overwrite receipt already exists")
         os.replace(_filesystem_path(temporary), _filesystem_path(directory))
     except Exception:
-        if temporary.exists():
-            shutil.rmtree(temporary)
+        if _path_exists(temporary):
+            shutil.rmtree(_filesystem_path(temporary))
         raise
     return record
+
+
+def validate_archive_manifest(
+    manifest: Mapping[str, Any],
+    packet: Mapping[str, Any],
+    implementer_receipt: Mapping[str, Any] | None,
+    runner_binding: Mapping[str, Any] | None,
+    runner_receipt: Mapping[str, Any] | None,
+    repo: str | Path | None = None,
+) -> None:
+    """Require an archive manifest to exactly match the recorded lanes."""
+
+    expected = build_subordinate_archive_manifest(packet, implementer_receipt, runner_binding, runner_receipt, repo)
+    if expected is None:
+        raise OrchestrationError("orchestrator-only packets have no subordinate archive manifest")
+    if dict(manifest) != expected:
+        raise OrchestrationError("archive manifest does not exactly match the validated recorded lanes")
+
+
+def validate_archive_acknowledgment(
+    acknowledgment: Mapping[str, Any],
+    manifest: Mapping[str, Any],
+) -> None:
+    """Validate Sol's host-side archival acknowledgment."""
+
+    required = {
+        "schema_version", "owner", "task_id", "packet_hash",
+        "archive_manifest_hash", "acknowledged_by", "correction_pending",
+        "lane_dispositions", "canonical_hash",
+    }
+    if set(acknowledgment) != required:
+        raise OrchestrationError("archive acknowledgment has missing or forbidden fields")
+    unsigned = {key: value for key, value in acknowledgment.items() if key != "canonical_hash"}
+    if acknowledgment.get("schema_version") != ARCHIVE_ACKNOWLEDGMENT_SCHEMA or acknowledgment.get("canonical_hash") != sha256_canonical(unsigned):
+        raise OrchestrationError("archive acknowledgment hash or schema is invalid")
+    for field in ("owner", "task_id", "packet_hash"):
+        if acknowledgment.get(field) != manifest.get(field):
+            raise OrchestrationError(f"archive acknowledgment {field} mismatch")
+    if acknowledgment.get("archive_manifest_hash") != manifest.get("canonical_hash"):
+        raise OrchestrationError("archive acknowledgment manifest hash mismatch")
+    if acknowledgment.get("acknowledged_by") != "owner_orchestrator" or acknowledgment.get("correction_pending") is not False:
+        raise OrchestrationError("archive acknowledgment must be Sol-owned and confirm no correction is pending")
+    actual = acknowledgment.get("lane_dispositions")
+    expected_lanes = manifest.get("lanes")
+    if not isinstance(actual, list) or not isinstance(expected_lanes, list) or len(actual) != len(expected_lanes):
+        raise OrchestrationError("archive acknowledgment must disposition every requested lane")
+    for supplied, requested in zip(actual, expected_lanes, strict=True):
+        if not isinstance(supplied, dict) or set(supplied) != {"lane", "subordinate_task_id", "disposition", "supersession_ref"}:
+            raise OrchestrationError("archive acknowledgment lane disposition has an invalid shape")
+        if supplied.get("lane") != requested.get("lane") or supplied.get("subordinate_task_id") != requested.get("subordinate_task_id"):
+            raise OrchestrationError("archive acknowledgment lane task identity mismatch")
+        disposition = supplied.get("disposition")
+        supersession = supplied.get("supersession_ref")
+        if disposition not in {"archived", "superseded"}:
+            raise OrchestrationError("archive acknowledgment disposition must be archived or superseded")
+        if disposition == "archived" and supersession != "":
+            raise OrchestrationError("archived lane must not carry a supersession reference")
+        if disposition == "superseded":
+            _require_safe_text(supersession, "archive acknowledgment supersession_ref")
+
+
+def validate_recorded_bundle(
+    record: Mapping[str, Any],
+    packet: Mapping[str, Any],
+    implementer_receipt: Mapping[str, Any] | None,
+    runner_binding: Mapping[str, Any] | None,
+    runner_receipt: Mapping[str, Any] | None,
+    archive_manifest: Mapping[str, Any],
+) -> None:
+    """Require the recorded bundle to match every finalized lane hash."""
+
+    expected = _build_orchestration_record(packet, implementer_receipt, runner_binding, runner_receipt, None, archive_manifest)
+    if dict(record) != expected:
+        raise OrchestrationError("recorded receipt bundle does not match the finalized lanes")
+
+
+def validate_closeout_delivery_evidence(
+    evidence: Mapping[str, Any],
+    packet: Mapping[str, Any],
+    implementer_receipt: Mapping[str, Any] | None,
+    runner_binding: Mapping[str, Any] | None,
+    runner_receipt: Mapping[str, Any] | None,
+    record: Mapping[str, Any],
+    repo: str | Path | None = None,
+) -> None:
+    """Validate Sol's terminal Git, synchronization, and worktree evidence."""
+
+    required = {
+        "schema_version", "owner", "task_id", "packet_hash", "branch",
+        "candidate_commit", "receipt_record_hash", "captured_receipt_hashes",
+        "terminal_reconciliation", "primary_branch_sync", "worktree_removal",
+        "acknowledged_by", "canonical_hash",
+    }
+    if set(evidence) != required:
+        raise OrchestrationError("closeout delivery evidence has missing or forbidden fields")
+    unsigned = {key: value for key, value in evidence.items() if key != "canonical_hash"}
+    if evidence.get("schema_version") != CLOSEOUT_DELIVERY_EVIDENCE_SCHEMA or evidence.get("canonical_hash") != sha256_canonical(unsigned):
+        raise OrchestrationError("closeout delivery evidence hash or schema is invalid")
+    for field in ("owner", "task_id", "packet_hash", "branch"):
+        expected = packet["canonical_hash"] if field == "packet_hash" else packet[field]
+        if evidence.get(field) != expected:
+            raise OrchestrationError(f"closeout delivery evidence {field} mismatch")
+    candidate = implementer_receipt.get("candidate_commit") if implementer_receipt else ""
+    if evidence.get("candidate_commit") != candidate:
+        raise OrchestrationError("closeout delivery evidence candidate mismatch")
+    if evidence.get("receipt_record_hash") != record.get("canonical_hash"):
+        raise OrchestrationError("closeout delivery evidence record hash mismatch")
+    expected_receipts = {
+        "implementer": _payload_hash(implementer_receipt) if implementer_receipt else "",
+        "runner_binding": runner_binding.get("canonical_hash", "") if runner_binding else "",
+        "runner": _payload_hash(runner_receipt) if runner_receipt else "",
+    }
+    if evidence.get("captured_receipt_hashes") != expected_receipts:
+        raise OrchestrationError("closeout delivery evidence receipt hashes mismatch")
+    if evidence.get("acknowledged_by") != "owner_orchestrator":
+        raise OrchestrationError("closeout delivery evidence must be Sol-owned")
+    registry = load_registry(repo)
+    canonical_target = f"{registry['git']['canonical_remote']}/{registry['git']['canonical_branch']}"
+    reconciliation = evidence.get("terminal_reconciliation")
+    if not isinstance(reconciliation, dict) or set(reconciliation) != {"target", "disposition", "evidence_ref"} or reconciliation.get("target") != canonical_target or reconciliation.get("disposition") not in {"landed", "superseded"}:
+        raise OrchestrationError("closeout requires terminal branch reconciliation")
+    _require_safe_text(reconciliation.get("evidence_ref"), "terminal reconciliation evidence_ref")
+    primary_sync = evidence.get("primary_branch_sync")
+    if not isinstance(primary_sync, dict) or set(primary_sync) != {"verified", "evidence_ref"} or primary_sync.get("verified") is not True:
+        raise OrchestrationError("closeout requires verified primary-branch synchronization")
+    _require_safe_text(primary_sync.get("evidence_ref"), "primary branch sync evidence_ref")
+    worktree = evidence.get("worktree_removal")
+    if not isinstance(worktree, dict) or set(worktree) != {"worktree", "removed", "evidence_ref"} or worktree.get("worktree") != packet["worktree"] or worktree.get("removed") is not True:
+        raise OrchestrationError("closeout requires verified packet worktree removal")
+    _require_safe_text(worktree.get("evidence_ref"), "worktree removal evidence_ref")
+
+
+def finalize_closeout(
+    packet: Mapping[str, Any],
+    implementer_receipt: Mapping[str, Any] | None,
+    runner_binding: Mapping[str, Any] | None,
+    runner_receipt: Mapping[str, Any] | None,
+    archive_manifest: Mapping[str, Any],
+    archive_acknowledgment: Mapping[str, Any],
+    record: Mapping[str, Any],
+    delivery_evidence: Mapping[str, Any],
+    repo: str | Path | None = None,
+) -> dict[str, Any]:
+    """Publish immutable finalization after archival and delivery closeout."""
+
+    root = repository_root(repo)
+    validate_archive_manifest(archive_manifest, packet, implementer_receipt, runner_binding, runner_receipt, root)
+    validate_archive_acknowledgment(archive_acknowledgment, archive_manifest)
+    validate_recorded_bundle(record, packet, implementer_receipt, runner_binding, runner_receipt, archive_manifest)
+    validate_closeout_delivery_evidence(delivery_evidence, packet, implementer_receipt, runner_binding, runner_receipt, record, root)
+    profile = load_active_owner_profile(packet["owner"], root)
+    lane_dispositions = [
+        {"lane": item["lane"], "subordinate_task_id": item["subordinate_task_id"], "disposition": item["disposition"]}
+        for item in archive_acknowledgment["lane_dispositions"]
+    ]
+    payload = {
+        "schema_version": CLOSEOUT_FINALIZATION_SCHEMA,
+        "owner": packet["owner"],
+        "task_id": packet["task_id"],
+        "packet_hash": packet["canonical_hash"],
+        "receipt_record_hash": record["canonical_hash"],
+        "captured_receipt_hashes": delivery_evidence["captured_receipt_hashes"],
+        "archive_manifest_hash": archive_manifest["canonical_hash"],
+        "archive_acknowledgment_hash": _payload_hash(archive_acknowledgment),
+        "subordinate_task_dispositions": lane_dispositions,
+        "terminal_reconciliation": delivery_evidence["terminal_reconciliation"],
+        "primary_branch_sync": delivery_evidence["primary_branch_sync"],
+        "worktree_removal": delivery_evidence["worktree_removal"],
+        "delivery_evidence_hash": delivery_evidence["canonical_hash"],
+        "outcome": "closed",
+    }
+    finalization = {**payload, "canonical_hash": sha256_canonical(payload)}
+    directory = root / profile["continuity_receipts_root"] / packet["task_id"] / "finalizations" / finalization["canonical_hash"]
+    temporary = root / "tmp" / "owner_scoped_orchestration_finalizations" / f"{finalization['canonical_hash']}.tmp-{os.getpid()}"
+    try:
+        os.makedirs(_filesystem_path(temporary), exist_ok=False)
+        _exclusive_write(temporary / "archive_acknowledgment.json", archive_acknowledgment)
+        _exclusive_write(temporary / "closeout_delivery_evidence.json", delivery_evidence)
+        _exclusive_write(temporary / "closeout_finalization.json", finalization)
+        if _path_exists(directory):
+            raise OrchestrationError("no-overwrite closeout finalization already exists")
+        os.makedirs(_filesystem_path(directory.parent), exist_ok=True)
+        os.replace(_filesystem_path(temporary), _filesystem_path(directory))
+    except Exception:
+        if _path_exists(temporary):
+            shutil.rmtree(_filesystem_path(temporary))
+        raise
+    return finalization
 
 
 def _lane_binding(registry: Mapping[str, Any], lane: str) -> dict[str, str]:
@@ -557,6 +865,39 @@ def _is_safe_task_id(value: Any) -> bool:
         and len(value) <= MAX_TASK_ID_LENGTH
         and bool(TASK_ID_PATTERN.fullmatch(value))
     )
+
+
+def _is_opaque_task_id(value: Any) -> bool:
+    """Return whether a host task ID is bounded and safe to persist."""
+
+    return (
+        isinstance(value, str)
+        and len(value) <= MAX_SUBORDINATE_TASK_ID_LENGTH
+        and bool(OPAQUE_TASK_ID_PATTERN.fullmatch(value))
+    )
+
+
+def _validate_subordinate_task_ids(
+    value: Mapping[str, str] | None,
+    tier: str,
+) -> dict[str, str]:
+    """Require exactly the packet-bound subordinate tasks needed by the tier."""
+
+    expected = {
+        "orchestrator_only": set(),
+        "orchestrator_plus_implementer": {"implementer"},
+        "full_team": {"implementer", "runner"},
+    }.get(tier)
+    if expected is None:
+        raise OrchestrationError("unknown risk tier for subordinate task binding")
+    supplied = dict(value or {})
+    if set(supplied) != expected:
+        raise OrchestrationError("packet subordinate task IDs do not match the selected tier")
+    if any(not _is_opaque_task_id(task_id) for task_id in supplied.values()):
+        raise OrchestrationError("subordinate task ID must be an opaque safe identifier")
+    if len(set(supplied.values())) != len(supplied):
+        raise OrchestrationError("subordinate task IDs must be unique across lanes")
+    return supplied
 
 
 def _is_safe_branch_prefix(value: Any) -> bool:
@@ -767,9 +1108,9 @@ def _contains_term(text: str, term: str) -> bool:
 
 
 def _exclusive_write(path: Path, payload: Mapping[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
+    os.makedirs(_filesystem_path(path.parent), exist_ok=True)
     try:
-        with path.open("x", encoding="utf-8", newline="\n") as handle:
+        with open(_filesystem_path(path), "x", encoding="utf-8", newline="\n") as handle:
             handle.write(canonical_json(payload) + "\n")
     except FileExistsError as exc:
         raise OrchestrationError(f"no-overwrite receipt already exists: {path}") from exc
@@ -818,9 +1159,12 @@ def _parser() -> argparse.ArgumentParser:
     for argument in ("allowed-path", "prohibited-path", "evidence-ref", "focused-check", "broad-check"):
         prepare.add_argument(f"--{argument}", action="append", default=[])
     prepare.add_argument("--requested-tier")
+    prepare.add_argument("--implementer-task-id")
+    prepare.add_argument("--runner-task-id")
     bind = commands.add_parser("bind-runner"); bind.add_argument("--packet", required=True); bind.add_argument("--implementer-receipt", required=True); bind.add_argument("--candidate-commit", required=True); bind.add_argument("--output", required=True)
     validate = commands.add_parser("validate"); validate.add_argument("--packet", required=True); validate.add_argument("--implementer-receipt"); validate.add_argument("--runner-binding"); validate.add_argument("--runner-receipt"); validate.add_argument("--sol-disposition")
     record = commands.add_parser("record"); record.add_argument("--packet", required=True); record.add_argument("--implementer-receipt"); record.add_argument("--runner-binding"); record.add_argument("--runner-receipt"); record.add_argument("--sol-disposition")
+    finalize = commands.add_parser("finalize-closeout"); finalize.add_argument("--packet", required=True); finalize.add_argument("--implementer-receipt"); finalize.add_argument("--runner-binding"); finalize.add_argument("--runner-receipt"); finalize.add_argument("--archive-manifest", required=True); finalize.add_argument("--archive-acknowledgment", required=True); finalize.add_argument("--record", required=True); finalize.add_argument("--delivery-evidence", required=True)
     return parser
 
 
@@ -841,13 +1185,16 @@ def main(argv: list[str] | None = None) -> int:
                 if args.requested_tier not in tiers: raise OrchestrationError("unknown requested tier")
                 result["tier"] = max((result["tier"], args.requested_tier), key=tiers.index)
         elif args.command == "prepare":
-            result = make_packet(owner=args.owner, task_id=args.task_id, approval_ref=args.approval_ref, baseline=args.baseline, branch=args.branch, worktree=args.worktree, allowed_paths=args.allowed_path, prohibited_paths=args.prohibited_path, evidence_refs=args.evidence_ref, focused_checks=args.focused_check, broad_checks=args.broad_check, description=args.description, requested_tier=args.requested_tier, repo=root); _write_tmp(root, args.output, result)
+            subordinate_task_ids = {lane: value for lane, value in (("implementer", args.implementer_task_id), ("runner", args.runner_task_id)) if value}
+            result = make_packet(owner=args.owner, task_id=args.task_id, approval_ref=args.approval_ref, baseline=args.baseline, branch=args.branch, worktree=args.worktree, allowed_paths=args.allowed_path, prohibited_paths=args.prohibited_path, evidence_refs=args.evidence_ref, focused_checks=args.focused_check, broad_checks=args.broad_check, description=args.description, requested_tier=args.requested_tier, subordinate_task_ids=subordinate_task_ids, repo=root); _write_tmp(root, args.output, result)
         elif args.command == "bind-runner":
             result = bind_runner(_load_json(args.packet), _load_json(args.implementer_receipt), args.candidate_commit, root); _write_tmp(root, args.output, result)
         elif args.command == "validate":
             validate_receipts(_load_json(args.packet), _load_json(args.implementer_receipt) if args.implementer_receipt else None, _load_json(args.runner_binding) if args.runner_binding else None, _load_json(args.runner_receipt) if args.runner_receipt else None, _load_json(args.sol_disposition) if args.sol_disposition else None, root); result = {"outcome": "passed"}
-        else:
+        elif args.command == "record":
             result = record_bundle(_load_json(args.packet), _load_json(args.implementer_receipt) if args.implementer_receipt else None, _load_json(args.runner_binding) if args.runner_binding else None, _load_json(args.runner_receipt) if args.runner_receipt else None, _load_json(args.sol_disposition) if args.sol_disposition else None, root)
+        else:
+            result = finalize_closeout(_load_json(args.packet), _load_json(args.implementer_receipt) if args.implementer_receipt else None, _load_json(args.runner_binding) if args.runner_binding else None, _load_json(args.runner_receipt) if args.runner_receipt else None, _load_json(args.archive_manifest), _load_json(args.archive_acknowledgment), _load_json(args.record), _load_json(args.delivery_evidence), root)
         print(canonical_json(result)); return 0
     except InactiveOwnerError as exc:
         print(str(exc), file=sys.stderr); return 2

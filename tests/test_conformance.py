@@ -30,6 +30,15 @@ def test_orchestration_has_exact_model_bindings_and_separate_sol_finalization() 
     assert bindings["runner"] == {"model": "gpt-5.6-luna", "reasoning_effort": "max"}
     assert orchestration["subordinate_task_lifecycle"]["archive_owner"] == "owner_orchestrator"
     assert orchestration["subordinate_task_lifecycle"]["reuse_runner_thread_per_cycle"] is True
+    assert set(orchestration["subordinate_task_lifecycle"]["finalization_requires"]) == {
+        "recorded_receipt_hashes",
+        "subordinate_task_dispositions",
+        "terminal_reconciliation",
+        "primary_branch_sync",
+        "worktree_removal",
+        "archive_acknowledgment",
+    }
+    assert "/.worktrees/" in (ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
 
 
 def test_owner_dependency_profiles_keep_examples_inactive_and_non_authorizing() -> None:

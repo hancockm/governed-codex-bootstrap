@@ -207,6 +207,16 @@ def check_repository(root: Path) -> list[str]:
     required_finalization = {"accepted_exact_candidate_receipt", "no_correction_pending", "commit_push_integration", "primary_branch_sync", "terminal_reconciliation", "worktree_cleanup"}
     if subordinate.get("archive_owner") != "owner_orchestrator" or set(subordinate.get("archive_after", [])) != required_finalization:
         failures.append("orchestration: separate Sol finalization is incomplete")
+    required_finalization_evidence = {"recorded_receipt_hashes", "subordinate_task_dispositions", "terminal_reconciliation", "primary_branch_sync", "worktree_removal", "archive_acknowledgment"}
+    if set(subordinate.get("finalization_requires", [])) != required_finalization_evidence:
+        failures.append("orchestration: enforceable closeout evidence is incomplete")
+    gitignore_lines = {
+        line.strip()
+        for line in (root / ".gitignore").read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
+    if "/.worktrees/" not in gitignore_lines:
+        failures.append("git: repository-local worktree root is not ignored")
     parity = validate_manifest(_load(root, "configs/tool_parity_v1.json"), root=root)
     failures.extend(f"tool-parity: {item}" for item in parity["errors"])
     testing = _load(root, "configs/testing/execution_v1.json")

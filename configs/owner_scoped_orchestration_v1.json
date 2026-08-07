@@ -25,6 +25,14 @@
       "terminal_reconciliation",
       "worktree_cleanup"
     ],
+    "finalization_requires": [
+      "recorded_receipt_hashes",
+      "subordinate_task_dispositions",
+      "terminal_reconciliation",
+      "primary_branch_sync",
+      "worktree_removal",
+      "archive_acknowledgment"
+    ],
     "visible_nonterminal_statuses": ["failed", "blocked", "user_input_needed"]
   },
   "owners": {

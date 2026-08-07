@@ -19,7 +19,7 @@ repository maintenance; they do not create product authority.
 | `check_agent_discussion_updates.py` | Detects coordination records that changed and need owner review or publication handling. |
 | `export_agent_thread_continuity.py` | Exports one exact bounded user-visible task transcript transactionally, with redaction, ownership, navigation, and manifest evidence. |
 | `origin_reconciler.py` | Inspects branches, remotes, worktrees, reachability, patch equivalence, owner integration inboxes, and Core-only primary synchronization. |
-| `owner_scoped_orchestration.py` | Validates risk classifications, immutable work packets, lane receipts, runner bindings, and owner receipt publication. It does not invoke models or Git. |
+| `owner_scoped_orchestration.py` | Validates risk classifications, immutable work packets, lane receipts, runner bindings, archive acknowledgments, terminal reconciliation/synchronization/worktree evidence, and immutable closeout finalization. It records but does not perform host task archival, invoke models, or mutate Git. |
 | `research_intake.py` | Imports one research artifact into immutable, content-addressed source records with provenance. |
 | `research_organizer.py` | Scans, compares, reviews, and maps research records without promoting them into canonical doctrine. |
 | `source_doc_audit.py` | Checks project-owned Python public surfaces for the required module and API documentation. |

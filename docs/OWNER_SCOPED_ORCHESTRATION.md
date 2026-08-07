@@ -95,6 +95,7 @@ Bind, validate, and record:
 python tools/owner_scoped_orchestration.py bind-runner ...
 python tools/owner_scoped_orchestration.py validate ...
 python tools/owner_scoped_orchestration.py record ...
+python tools/owner_scoped_orchestration.py finalize-closeout --packet <packet>.json --implementer-receipt <terra-receipt>.json --runner-binding <binding>.json --runner-receipt <luna-receipt>.json --archive-manifest <recorded-manifest>.json --archive-acknowledgment <sol-acknowledgment>.json --record <recorded-bundle>.json --delivery-evidence <sol-delivery-evidence>.json
 ```
 
 The tool does not invoke models, infer ownership, push branches, integrate the
@@ -144,6 +145,15 @@ are recorded:
 - terminal branch reconciliation;
 - verified worktree cleanup;
 - receipt bundle captured in the owner's continuity pack.
+
+The immutable delivery evidence must bind the exact recorded-bundle hash,
+captured lane-receipt hashes, terminal `landed` or authorized `superseded`
+reconciliation, verified primary-branch synchronization, and removal of the
+packet worktree. The archive acknowledgment binds each packet-assigned
+subordinate task ID to `archived` or explicitly `superseded`. Only
+`finalize-closeout` can combine those records into the terminal `closed` state.
+A recorded receipt, an archive manifest, or an acknowledgment by itself is not
+closeout.
 
 Failed, blocked, and user-input-needed tasks remain visible. Keep only the
 owner-facing Sol task active after successful closeout.

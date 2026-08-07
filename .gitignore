@@ -6,3 +6,4 @@ tmp/
 dist/
 build/
 *.egg-info/
+/.worktrees/
