@@ -1,0 +1,87 @@
+{
+  "schema_version": "social_asset_catalog_v1",
+  "brand": {
+    "name": "Governed Codex Bootstrap",
+    "palette": {
+      "background": "#07111F",
+      "surface": "#102238",
+      "cyan": "#4DE2C5",
+      "violet": "#8B7CFF",
+      "gold": "#F4C95D",
+      "text": "#F7FAFC",
+      "muted": "#A9B7C7"
+    }
+  },
+  "assets": [
+    {
+      "id": "architecture-six-planes",
+      "launch_order": 1,
+      "use": "Launch-thread overview",
+      "source": "assets/social/source/architecture-six-planes.svg",
+      "export": "assets/social/x/architecture-six-planes-1200x628.png",
+      "width": 1200,
+      "height": 628,
+      "alt_text": "Six-plane governed development architecture. Authority and canonical knowledge feed coordination, followed by execution, delivery, and continuity, with verified evidence returning to the knowledge layer."
+    },
+    {
+      "id": "research-first-lifecycle",
+      "launch_order": 2,
+      "use": "Research-first explanation",
+      "source": "assets/social/source/research-first-lifecycle.svg",
+      "export": "assets/social/x/research-first-lifecycle-1200x628.png",
+      "width": 1200,
+      "height": 628,
+      "alt_text": "Markdown, text, and PDF sources move through immutable intake, candidate organization, Core review, and user-approved promotion into canonical documents; unaccepted material remains evidence."
+    },
+    {
+      "id": "owner-scoped-orchestration",
+      "launch_order": 3,
+      "use": "Owner-team explanation",
+      "source": "assets/social/source/owner-scoped-orchestration.svg",
+      "export": "assets/social/x/owner-scoped-orchestration-1200x628.png",
+      "width": 1200,
+      "height": 628,
+      "alt_text": "Owner-scoped development cycle: Sol plans and controls authority, Terra implements the approved packet, Luna independently verifies the exact commit, and Core integrates the primary branch."
+    },
+    {
+      "id": "governed-pdf-research",
+      "launch_order": 4,
+      "use": "PDF research follow-up",
+      "source": "assets/social/source/governed-pdf-research.svg",
+      "export": "assets/social/x/governed-pdf-research-1200x628.png",
+      "width": 1200,
+      "height": 628,
+      "alt_text": "Governed PDF research flow. Exact PDF bytes are preserved, Core asks before installing the pinned parser, native text is extracted page by page, and OCR, encryption, or empty-page limits stay explicit."
+    },
+    {
+      "id": "test-lifecycle",
+      "launch_order": 5,
+      "use": "Developer testing follow-up",
+      "source": "assets/social/source/test-lifecycle.svg",
+      "export": "assets/social/x/test-lifecycle-1200x628.png",
+      "width": 1200,
+      "height": 628,
+      "alt_text": "Efficient testing lifecycle. Focused, cached-failure, affected, and broad checks support development, followed by one parallel-safe full phase and one isolated serial phase on the final candidate."
+    },
+    {
+      "id": "portable-continuity",
+      "launch_order": 6,
+      "use": "Continuity follow-up",
+      "source": "assets/social/source/portable-continuity.svg",
+      "export": "assets/social/x/portable-continuity-1200x628.png",
+      "width": 1200,
+      "height": 628,
+      "alt_text": "Portable owner continuity. A completed task exports bounded transcripts, receipts, and decisions to Git so another device, fresh task, or authorized employee can rehydrate and verify the same owner role."
+    },
+    {
+      "id": "x-profile-header",
+      "launch_order": 0,
+      "use": "X profile header",
+      "source": "assets/social/source/x-profile-header.svg",
+      "export": "assets/social/x/governed-codex-header-1500x500.png",
+      "width": 1500,
+      "height": 500,
+      "alt_text": "Governed Codex Bootstrap header with the tagline: Research to evidence to approval to delivery to continuity."
+    }
+  ]
+}

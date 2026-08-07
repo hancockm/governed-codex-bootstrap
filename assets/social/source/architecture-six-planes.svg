@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="628" viewBox="0 0 1200 628" role="img" aria-labelledby="title desc">
+  <title id="title">Six-plane governed development architecture</title>
+  <desc id="desc">Authority and canonical knowledge feed coordination, then execution, delivery, and continuity.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111F"/><stop offset="1" stop-color="#0B1B2D"/></linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#4DE2C5"/></marker>
+    <style>
+      .brand{font:700 18px 'Segoe UI',sans-serif;letter-spacing:2px;fill:#4DE2C5}.title{font:700 44px 'Segoe UI',sans-serif;fill:#F7FAFC}.sub{font:400 21px 'Segoe UI',sans-serif;fill:#A9B7C7}.card{fill:#102238;stroke:#29445F;stroke-width:2}.name{font:700 21px 'Segoe UI',sans-serif;fill:#F7FAFC}.detail{font:400 15px 'Segoe UI',sans-serif;fill:#A9B7C7}.num{font:700 14px 'Segoe UI',sans-serif;fill:#07111F}.line{stroke:#4DE2C5;stroke-width:3;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1200" height="628" fill="url(#bg)"/>
+  <circle cx="1090" cy="-20" r="210" fill="#8B7CFF" opacity=".09"/><circle cx="70" cy="650" r="220" fill="#4DE2C5" opacity=".07"/>
+  <text x="64" y="55" class="brand">GOVERNED CODEX BOOTSTRAP</text>
+  <text x="64" y="118" class="title">One system. Six separate planes.</text>
+  <text x="64" y="154" class="sub">Evidence moves forward. Authority never moves by accident.</text>
+  <path d="M286 261H356" class="line"/><path d="M286 425H356" class="line"/><path d="M566 343H626" class="line"/><path d="M816 343H876" class="line"/>
+  <path d="M976 412V455H566V405" stroke="#8B7CFF" stroke-width="2.5" stroke-dasharray="8 7" fill="none" marker-end="url(#arrow)"/>
+  <g transform="translate(64 208)"><rect width="222" height="106" rx="16" class="card"/><circle cx="28" cy="28" r="15" fill="#4DE2C5"/><text x="23" y="33" class="num">1</text><text x="52" y="34" class="name">Authority</text><text x="22" y="68" class="detail">Who may decide?</text><text x="22" y="90" class="detail">User · policy · owners</text></g>
+  <g transform="translate(64 372)"><rect width="222" height="106" rx="16" class="card"/><circle cx="28" cy="28" r="15" fill="#F4C95D"/><text x="23" y="33" class="num">2</text><text x="52" y="34" class="name">Knowledge</text><text x="22" y="68" class="detail">What is accepted?</text><text x="22" y="90" class="detail">Thesis · spec · roadmap</text></g>
+  <g transform="translate(356 290)"><rect width="210" height="106" rx="16" class="card"/><circle cx="28" cy="28" r="15" fill="#8B7CFF"/><text x="23" y="33" class="num">3</text><text x="52" y="34" class="name">Coordination</text><text x="22" y="68" class="detail">Plans · A2A · critique</text><text x="22" y="90" class="detail">Explicit dispositions</text></g>
+  <g transform="translate(626 290)"><rect width="190" height="106" rx="16" class="card"/><circle cx="28" cy="28" r="15" fill="#4DE2C5"/><text x="23" y="33" class="num">4</text><text x="52" y="34" class="name">Execution</text><text x="22" y="68" class="detail">Sol · Terra · Luna</text><text x="22" y="90" class="detail">Bounded work packets</text></g>
+  <g transform="translate(876 208)"><rect width="260" height="106" rx="16" class="card"/><circle cx="28" cy="28" r="15" fill="#F4C95D"/><text x="23" y="33" class="num">5</text><text x="52" y="34" class="name">Delivery</text><text x="22" y="68" class="detail">Tests · commits · integration</text><text x="22" y="90" class="detail">Exact reconciliation evidence</text></g>
+  <g transform="translate(876 372)"><rect width="260" height="106" rx="16" class="card"/><circle cx="28" cy="28" r="15" fill="#8B7CFF"/><text x="23" y="33" class="num">6</text><text x="52" y="34" class="name">Continuity</text><text x="22" y="68" class="detail">Transcripts · receipts · history</text><text x="22" y="90" class="detail">Rehydrate, then re-verify</text></g>
+  <rect x="64" y="546" width="1072" height="2" fill="#29445F"/><text x="64" y="582" class="detail">A note is not a decision. A test is not approval. A pushed branch is not delivery.</text>
+</svg>

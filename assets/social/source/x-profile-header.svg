@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="500" viewBox="0 0 1500 500" role="img" aria-labelledby="title desc">
+  <title id="title">Governed Codex Bootstrap profile header</title><desc id="desc">Research to evidence to approval to delivery to continuity.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111F"/><stop offset="1" stop-color="#102238"/></linearGradient><style>.brand{font:700 22px 'Segoe UI',sans-serif;letter-spacing:3px;fill:#4DE2C5}.title{font:700 58px 'Segoe UI',sans-serif;fill:#F7FAFC}.sub{font:400 24px 'Segoe UI',sans-serif;fill:#A9B7C7}.pill{font:700 15px 'Segoe UI',sans-serif;fill:#07111F}</style></defs>
+  <rect width="1500" height="500" fill="url(#bg)"/><circle cx="1360" cy="40" r="260" fill="#8B7CFF" opacity=".10"/><circle cx="1180" cy="510" r="240" fill="#4DE2C5" opacity=".07"/>
+  <g transform="translate(440 90)"><text x="0" y="0" class="brand">GOVERNED CODEX BOOTSTRAP</text><text x="0" y="84" class="title">Development that can explain itself.</text><text x="0" y="134" class="sub">Research → evidence → approval → delivery → continuity</text>
+    <g transform="translate(0 186)"><rect width="112" height="34" rx="17" fill="#4DE2C5"/><text x="22" y="23" class="pill">RESEARCH</text><rect x="126" width="116" height="34" rx="17" fill="#8B7CFF"/><text x="148" y="23" class="pill">OWNERSHIP</text><rect x="256" width="130" height="34" rx="17" fill="#F4C95D"/><text x="276" y="23" class="pill">VERIFICATION</text><rect x="400" width="120" height="34" rx="17" fill="#4DE2C5"/><text x="420" y="23" class="pill">CONTINUITY</text></g>
+  </g>
+</svg>
