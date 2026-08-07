@@ -13,6 +13,7 @@ text remain authoritative in the parent catalog.
 - `a2a-owner-boundaries-1200x628.png` explains atomic cross-owner coordination.
 - `governed-pdf-research-1200x628.png` explains PDF consent and limits.
 - `test-lifecycle-1200x628.png` explains efficient testing.
+- `test-runner-terminal-1200x628.png` shows all five test-runner commands.
 - `portable-continuity-1200x628.png` explains Git-backed rehydration.
 - `governed-codex-header-1500x500.png` is the X profile header.
 

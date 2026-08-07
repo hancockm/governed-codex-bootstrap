@@ -76,8 +76,20 @@
       "alt_text": "Efficient testing lifecycle. Focused, cached-failure, affected, and broad checks support development, followed by one parallel-safe full phase and one isolated serial phase on the final candidate."
     },
     {
-      "id": "portable-continuity",
+      "id": "test-runner-terminal",
       "launch_order": 7,
+      "use": "Executable pytest profile reference",
+      "source": "assets/social/source/test-runner-terminal.svg",
+      "export": "assets/social/x/test-runner-terminal-1200x628.png",
+      "width": 1200,
+      "height": 628,
+      "post_copy": "Five pytest profiles. One lifecycle.\n\nfocused → current surface\nfailed → cached failures\naffected → Git impact map\nbroad → bounded regression\nfull → parallel-safe + serial isolation\n\nTerra debugs narrowly. Luna verifies the final candidate once.",
+      "post_timing": "Publish immediately after the conceptual test-lifecycle post.",
+      "alt_text": "Terminal command reference for five governed pytest profiles: focused tests one current surface and stops immediately; failed reruns cached failures; affected maps a Git diff to tests; broad runs conservative regression with a three-failure limit; full runs the registered parallel-safe phase followed by exclusive serial tests."
+    },
+    {
+      "id": "portable-continuity",
+      "launch_order": 8,
       "use": "Continuity follow-up",
       "source": "assets/social/source/portable-continuity.svg",
       "export": "assets/social/x/portable-continuity-1200x628.png",

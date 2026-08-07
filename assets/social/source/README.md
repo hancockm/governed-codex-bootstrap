@@ -14,6 +14,7 @@ without relying on generative-image text rendering.
 - `a2a-owner-boundaries.svg` shows atomic cross-owner requests and promotion.
 - `governed-pdf-research.svg` explains optional PDF extraction and consent.
 - `test-lifecycle.svg` shows fast triage followed by final verification.
+- `test-runner-terminal.svg` shows the five executable pytest profiles.
 - `portable-continuity.svg` shows Git-backed owner rehydration.
 - `x-profile-header.svg` provides the project profile header.
 

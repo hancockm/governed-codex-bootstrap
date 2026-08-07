@@ -5,7 +5,8 @@
 This catalog provides a coherent visual sequence for introducing Governed
 Codex Bootstrap to readers and developers. The initial set follows the launch
 order in the system narrative: architecture, research, orchestration, A2A
-owner boundaries, PDF intake, testing, and continuity.
+owner boundaries, PDF intake, conceptual testing, executable test commands,
+and continuity.
 
 ## Contents
 
@@ -33,6 +34,8 @@ follow as standalone posts.
 The A2A boundary post follows owner-scoped orchestration because the reader
 first needs to understand independent owner authority. Its registered
 `post_copy` is ready for X, and `post_timing` records its place in the series.
+The terminal test-runner post follows the conceptual testing diagram so readers
+see the lifecycle before receiving the five exact commands.
 
 ## Change Discipline
 
