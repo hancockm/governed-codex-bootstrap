@@ -22,7 +22,7 @@ or when the user asks for the next implementation step.
 
 Separate selection evidence from delivery conditions. Classify capability
 states, dependencies, owner boundaries, and canonical/runtime mismatches.
-Apply the [[30_Core/Continuity/Protocols/Assumption Audit.md]], then recommend
+Apply the [[30_Core/Continuity/Protocols/Assumption Audit]], then recommend
 the smallest unblocked Core-owned gate.
 
 Do not reopen stable selection because of unrelated documentation churn,

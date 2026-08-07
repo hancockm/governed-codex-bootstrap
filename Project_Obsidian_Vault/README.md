@@ -13,12 +13,12 @@ New operators should first read the repository-level
 [System User Guide](../docs/SYSTEM_USER_GUIDE.md) for Codex project setup,
 task closeout, continuity rehydration, and the architectural rationale.
 
-1. Open [[00_Home/Project MOC.md]].
-2. Read [[10_Research/Research Sources MOC.md]] before accepting derived
+1. Open [[00_Home/Project MOC]].
+2. Read [[10_Research/Research Sources MOC]] before accepting derived
    canonical claims.
-3. Read [[00_Canonical/Canonical MOC.md]] for current accepted doctrine.
-4. Use [[30_Core/Core MOC.md]] for Core authority and operating protocols.
-5. Use [[40_Coordination/Agent-to-Agent Discussions MOC.md]] for active
+3. Read [[00_Canonical/Canonical MOC]] for current accepted doctrine.
+4. Use [[30_Core/Core MOC]] for Core authority and operating protocols.
+5. Use [[40_Coordination/Agent-to-Agent Discussions MOC]] for active
    requests, critiques, and dispositions.
 6. Open feature or continuity areas only when the task requires them.
 
@@ -56,7 +56,7 @@ discoverable from current narrative rather than becoming an unindexed dump.
 ## Owner Instructions
 
 Shared owner instructions live at
-[[40_Coordination/Instructions/README.md]]. Root [AGENTS.md](../AGENTS.md) remains the sole
+[[40_Coordination/Instructions/README]]. Root [AGENTS.md](../AGENTS.md) remains the sole
 repository-wide operational authority. Owner instructions narrow scope and
 startup order but cannot weaken shared Git, continuity, safety, evidence, or
 verification rules.

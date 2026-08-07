@@ -10,8 +10,8 @@ convergence history, not canonical project doctrine.
 
 ## Start Here
 
-1. Read [[40_Coordination/Instructions/README.md]].
-2. Open [[40_Coordination/Generated/Active Records.md]].
+1. Read [[40_Coordination/Instructions/README]].
+2. Open [[40_Coordination/Generated/Active Records]].
 3. Inspect only records relevant to the current owner boundary or plan.
 4. Verify repository claims against current evidence before acting.
 

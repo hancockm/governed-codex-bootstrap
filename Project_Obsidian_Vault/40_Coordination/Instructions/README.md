@@ -13,8 +13,8 @@ creating a second, divergent policy source.
 
 1. Read root [AGENTS.md](../../../AGENTS.md).
 2. Read the active owner's role, bootstrap prompt, continuity MOC, and profile.
-3. Read [[40_Coordination/Instructions/All Owners User Collaboration And Decision Semantics.md]].
-4. Read [[40_Coordination/Instructions/Universal Work Selection Audit.md]] for
+3. Read [[40_Coordination/Instructions/All Owners User Collaboration And Decision Semantics]].
+4. Read [[40_Coordination/Instructions/Universal Work Selection Audit]] for
    substantial next-step selection.
 5. Read the active coordination index and only records relevant to the task.
 6. Verify every material repository claim against current evidence.
@@ -110,14 +110,14 @@ through Core.
 ## Instruction Map
 
 <!-- managed:moc-children:start -->
-- [[40_Coordination/Instructions/All Owners User Collaboration And Decision Semantics.md]] — Authorization, evidence, ownership, disagreement, and completion behavior shared by every owner.
-- [[40_Coordination/Instructions/Universal Work Selection Audit.md]] — Source-only frozen-baseline audit procedure for substantial next-step selection.
-- [[40_Coordination/Instructions/Repository-Local Worktree Standard.md]] — Vault pointer to the binding root Git/worktree policy and its historical rationale.
-- [[40_Coordination/Instructions/Core Owner.md]] — Vault entry for Core authority, startup, promotion, integration, and continuity.
-- [[40_Coordination/Instructions/Future Owner Template.md]] — Non-authorizing instructions for owner recognition, adoption, activation, and retirement.
-- [[40_Coordination/Instructions/Review And Critique Agent.md]] — Analytical supporting-role boundaries and critique contract.
-- [[40_Coordination/Instructions/Owner-Scoped Development Lanes.md]] — Sol, Terra, and Luna packet, receipt, correction, and archival boundaries.
-- [[40_Coordination/Instructions/External Critique Handoff.md]] — Optional provider invocation, output validation, fallback, and publication rules.
+- [[40_Coordination/Instructions/All Owners User Collaboration And Decision Semantics]] — Authorization, evidence, ownership, disagreement, and completion behavior shared by every owner.
+- [[40_Coordination/Instructions/Universal Work Selection Audit]] — Source-only frozen-baseline audit procedure for substantial next-step selection.
+- [[40_Coordination/Instructions/Repository-Local Worktree Standard]] — Vault pointer to the binding root Git/worktree policy and its historical rationale.
+- [[40_Coordination/Instructions/Core Owner]] — Vault entry for Core authority, startup, promotion, integration, and continuity.
+- [[40_Coordination/Instructions/Future Owner Template]] — Non-authorizing instructions for owner recognition, adoption, activation, and retirement.
+- [[40_Coordination/Instructions/Review And Critique Agent]] — Analytical supporting-role boundaries and critique contract.
+- [[40_Coordination/Instructions/Owner-Scoped Development Lanes]] — Sol, Terra, and Luna packet, receipt, correction, and archival boundaries.
+- [[40_Coordination/Instructions/External Critique Handoff]] — Optional provider invocation, output validation, fallback, and publication rules.
 <!-- managed:moc-children:end -->
 
 Owner-specific instruction manuals and continuity packs are added here only

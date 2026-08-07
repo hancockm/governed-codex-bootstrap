@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 IGNORED_DOCUMENTATION_ROOTS = {".git", ".worktrees", "social", "tmp"}
 MARKDOWN_LINK = re.compile(r"!?\[[^\]]+\]\(([^)]+)\)")
 INLINE_CODE = re.compile(r"(?<!`)`([^`\r\n]+)`(?!`)")
+OBSIDIAN_WIKILINK = re.compile(r"(?<!!)\[\[([^\]|#]+)")
 
 
 def _markdown_files() -> list[Path]:
@@ -178,6 +179,20 @@ def test_repository_markdown_links_resolve_without_changing_obsidian_wiki_links(
                     continue
                 if not resolved.exists():
                     failures.append(f"{markdown.relative_to(ROOT)}:{number}: missing target: {target}")
+    assert failures == []
+
+
+def test_obsidian_wikilinks_use_extensionless_targets() -> None:
+    failures: list[str] = []
+    vault_root = ROOT / "Project_Obsidian_Vault"
+    for markdown in sorted(vault_root.rglob("*.md")):
+        for number, line in _outside_fences(markdown):
+            for match in OBSIDIAN_WIKILINK.finditer(line):
+                target = match.group(1).strip().replace("\\", "/")
+                if target.endswith(".md"):
+                    failures.append(
+                        f"{markdown.relative_to(ROOT)}:{number}: use extensionless wikilink: {target[:-3]}"
+                    )
     assert failures == []
 
 

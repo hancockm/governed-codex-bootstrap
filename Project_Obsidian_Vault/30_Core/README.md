@@ -10,11 +10,11 @@ integration, and the Core continuity pack.
 
 ## Reading Order
 
-1. [[30_Core/Core Bootstrap.md]]
-2. [[30_Core/Core Protocols.md]]
-3. [[30_Core/Role Bootstrap and Activation.md]] when ownership changes
-4. [[30_Core/Core Vault Maintenance Protocol.md]] for vault cleanup
-5. [[30_Core/Continuity/Core Continuity MOC.md]] for reorientation or closeout
+1. [[30_Core/Core Bootstrap]]
+2. [[30_Core/Core Protocols]]
+3. [[30_Core/Role Bootstrap and Activation]] when ownership changes
+4. [[30_Core/Core Vault Maintenance Protocol]] for vault cleanup
+5. [[30_Core/Continuity/Core Continuity MOC]] for reorientation or closeout
 
 Root [AGENTS.md](../../AGENTS.md) and [roles/core/ROLE.md](../../roles/core/ROLE.md) remain operational authorities. This
 vault area supplies the maintained narrative path.

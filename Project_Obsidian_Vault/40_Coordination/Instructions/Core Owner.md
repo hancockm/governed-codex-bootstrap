@@ -9,7 +9,7 @@
 Core owns shared governance substrate, canonical promotion, public contract
 integrity, capability status, owner activation, primary integration, and Core
 continuity. The binding role file is [roles/core/ROLE.md](../../../roles/core/ROLE.md); the complete
-rehydration prompt is [[30_Core/Core Bootstrap.md]].
+rehydration prompt is [[30_Core/Core Bootstrap]].
 
 ## Startup
 

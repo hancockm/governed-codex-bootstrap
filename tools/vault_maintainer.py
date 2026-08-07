@@ -332,12 +332,31 @@ def _visible_h1(text: str) -> re.Match[str] | None:
 
 def _moc_diagnostics(text: str, path: str) -> list[Diagnostic]:
     diagnostics = _frontmatter_diagnostics(text, path)
+    diagnostics.extend(_wikilink_diagnostics(text, path))
     if TRANSCLUSION_RE.search(text):
         diagnostics.append(
             Diagnostic("error", "transclusion_in_moc", path, "managed MOCs cannot contain ![[...]]")
         )
     if not _visible_h1(text):
         diagnostics.append(Diagnostic("error", "missing_h1", path, "managed MOC has no H1"))
+    return diagnostics
+
+
+def _wikilink_diagnostics(text: str, path: str) -> list[Diagnostic]:
+    """Reject file extensions that Obsidian would expose as link labels."""
+
+    diagnostics: list[Diagnostic] = []
+    for match in WIKILINK_RE.finditer(text):
+        target = match.group("target").strip().replace("\\", "/")
+        if target.endswith(".md"):
+            diagnostics.append(
+                Diagnostic(
+                    "error",
+                    "markdown_extension_in_wikilink",
+                    path,
+                    f"use extensionless Obsidian target: {target[:-3]}",
+                )
+            )
     return diagnostics
 
 
@@ -470,6 +489,7 @@ def validate_scope(registry: Registry, scope: Scope, *, require_navigation: bool
         relative_path = f"{target}.md"
         text = _read_text(path)
         diagnostics.extend(_frontmatter_diagnostics(text, relative_path))
+        diagnostics.extend(_wikilink_diagnostics(text, relative_path))
         visible_h1 = _visible_h1(text)
         if not visible_h1:
             diagnostics.append(Diagnostic("error", "missing_h1", relative_path, "managed child has no H1"))

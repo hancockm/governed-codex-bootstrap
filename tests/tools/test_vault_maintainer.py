@@ -65,6 +65,16 @@ def test_parse_moc_children_supports_multiple_blocks_and_requires_sentences():
     assert [item.code for item in diagnostics] == ["child_summary_not_sentence"]
 
 
+def test_wikilink_diagnostics_reject_markdown_extensions():
+    diagnostics = vault._wikilink_diagnostics(
+        "Read [[Docs/Native]] and [[Docs/Visible.md|Visible]].",
+        "Root.md",
+    )
+
+    assert [item.code for item in diagnostics] == ["markdown_extension_in_wikilink"]
+    assert diagnostics[0].message == "use extensionless Obsidian target: Docs/Visible"
+
+
 def test_nested_mocs_generate_path_qualified_breadcrumbs_and_are_byte_idempotent(tmp_path):
     vault_root = tmp_path / "vault"
     (vault_root / "Docs" / "Nested").mkdir(parents=True)

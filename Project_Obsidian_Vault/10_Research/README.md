@@ -46,5 +46,5 @@ material. Promotion requires user authorization where applicable, precise
 canonical wording, owner alignment, and executable evidence proportional to
 the claim.
 
-Use [[10_Research/Research Source Map.md]] as the vault entry to the generated
+Use [[10_Research/Research Source Map]] as the vault entry to the generated
 research map. The authoritative byte records remain under [research/records/](../../research/records).

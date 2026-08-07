@@ -47,5 +47,5 @@ the owning pack. They do not create duplicate continuity owners. Completed or
 superseded subordinate tasks are archived only after durable receipt capture,
 delivery, terminal reconciliation, and worktree cleanup.
 
-Start at [[30_Core/Continuity/Core Continuity MOC.md]] and open only the
+Start at [[30_Core/Continuity/Core Continuity MOC]] and open only the
 protocol relevant to the present task.

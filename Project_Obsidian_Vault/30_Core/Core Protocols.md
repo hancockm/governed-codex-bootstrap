@@ -47,6 +47,6 @@ removes only verified-clean temporary worktrees.
 
 ## Continuity
 
-The [[30_Core/Continuity/Core Continuity MOC.md]] contains the reorientation,
+The [[30_Core/Continuity/Core Continuity MOC]] contains the reorientation,
 assumption, reconciliation, and maintenance protocols. Transcript history is
 bounded, attributable, sanitized, and non-canonical.
