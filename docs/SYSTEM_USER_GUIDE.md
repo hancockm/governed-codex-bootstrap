@@ -21,6 +21,7 @@ section during daily operation.
 | [Start In The Codex Desktop App](#start-in-the-codex-desktop-app) | Opens the repository correctly, verifies Codex capabilities, starts Core, and imports initial research. |
 | [The Vault And The LLM Wiki Pattern](#the-vault-and-the-llm-wiki-pattern) | Explains how source, canonical knowledge, coordination, continuity, and archives remain distinct but navigable. |
 | [Owner-Scoped Orchestration](#owner-scoped-orchestration) | Defines the Sol, Terra, and Luna lanes and their immutable packet, verification, and archival boundaries. |
+| [Create And Activate A New Owner](#create-and-activate-a-new-owner) | Shows when a separate owner is justified, what Core scaffolds, what prompt the user receives, and how adoption becomes active authority. |
 | [Agent-To-Agent Discussions And Owner Direction](#agent-to-agent-discussions-and-owner-direction) | Shows how separate owners request boundaries, decide direction, converge critiques, and set up A2A delivery. |
 | [One Complete Work Cycle](#one-complete-work-cycle) | Follows one approved outcome from discovery through implementation, verification, delivery, and integrated closeout. |
 | [Close A Task Promptly And Rehydrate Correctly](#close-a-task-promptly-and-rehydrate-correctly) | Preserves portable owner history in Git before archiving and rehydrates it across tasks, devices, or employees. |
@@ -287,6 +288,205 @@ sequenceDiagram
 Sol remains the only user-facing lane. Terra cannot push or expand scope.
 Luna cannot edit, commit, push, integrate, delete, or archive itself. A failed,
 blocked, or user-input-needed subordinate task remains visible.
+
+## Create And Activate A New Owner
+
+Create a separate owner only when the project has developed a durable authority
+boundary that Core should no longer decide by itself. Core builds the inactive
+scaffold and returns the exact prompt for the first owner task. The user opens
+that task; the proposed owner audits and adopts its boundary; Core then
+integrates and activates it.
+
+### Decide whether a new owner is warranted
+
+| A separate owner is usually warranted when | Keep the work with an existing owner when |
+| --- | --- |
+| The area makes recurring semantic, policy, release, or operational decisions | The need is one class, adapter, script, or short implementation slice |
+| It has distinct source authority, evidence, risks, or maturity claims | It only needs more implementation capacity |
+| Multiple consumers need a stable public contract from it | Core can expose the required neutral contract without delegating meaning |
+| It needs an independent continuity history and approval lifecycle | The proposed role would merely mirror another owner's decisions |
+| Its change cadence and verification surface are independently governable | No concrete owned decision can be named |
+
+Agent count is not the objective. A new owner adds coordination, continuity,
+Git, testing, and activation cost. Core should first test whether the need is a
+bounded capability inside an existing owner. If the proposed owner cannot
+state what it decides, what it refuses to decide, and who consumes its public
+contracts, it is not ready for recognition.
+
+### Ask Core to evaluate and scaffold the boundary
+
+Start in the current Core task with a request such as:
+
+```text
+Evaluate whether <proposed owner name> should become a separate owner. The
+demonstrated need is <recurring decisions and consumers>. Identify what Core
+would retain, what the new owner would decide, its upstream contracts,
+downstream consumers, risks, and verification surface. Challenge whether a
+new owner is actually warranted. If I approve the boundary plan, build the
+inactive scaffold, validate it, and return the exact prompt for the proposed
+owner's first adoption task. Do not activate the owner or begin feature
+implementation during scaffolding.
+```
+
+Core first presents a boundary plan. The user approves the boundary before
+Core creates authority-shaped files. This prevents a plausible directory tree
+from quietly becoming an owner decision.
+
+### What Core builds
+
+Core creates one connected, inactive package. Paths vary with the approved
+owner ID, but the dependency shape is:
+
+```text
+future_owners/<owner-id>/
+├── README.md                       purpose and inactive status
+├── ROLE.md                         owned and prohibited decisions
+├── BOOTSTRAP.md                    exact startup and first-response contract
+├── owner_profile.json              dependencies and ownership map
+├── orchestration_profile.json      Sol/Terra/Luna bindings and checks
+└── continuity/
+    ├── README.md                   continuity ownership and maintenance
+    └── MOC.md                      transcripts, protocols, and receipts map
+
+Project_Obsidian_Vault/20_Features/<Owner Name>/
+├── <Owner Name> MOC.md             narrative parent and reading order
+├── README.md                       public purpose and package boundary
+└── Continuity link or registered owner pack
+
+configs/owners_v1.json              logical owner registration, inactive
+configs/owner_scoped_orchestration_v1.json
+                                     Git identity and adoption-only status
+tests/                               profile, namespace, and boundary checks
+```
+
+The active project may add a source package, feature README, configuration
+schema, or dedicated vault scope when those are part of the approved boundary.
+Core does not create speculative runtime code merely to make the owner look
+substantial.
+
+Core fills the scaffold with:
+
+- a stable owner ID, Git owner, branch prefix, and `.worktrees/` prefix;
+- lifecycle state `recognized_inactive` or `owner_adoption_required`;
+- owned files, decisions, capabilities, evidence, and maturity claims;
+- prohibited paths and explicit non-ownership;
+- public upstream contracts and their owners;
+- downstream consumers and the public outputs they may use;
+- one registered continuity pack and transcript-ownership rule;
+- owner-specific focused and broad verification profiles;
+- shared Sol/Terra/Luna prompt references without copying root policy;
+- adoption, activation, retirement, and unresolved-dependency fields;
+- conformance tests proving identity and namespace uniqueness.
+
+The scaffold must keep `no_ownership_grant: true`, contain no activation
+evidence, and remain non-dispatchable. Core validates it as an inactive owner;
+it does not run implementation packets for that owner.
+
+### What Core returns to the user
+
+Core's scaffold handoff contains four things:
+
+1. the accepted owner/non-owner boundary and unresolved questions;
+2. the exact scaffold paths, validation results, commit, and Git disposition;
+3. any A2A adoption request the proposed owner must answer;
+4. a complete prompt for a fresh Codex task inside the same saved project.
+
+The returned prompt follows this pattern:
+
+```text
+You are the proposed <Owner Name> Owner Orchestrator. This is an adoption task,
+not feature implementation and not active-owner dispatch.
+
+Read, in order:
+1. AGENTS.md
+2. docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md
+3. future_owners/<owner-id>/ROLE.md
+4. future_owners/<owner-id>/BOOTSTRAP.md
+5. future_owners/<owner-id>/owner_profile.json
+6. future_owners/<owner-id>/orchestration_profile.json
+7. future_owners/<owner-id>/continuity/MOC.md
+8. the relevant canonical documents and A2A adoption request
+9. current source, tests, configuration, capability state, and Git evidence
+
+Verify the proposed authority, non-ownership, upstream contracts, downstream
+consumers, Git namespace, continuity ownership, verification profiles, and
+unresolved assumptions. Challenge any overlap or private cross-owner
+dependency. Your first response must report the evidence inspected, freshness,
+verified and unverified assumptions, boundary corrections, and whether you can
+adopt the profile as written. Do not implement product behavior, alter Core
+doctrine, or claim active authority.
+
+After I approve your adoption plan, publish only the owner-scoped adoption and
+correction records on <owner-branch-prefix><adoption-slice>, route them to Core,
+and remain inactive until Core lands the branch and records activation.
+```
+
+The user should paste that prompt into a **new task within the same Codex
+project**. Do not continue the Core task while pretending it is the proposed
+owner. The new task gets a new thread ID and, after adoption, writes only to
+the proposed owner's registered continuity pack.
+
+### Adoption and activation sequence
+
+```mermaid
+flowchart TD
+    Need["User identifies a durable boundary"] --> Evaluate["Core challenges need and dependency shape"]
+    Evaluate --> Plan["Core presents owner-boundary plan"]
+    Plan -->|"user approves"| Scaffold["Core builds inactive scaffold + tests"]
+    Scaffold --> Prompt["Core returns exact fresh-task prompt"]
+    Prompt --> OwnerTask["User starts proposed owner adoption task"]
+    OwnerTask --> Audit["Owner audits scope, dependencies, Git, continuity"]
+    Audit --> Correction{"Correction required?"}
+    Correction -->|"Yes"| AdoptionBranch["Owner publishes bounded corrections + adoption"]
+    Correction -->|"No"| AdoptionBranch
+    AdoptionBranch --> CoreReview["Core integrates and validates adoption"]
+    CoreReview --> Activate["Core records active state and activation evidence"]
+    Activate --> FirstGoal["User may approve first owner implementation goal"]
+```
+
+Before activation, the proposed owner may change only its authorized adoption
+surfaces. It cannot dispatch Terra or Luna for product implementation, claim
+capability maturity, or treat its branch as landed. Adoption confirms the
+owner accepts the boundary; Core activation creates dispatch authority.
+
+### Worked example: Database Layer Owner
+
+A Database Layer Owner can be appropriate after the project has multiple
+database adapters, recurring migration and recovery operations, or shared
+persistence standards that no feature owner should privately redefine. It is
+premature when the project only has one small reference adapter and no
+cross-owner operational need.
+
+| Database Layer Owner owns | Database Layer Owner does not own |
+| --- | --- |
+| Concrete adapters for approved database engines | Business repository ports and atomic domain operations |
+| Driver, connection, pooling, transaction, and migration infrastructure | Feature data meaning, lifecycle semantics, or domain schema decisions |
+| Adapter conformance and environment-gated live tests | Privacy, retention, residency, or licensing conclusions owned elsewhere |
+| Backup, restore, recovery, capacity, and operational evidence | Selecting a production database without user/Core approval |
+| Shared persistence standards and safe diagnostics | Direct database dependencies inside business or orchestration code |
+
+It consumes storage-neutral contracts from Core and domain schema or migration
+requirements from the owning feature. It may provide adapter capability
+descriptors, migration receipts, conformance results, recovery evidence, and
+operational recommendations. Those outputs do not let it rewrite domain
+semantics.
+
+A user could ask Core:
+
+```text
+Evaluate and, if warranted after my approval, scaffold a Database Layer Owner.
+The demonstrated need is multiple production persistence adapters plus shared
+migration, backup, recovery, and conformance policy. Core must retain
+storage-neutral business repository ports and domain semantics. The new owner
+must not own feature data meaning, retention decisions, or database selection
+authority. Return the inactive scaffold, validation evidence, and the exact
+fresh-task adoption prompt. Do not activate it or implement an adapter yet.
+```
+
+Core would substitute the approved owner ID and exact paths into the generic
+prompt above. The proposed Database Layer Owner would then challenge the
+boundary in its own task before accepting it. This example demonstrates the
+workflow; it does not activate a database owner in this bootstrap.
 
 ## Agent-To-Agent Discussions And Owner Direction
 

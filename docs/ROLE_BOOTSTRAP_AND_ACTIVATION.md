@@ -49,6 +49,24 @@ Core supplies an inactive, connected set:
 Assets reference shared instructions rather than copying mutable repository-
 wide policy into each role.
 
+## Core Scaffold And User Handoff
+
+After the user approves the owner-boundary plan, Core creates the complete
+inactive scaffold. Core registers the proposed identity and namespaces,
+connects the role and bootstrap, establishes exactly one continuity pack,
+binds the shared orchestration prompts, records public dependencies and
+non-ownership, adds focused/conformance tests, and publishes an adoption A2A.
+
+Core then returns the scaffold paths, validation and Git evidence, unresolved
+questions, and a complete fresh-task prompt. The prompt identifies the role as
+proposed and inactive, supplies the exact reading order, requires an authority
+and dependency audit as the first response, and prohibits feature
+implementation before activation.
+
+The user starts a separate Codex task with that prompt. Core must not operate
+the new role inside the Core task, and the new task must not infer active
+authority from the scaffold's completeness.
+
 ## Dependency Architecture
 
 The owner profile records:
@@ -76,6 +94,15 @@ dependency assumptions, and publishes an adoption record. Adoption confirms
 the owner accepts its authority, non-ownership, public dependencies,
 continuity responsibilities, tests, and Git rules. It does not activate the
 profile by itself.
+
+## First Owner Task
+
+The first task is adoption-only. The proposed owner verifies current canonical
+and runtime evidence, challenges overlaps and private dependencies, confirms
+Git and continuity uniqueness, and reports whether it accepts the boundary.
+After user approval, it publishes only adoption records and authorized
+corrections on its registered adoption branch. It remains inactive while Core
+integrates and validates that branch.
 
 ## Core Activation
 
@@ -105,3 +132,6 @@ role is inactive.
 `future_owners/owner-template/` demonstrates required shape only. Copying it
 does not grant authority. Every filled template must pass the same recognition,
 adoption, integration, and activation sequence.
+
+The complete operator walkthrough and reusable first-task prompt are in
+`docs/SYSTEM_USER_GUIDE.md` under "Create And Activate A New Owner."

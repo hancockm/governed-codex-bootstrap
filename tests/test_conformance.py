@@ -139,6 +139,7 @@ def test_system_user_guide_has_a_clean_ordered_narrative_map() -> None:
         "Start In The Codex Desktop App",
         "The Vault And The LLM Wiki Pattern",
         "Owner-Scoped Orchestration",
+        "Create And Activate A New Owner",
         "Agent-To-Agent Discussions And Owner Direction",
         "One Complete Work Cycle",
         "Close A Task Promptly And Rehydrate Correctly",
@@ -155,6 +156,26 @@ def test_system_user_guide_has_a_clean_ordered_narrative_map() -> None:
         "### Set Up A2A Coordination From The Bootstrap"
     )
     assert "This section shows their\nnormal operating sequence" in guide
+
+
+def test_system_user_guide_explains_new_owner_scaffold_and_prompt_handoff() -> None:
+    guide = (ROOT / "docs/SYSTEM_USER_GUIDE.md").read_text(encoding="utf-8")
+    for phrase in (
+        "## Create And Activate A New Owner",
+        "### What Core builds",
+        "### What Core returns to the user",
+        "This is an adoption task",
+        "The user should paste that prompt into a **new task",
+        "### Adoption and activation sequence",
+        "### Worked example: Database Layer Owner",
+        "Business repository ports and atomic domain operations",
+        "does not activate a database owner in this bootstrap",
+    ):
+        assert phrase in guide
+    assert guide.index("## Owner-Scoped Orchestration") < guide.index(
+        "## Create And Activate A New Owner"
+    ) < guide.index("## Agent-To-Agent Discussions And Owner Direction")
+    assert "no_ownership_grant: true" in guide
 
 
 def test_system_user_guide_defines_a2a_authority_and_owner_direction() -> None:
