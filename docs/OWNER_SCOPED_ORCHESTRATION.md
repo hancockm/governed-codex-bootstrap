@@ -125,6 +125,20 @@ reasoning effort. Creating a projectless task, fork, or replacement runner for
 each retry fragments evidence and leaves stale active tasks. A channel or task
 identity mismatch is `route_integrity_failed`, not a successful verification.
 
+For every full-team cycle, the required lifecycle is:
+
+1. Create one fresh Luna chat inside the matching saved project.
+2. Bind `gpt-5.6-luna` at `xhigh`.
+3. Retain and reuse that exact thread ID for every verification and reverification in the cycle.
+4. Explicitly reassert the model and reasoning effort on every continuation.
+5. Archive only after receipt capture, push/integration, primary synchronization, terminal reconciliation, worktree removal, and finalization.
+6. Keep failed, blocked, and user-input-needed Luna tasks visible.
+
+No projectless Luna task, fork, or new Luna chat for candidate revisions is
+valid. Binding validation requires host-recorded `turn_context` evidence for
+the saved project, exact thread ID, and `gpt-5.6-luna`/`xhigh`; a self-reported
+agent identity is not route evidence.
+
 Luna is read-only: it may inspect source/diffs/Git state, run tests, and run
 read-only reconciliation checks. It may not edit, stage, commit, push, merge,
 rebase, reset, delete, alter the primary branch, or archive itself.

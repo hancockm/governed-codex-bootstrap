@@ -6,8 +6,18 @@
     {"url": "https://github.com/openai/codex/issues/28080", "observed_on": "2026-08-07", "state": "open", "relationship": "redirected_windows_handler_issue"}
   ],
   "locally_verified_resolved": false,
+  "creation_per_cycle": "one_fresh_luna_chat_inside_matching_saved_project",
   "required_runner_channel": "saved_project_reusable_chat",
   "continuation_requirements": ["same_runner_task_id", "repeat_model_and_reasoning_effort"],
+  "ordered_lifecycle": [
+    "create_fresh_saved_project_luna_chat",
+    "bind_gpt_5_6_luna_xhigh",
+    "reuse_exact_thread_id_for_verification_and_reverification",
+    "reassert_model_and_reasoning_effort_on_every_continuation",
+    "archive_only_after_receipt_capture_push_integration_primary_sync_terminal_reconciliation_worktree_removal_and_finalization",
+    "keep_failed_blocked_and_user_input_needed_visible"
+  ],
+  "host_turn_context": {"source": "host_recorded", "required_fields": ["channel", "project_context", "thread_id", "model"]},
   "route_mismatch_outcome": "route_integrity_failed",
   "removal_requires": ["upstream_recheck", "local_cross_route_handler_and_model_verification"]
 }

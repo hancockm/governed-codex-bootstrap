@@ -145,8 +145,8 @@ def load_runner_channel_workaround(repo: str | Path | None = None) -> dict[str, 
     except (OSError, json.JSONDecodeError) as exc:
         raise OrchestrationError("cannot load runner channel workaround") from exc
     expected = {
-        "schema_version", "issue_watch", "locally_verified_resolved",
-        "required_runner_channel", "continuation_requirements", "route_mismatch_outcome", "removal_requires",
+        "schema_version", "issue_watch", "locally_verified_resolved", "creation_per_cycle",
+        "required_runner_channel", "continuation_requirements", "ordered_lifecycle", "host_turn_context", "route_mismatch_outcome", "removal_requires",
     }
     if not isinstance(value, dict) or set(value) != expected or value.get("schema_version") != "runner_channel_workaround_v1":
         raise OrchestrationError("runner channel workaround has an invalid shape")
@@ -157,20 +157,25 @@ def load_runner_channel_workaround(repo: str | Path | None = None) -> dict[str, 
     ]
     if value["issue_watch"] != expected_watch:
         raise OrchestrationError("runner channel workaround must preserve the upstream issue disposition")
-    if value["locally_verified_resolved"] is not False or value["required_runner_channel"] != "saved_project_reusable_chat":
+    if value["locally_verified_resolved"] is not False or value["creation_per_cycle"] != "one_fresh_luna_chat_inside_matching_saved_project" or value["required_runner_channel"] != "saved_project_reusable_chat":
         raise OrchestrationError("runner channel workaround must remain active until locally verified resolved")
     if value["continuation_requirements"] != ["same_runner_task_id", "repeat_model_and_reasoning_effort"] or value["route_mismatch_outcome"] != "route_integrity_failed":
         raise OrchestrationError("runner channel workaround continuation contract is invalid")
+    if value["ordered_lifecycle"] != ["create_fresh_saved_project_luna_chat", "bind_gpt_5_6_luna_xhigh", "reuse_exact_thread_id_for_verification_and_reverification", "reassert_model_and_reasoning_effort_on_every_continuation", "archive_only_after_receipt_capture_push_integration_primary_sync_terminal_reconciliation_worktree_removal_and_finalization", "keep_failed_blocked_and_user_input_needed_visible"]:
+        raise OrchestrationError("runner channel workaround lifecycle order is invalid")
+    if value["host_turn_context"] != {"source": "host_recorded", "required_fields": ["channel", "project_context", "thread_id", "model"]}:
+        raise OrchestrationError("runner channel workaround host turn-context contract is invalid")
     if value["removal_requires"] != ["upstream_recheck", "local_cross_route_handler_and_model_verification"]:
         raise OrchestrationError("runner channel workaround removal contract is invalid")
     return value
 
 
-def validate_runner_channel(channel: str, runner_task_id: str, expected_runner_task_id: str, repo: str | Path | None = None) -> None:
-    """Fail closed with ``route_integrity_failed`` for a runner-route mismatch."""
+def validate_runner_channel(turn_context: Any, runner_task_id: str, expected_runner_task_id: str, runner_model: Mapping[str, str], repo: str | Path | None = None) -> None:
+    """Require host-recorded saved-project, thread, and model evidence for Luna."""
 
     requirement = load_runner_channel_workaround(repo)
-    if channel != requirement["required_runner_channel"] or runner_task_id != expected_runner_task_id:
+    expected = {"source": "host_recorded", "channel": requirement["required_runner_channel"], "project_context": "matching_saved_project", "thread_id": expected_runner_task_id, "model": dict(runner_model)}
+    if turn_context != expected or runner_task_id != expected_runner_task_id:
         raise OrchestrationError("route_integrity_failed")
 
 
@@ -536,7 +541,7 @@ def validate_packet(packet: Mapping[str, Any], repo: str | Path | None = None) -
     _validate_subordinate_task_ids(packet.get("subordinate_task_ids"), classification["tier"])
 
 
-def bind_runner(packet: Mapping[str, Any], implementer_receipt: Mapping[str, Any], candidate_commit: str, repo: str | Path | None = None) -> dict[str, Any]:
+def bind_runner(packet: Mapping[str, Any], implementer_receipt: Mapping[str, Any], candidate_commit: str, repo: str | Path | None = None, *, turn_context: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Bind a runner to one validated receipt and exact candidate commit."""
 
     validate_packet(packet, repo)
@@ -547,7 +552,10 @@ def bind_runner(packet: Mapping[str, Any], implementer_receipt: Mapping[str, Any
         raise OrchestrationError("candidate commit must be exact lowercase 40-hex")
     if implementer_receipt.get("candidate_commit") != candidate_commit:
         raise OrchestrationError("implementer receipt candidate mismatch")
-    payload = {"schema_version": RUNNER_BINDING_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_receipt_hash": _payload_hash(implementer_receipt), "candidate_commit": candidate_commit, "runner_model": _lane_binding(load_registry(repo), "runner"), "runner_task_id": packet["subordinate_task_ids"]["runner"], "runner_channel": load_runner_channel_workaround(repo)["required_runner_channel"]}
+    runner_model = _lane_binding(load_registry(repo), "runner")
+    runner_task_id = packet["subordinate_task_ids"]["runner"]
+    validate_runner_channel(turn_context, runner_task_id, runner_task_id, runner_model, repo)
+    payload = {"schema_version": RUNNER_BINDING_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_receipt_hash": _payload_hash(implementer_receipt), "candidate_commit": candidate_commit, "runner_model": runner_model, "runner_task_id": runner_task_id, "turn_context": dict(turn_context)}
     return {**payload, "canonical_hash": sha256_canonical(payload)}
 
 
@@ -574,7 +582,7 @@ def validate_receipts(packet: Mapping[str, Any], implementer_receipt: Mapping[st
     if runner_binding is None or runner_receipt is None:
         raise OrchestrationError("full-team packet requires runner binding and receipt")
     if runner_binding is not None:
-        binding_keys = {"schema_version", "owner", "task_id", "packet_hash", "implementer_receipt_hash", "candidate_commit", "runner_model", "runner_task_id", "runner_channel", "canonical_hash"}
+        binding_keys = {"schema_version", "owner", "task_id", "packet_hash", "implementer_receipt_hash", "candidate_commit", "runner_model", "runner_task_id", "turn_context", "canonical_hash"}
         if set(runner_binding) != binding_keys:
             raise OrchestrationError("runner binding has missing or forbidden fields")
         expected = {key: value for key, value in runner_binding.items() if key != "canonical_hash"}
@@ -589,7 +597,7 @@ def validate_receipts(packet: Mapping[str, Any], implementer_receipt: Mapping[st
             raise OrchestrationError("runner binding implementer receipt hash mismatch")
         if runner_binding.get("runner_model") != _lane_binding(load_registry(repo), "runner"):
             raise OrchestrationError("runner binding model mismatch")
-        validate_runner_channel(runner_binding.get("runner_channel"), runner_binding.get("runner_task_id"), packet["subordinate_task_ids"]["runner"], repo)
+        validate_runner_channel(runner_binding.get("turn_context"), runner_binding.get("runner_task_id"), packet["subordinate_task_ids"]["runner"], runner_binding["runner_model"], repo)
     if runner_receipt is not None:
         if runner_binding is None:
             raise OrchestrationError("runner receipt requires runner binding")
@@ -1338,7 +1346,7 @@ def _parser() -> argparse.ArgumentParser:
     owner = commands.add_parser("check-owner"); owner.add_argument("--owner", required=True); owner.add_argument("--active", action="store_true")
     classify = commands.add_parser("classify"); classify.add_argument("--owner", required=True); classify.add_argument("--description", required=True); classify.add_argument("--path", action="append", default=[]); classify.add_argument("--requested-tier")
     ownership = commands.add_parser("ownership"); ownership.add_argument("--path", action="append", required=True); ownership.add_argument("--owner")
-    runner_channel = commands.add_parser("check-runner-channel"); runner_channel.add_argument("--channel", required=True); runner_channel.add_argument("--runner-task-id", required=True); runner_channel.add_argument("--expected-runner-task-id", required=True)
+    runner_channel = commands.add_parser("check-runner-channel"); runner_channel.add_argument("--turn-context", required=True); runner_channel.add_argument("--runner-task-id", required=True); runner_channel.add_argument("--expected-runner-task-id", required=True)
     prepare = commands.add_parser("prepare")
     for argument in ("owner", "task-id", "approval-ref", "baseline", "branch", "worktree", "description", "output"):
         prepare.add_argument(f"--{argument}", required=True)
@@ -1347,7 +1355,7 @@ def _parser() -> argparse.ArgumentParser:
     prepare.add_argument("--requested-tier")
     prepare.add_argument("--implementer-task-id")
     prepare.add_argument("--runner-task-id")
-    bind = commands.add_parser("bind-runner"); bind.add_argument("--packet", required=True); bind.add_argument("--implementer-receipt", required=True); bind.add_argument("--candidate-commit", required=True); bind.add_argument("--output", required=True)
+    bind = commands.add_parser("bind-runner"); bind.add_argument("--packet", required=True); bind.add_argument("--implementer-receipt", required=True); bind.add_argument("--candidate-commit", required=True); bind.add_argument("--turn-context", required=True); bind.add_argument("--output", required=True)
     validate = commands.add_parser("validate"); validate.add_argument("--packet", required=True); validate.add_argument("--implementer-receipt"); validate.add_argument("--runner-binding"); validate.add_argument("--runner-receipt"); validate.add_argument("--sol-disposition")
     record = commands.add_parser("record"); record.add_argument("--packet", required=True); record.add_argument("--implementer-receipt"); record.add_argument("--runner-binding"); record.add_argument("--runner-receipt"); record.add_argument("--sol-disposition")
     finalize = commands.add_parser("finalize-closeout"); finalize.add_argument("--packet", required=True); finalize.add_argument("--implementer-receipt"); finalize.add_argument("--runner-binding"); finalize.add_argument("--runner-receipt"); finalize.add_argument("--archive-manifest", required=True); finalize.add_argument("--archive-acknowledgment", required=True); finalize.add_argument("--record", required=True); finalize.add_argument("--delivery-evidence", required=True)
@@ -1375,13 +1383,14 @@ def main(argv: list[str] | None = None) -> int:
             resolved = validate_owner_path_authority(args.owner, paths, root) if args.owner else tuple(resolve_path_ownership(path, root) for path in paths)
             result = {"paths": [{"path": path, "resolution": rule} for path, rule in zip(paths, resolved)]}
         elif args.command == "check-runner-channel":
-            validate_runner_channel(args.channel, args.runner_task_id, args.expected_runner_task_id, root)
-            result = {"outcome": "passed", "channel": args.channel}
+            turn_context = _load_json(args.turn_context)
+            validate_runner_channel(turn_context, args.runner_task_id, args.expected_runner_task_id, _lane_binding(load_registry(root), "runner"), root)
+            result = {"outcome": "passed", "turn_context": turn_context}
         elif args.command == "prepare":
             subordinate_task_ids = {lane: value for lane, value in (("implementer", args.implementer_task_id), ("runner", args.runner_task_id)) if value}
             result = make_packet(owner=args.owner, task_id=args.task_id, approval_ref=args.approval_ref, baseline=args.baseline, branch=args.branch, worktree=args.worktree, allowed_paths=args.allowed_path, prohibited_paths=args.prohibited_path, evidence_refs=args.evidence_ref, focused_checks=args.focused_check, broad_checks=args.broad_check, description=args.description, requested_tier=args.requested_tier, subordinate_task_ids=subordinate_task_ids, repo=root); _write_tmp(root, args.output, result)
         elif args.command == "bind-runner":
-            result = bind_runner(_load_json(args.packet), _load_json(args.implementer_receipt), args.candidate_commit, root); _write_tmp(root, args.output, result)
+            result = bind_runner(_load_json(args.packet), _load_json(args.implementer_receipt), args.candidate_commit, root, turn_context=_load_json(args.turn_context)); _write_tmp(root, args.output, result)
         elif args.command == "validate":
             validate_receipts(_load_json(args.packet), _load_json(args.implementer_receipt) if args.implementer_receipt else None, _load_json(args.runner_binding) if args.runner_binding else None, _load_json(args.runner_receipt) if args.runner_receipt else None, _load_json(args.sol_disposition) if args.sol_disposition else None, root); result = {"outcome": "passed"}
         elif args.command == "record":

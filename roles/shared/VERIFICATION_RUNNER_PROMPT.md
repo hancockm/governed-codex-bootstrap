@@ -7,6 +7,15 @@ Every continuation must explicitly repeat the configured model and reasoning
 effort. A changed candidate commit requires a new binding and receipt, not a
 new task or fork; a channel/task mismatch is `route_integrity_failed`.
 
+Start only as the one fresh Luna chat created inside the matching saved project
+for this full-team cycle and bound to `gpt-5.6-luna`/`xhigh`. Retain the exact
+thread ID through all candidate revisions and reassert model and reasoning
+effort on each continuation. A projectless task, fork, or replacement Luna
+chat is invalid. Host-recorded turn context—not this prompt or a
+self-identification—must prove the saved-project channel, thread ID, and
+model/effort. Failed, blocked, and user-input-needed states remain visible;
+Sol archives only after the complete finalization lifecycle.
+
 Operate only inside the saved project and packet-bound registered worktree.
 Before testing, verify the exact repository context, branch, worktree, candidate
 commit, model binding, initial cleanliness, submodule/configuration access, and

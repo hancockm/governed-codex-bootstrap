@@ -7,3 +7,13 @@ file ownership, mutate Git implicitly, or put credentials or private reasoning
 into a packet or receipt. Bind verification to the exact candidate commit,
 validate every lane receipt, publish only authorized owner work, and retain the
 single owner-facing continuity transcript.
+
+For each full-team cycle, create one fresh Luna chat inside the matching saved
+project, bind `gpt-5.6-luna`/`xhigh`, and retain its exact thread ID through all
+candidate revisions. On every continuation reassert model and reasoning effort
+and capture host-recorded turn-context evidence for the project, thread, and
+model/effort; natural-language self-identification is insufficient. Do not use
+a projectless task, fork, or replacement Luna chat for a candidate revision.
+Archive only after receipt capture, push/integration, primary synchronization,
+terminal reconciliation, worktree removal, and finalization; failed, blocked,
+and user-input-needed tasks remain visible.

@@ -84,6 +84,14 @@ def _checks(command: str) -> list[dict[str, str]]:
     return [{"command": command, "outcome": "passed"}]
 
 
+def _turn_context(packet: dict[str, object]) -> dict[str, object]:
+    return {"source": "host_recorded", "channel": "saved_project_reusable_chat", "project_context": "matching_saved_project", "thread_id": packet["subordinate_task_ids"]["runner"], "model": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}}
+
+
+def _bind_runner(packet: dict[str, object], implementer: dict[str, object], candidate: str, root: Path) -> dict[str, object]:
+    return orchestration.bind_runner(packet, implementer, candidate, root, turn_context=_turn_context(packet))
+
+
 def _implementer(packet: dict[str, object], candidate: str = "b" * 40) -> dict[str, object]:
     return {"schema_version": orchestration.IMPLEMENTER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "model": {"model": "gpt-5.6-terra", "reasoning_effort": "high"}, "candidate_commit": candidate, "changed_paths": ["tools/example.py"], "actions": ["write", "commit", "test"], "checks": _checks("focused"), "residual_issues": [], "outcome": "passed"}
 
@@ -320,10 +328,15 @@ def test_every_tracked_path_has_exactly_one_owner_or_shared_route() -> None:
 
 def test_runner_channel_workaround_requires_reusable_saved_project_route(tmp_path: Path) -> None:
     root = _repo(tmp_path)
-    assert orchestration.load_runner_channel_workaround(root)["locally_verified_resolved"] is False
-    orchestration.validate_runner_channel("saved_project_reusable_chat", "runner-1", "runner-1", root)
+    packet = _packet(root, description="runtime change")
+    requirement = orchestration.load_runner_channel_workaround(root)
+    assert requirement["locally_verified_resolved"] is False
+    assert requirement["creation_per_cycle"] == "one_fresh_luna_chat_inside_matching_saved_project"
+    assert requirement["ordered_lifecycle"] == ["create_fresh_saved_project_luna_chat", "bind_gpt_5_6_luna_xhigh", "reuse_exact_thread_id_for_verification_and_reverification", "reassert_model_and_reasoning_effort_on_every_continuation", "archive_only_after_receipt_capture_push_integration_primary_sync_terminal_reconciliation_worktree_removal_and_finalization", "keep_failed_blocked_and_user_input_needed_visible"]
+    assert requirement["host_turn_context"] == {"source": "host_recorded", "required_fields": ["channel", "project_context", "thread_id", "model"]}
+    orchestration.validate_runner_channel(_turn_context(packet), packet["subordinate_task_ids"]["runner"], packet["subordinate_task_ids"]["runner"], {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}, root)
     with pytest.raises(orchestration.OrchestrationError, match="route_integrity_failed"):
-        orchestration.validate_runner_channel("projectless_task", "runner-1", "runner-1", root)
+        orchestration.validate_runner_channel({**_turn_context(packet), "source": "agent_reported"}, packet["subordinate_task_ids"]["runner"], packet["subordinate_task_ids"]["runner"], {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}, root)
 
 
 def test_implementer_receipt_exact_shape_actions_and_checks(tmp_path: Path) -> None:
@@ -341,13 +354,13 @@ def test_implementer_receipt_exact_shape_actions_and_checks(tmp_path: Path) -> N
 
 
 def test_full_team_hashes_runner_actions_and_broad_checks(tmp_path: Path) -> None:
-    root = _repo(tmp_path); packet = _packet(root, description="runtime change"); implementer = _implementer(packet); binding = orchestration.bind_runner(packet, implementer, "b" * 40, root); runner = _runner(packet, binding)
+    root = _repo(tmp_path); packet = _packet(root, description="runtime change"); implementer = _implementer(packet); binding = _bind_runner(packet, implementer, "b" * 40, root); runner = _runner(packet, binding)
     orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
     binding["implementer_receipt_hash"] = "0" * 64; binding["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in binding.items() if key != "canonical_hash"})
     with pytest.raises(orchestration.OrchestrationError, match="implementer receipt hash"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
-    binding = orchestration.bind_runner(packet, implementer, "b" * 40, root); binding["runner_channel"] = "projectless_task"; binding["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in binding.items() if key != "canonical_hash"})
+    binding = _bind_runner(packet, implementer, "b" * 40, root); binding["turn_context"]["channel"] = "projectless_task"; binding["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in binding.items() if key != "canonical_hash"})
     with pytest.raises(orchestration.OrchestrationError, match="route_integrity_failed"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
-    binding = orchestration.bind_runner(packet, implementer, "b" * 40, root); runner = _runner(packet, binding); runner["runner_binding_hash"] = "0" * 64
+    binding = _bind_runner(packet, implementer, "b" * 40, root); runner = _runner(packet, binding); runner["runner_binding_hash"] = "0" * 64
     with pytest.raises(orchestration.OrchestrationError, match="binding hash"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
     runner = _runner(packet, binding); runner["actions"] = ["commit"]
     with pytest.raises(orchestration.OrchestrationError, match="write action"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
@@ -372,9 +385,9 @@ def test_tier_correct_records_and_new_candidate_rebinding(tmp_path: Path) -> Non
     assert (bundle / "sol_disposition.json").exists() and not (bundle / "runner_receipt.json").exists() and record["tier"] == "orchestrator_only"
     tier_two = _packet(root, task_id="tier-two"); orchestration.record_bundle(tier_two, _implementer(tier_two), repo=root)
     assert not (root / "receipts/tier-two" / tier_two["canonical_hash"] / "runner_receipt.json").exists()
-    full = _packet(root, task_id="full", description="runtime change"); first = _implementer(full); first_binding = orchestration.bind_runner(full, first, "b" * 40, root); second = _implementer(full, "c" * 40)
+    full = _packet(root, task_id="full", description="runtime change"); first = _implementer(full); first_binding = _bind_runner(full, first, "b" * 40, root); second = _implementer(full, "c" * 40)
     with pytest.raises(orchestration.OrchestrationError, match="candidate"): orchestration.validate_receipts(full, second, first_binding, _runner(full, first_binding), repo=root)
-    second_binding = orchestration.bind_runner(full, second, "c" * 40, root); runner = _runner(full, second_binding, "c" * 40); orchestration.validate_receipts(full, second, second_binding, runner, repo=root)
+    second_binding = _bind_runner(full, second, "c" * 40, root); runner = _runner(full, second_binding, "c" * 40); orchestration.validate_receipts(full, second, second_binding, runner, repo=root)
     orchestration.record_bundle(full, second, second_binding, runner, repo=root)
     full_bundle = root / "receipts/full" / full["canonical_hash"]
     assert {path.name for path in full_bundle.iterdir()} == {"packet.json", "implementer_receipt.json", "runner_binding.json", "runner_receipt.json", "subordinate_archive_manifest.json", "record.json"}
@@ -384,7 +397,7 @@ def test_closeout_requires_exact_receipts_reconciliation_cleanup_and_archival(tm
     root = _repo(tmp_path)
     packet = _packet(root, task_id="finalize", description="runtime change")
     implementer = _implementer(packet)
-    binding = orchestration.bind_runner(packet, implementer, "b" * 40, root)
+    binding = _bind_runner(packet, implementer, "b" * 40, root)
     runner = _runner(packet, binding)
     record = orchestration.record_bundle(packet, implementer, binding, runner, repo=root)
     bundle = root / "receipts/finalize" / packet["canonical_hash"]
@@ -417,7 +430,7 @@ def test_closeout_rejects_nonterminal_delivery_state(tmp_path: Path, field: str,
     root = _repo(tmp_path)
     packet = _packet(root, task_id="finalize", description="runtime change")
     implementer = _implementer(packet)
-    binding = orchestration.bind_runner(packet, implementer, "b" * 40, root)
+    binding = _bind_runner(packet, implementer, "b" * 40, root)
     runner = _runner(packet, binding)
     record = orchestration.record_bundle(packet, implementer, binding, runner, repo=root)
     bundle = root / "receipts/finalize" / packet["canonical_hash"]
@@ -482,11 +495,11 @@ def test_read_only_cli_and_tmp_only_writes(tmp_path: Path, capsys: pytest.Captur
     assert orchestration.main(["--repo", str(root), "check-owner", "--owner", "core"]) == 0
     assert orchestration.main(["--repo", str(root), "classify", "--owner", "core", "--description", "analysis"]) == 0
     assert sorted(path.relative_to(root).as_posix() for path in root.rglob("*")) == before
-    packet = _packet(root); packet_path = root / "packet.json"; receipt_path = root / "receipt.json"; packet_path.write_text(json.dumps(packet), encoding="utf-8"); receipt_path.write_text(json.dumps(_implementer(packet)), encoding="utf-8")
+    packet = _packet(root); packet_path = root / "packet.json"; receipt_path = root / "receipt.json"; context_path = root / "turn_context.json"; packet_path.write_text(json.dumps(packet), encoding="utf-8"); receipt_path.write_text(json.dumps(_implementer(packet)), encoding="utf-8"); context_path.write_text(json.dumps({"source": "host_recorded", "channel": "saved_project_reusable_chat", "project_context": "matching_saved_project", "thread_id": "host-runner", "model": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}}), encoding="utf-8")
     before_validate = sorted(path.relative_to(root).as_posix() for path in root.rglob("*"))
     assert orchestration.main(["--repo", str(root), "validate", "--packet", str(packet_path), "--implementer-receipt", str(receipt_path)]) == 0
     assert sorted(path.relative_to(root).as_posix() for path in root.rglob("*")) == before_validate
-    assert orchestration.main(["--repo", str(root), "bind-runner", "--packet", str(packet_path), "--implementer-receipt", str(receipt_path), "--candidate-commit", "b" * 40, "--output", "outside.json"]) == 3
+    assert orchestration.main(["--repo", str(root), "bind-runner", "--packet", str(packet_path), "--implementer-receipt", str(receipt_path), "--candidate-commit", "b" * 40, "--turn-context", str(context_path), "--output", "outside.json"]) == 3
     assert not (root / "outside.json").exists(); capsys.readouterr()
 
 

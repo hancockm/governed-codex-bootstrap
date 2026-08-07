@@ -304,6 +304,19 @@ is retired with its recorded evidence, every Luna continuation reasserts its
 configured model and reasoning effort. A runner-channel or task-ID mismatch is
 `route_integrity_failed`; archive only after `finalize-closeout`.
 
+For every full-team cycle, use this mandatory Luna lifecycle in order:
+
+1. Create one fresh Luna chat inside the matching saved project.
+2. Bind `gpt-5.6-luna` at `xhigh`.
+3. Retain and reuse that exact thread ID for every verification and reverification in the cycle.
+4. Explicitly reassert the model and reasoning effort on every continuation.
+5. Archive only after receipt capture, push/integration, primary synchronization, terminal reconciliation, worktree removal, and finalization.
+6. Keep failed, blocked, and user-input-needed Luna tasks visible.
+
+Do not use a projectless Luna task, fork a Luna task, or create a new Luna chat
+for candidate revisions. Route acceptance is the host-recorded turn context
+and model/effort evidence, not an agent's natural-language identification.
+
 ## Git Staging, Commit, and Push Discipline
 
 Root [AGENTS.md](AGENTS.md) is the sole repository-wide Git authority. Before staging,
