@@ -18,7 +18,7 @@ section during daily operation.
 | Section | Concise purpose |
 | --- | --- |
 | [The System In One View](#the-system-in-one-view) | Introduces the six planes and the authority separations that hold the system together. |
-| [Start In The Codex Desktop App](#start-in-the-codex-desktop-app) | Opens the repository correctly, verifies Codex capabilities, starts Core, and imports initial research. |
+| [Start In The Codex Desktop App](#start-in-the-codex-desktop-app) | Opens the repository correctly, verifies Codex capabilities, starts Core, and imports Markdown, text, PDF, or an exact public GitHub repository snapshot as research. |
 | [The Vault And The LLM Wiki Pattern](#the-vault-and-the-llm-wiki-pattern) | Explains how source, canonical knowledge, coordination, continuity, and archives remain distinct but navigable. |
 | [Owner-Scoped Orchestration](#owner-scoped-orchestration) | Defines the Sol, Terra, and Luna lanes and their immutable packet, verification, and archival boundaries. |
 | [Create And Activate A New Owner](#create-and-activate-a-new-owner) | Shows when a separate owner is justified, what Core scaffolds, what prompt the user receives, and how adoption becomes active authority. |
@@ -164,7 +164,18 @@ I approve a plan.
 The task should first report what it found. It should not infer product truth
 from the template or treat sample research as accepted doctrine.
 
-### Bring in your research
+### Bring in files or a GitHub repository
+
+Research can begin from four source types. All four become immutable research
+records before Core analyzes them; none becomes canonical merely because it
+was imported.
+
+| Research source | Intake path | Identity and consent boundary |
+| --- | --- | --- |
+| Markdown (`.md`) | Copy to `research/inbox/`, then run `research_intake.py` | Exact file bytes, origin, and content hash |
+| Plain text (`.txt`) | Copy to `research/inbox/`, then run `research_intake.py` | Exact file bytes, origin, and content hash |
+| PDF (`.pdf`) | Copy to `research/inbox/`, then run `research_intake.py` | Exact PDF bytes; optional parsing requires separate installation consent |
+| Public GitHub repository | Run `research_git_adapter.py`; do not copy or clone it into the inbox | Credential-free HTTPS URL, explicit branch/tag ref, full expected commit, selected paths, and explicit network authorization |
 
 Put `.md`, `.txt`, and `.pdf` source material in `research/inbox/` and register
 each exact file rather than copying claims directly into canonical documents:
@@ -184,7 +195,8 @@ order. It does not perform OCR, infer text from images, or request passwords
 for encrypted PDFs. A scanned or image-only page remains an explicit
 `no_extractable_text` diagnostic.
 
-A public Git repository enters through a separate source adapter rather than
+A public GitHub repository—or another public HTTPS Git repository—enters
+through a separate source adapter rather than
 being copied or cloned into `research/inbox/`. Ask Core to identify the public
 credential-free HTTPS URL, an explicit branch or tag ref, and the full commit
 that is expected. After the user authorizes that network acquisition, Core may
@@ -235,7 +247,7 @@ The user approves promotion; the organizer never promotes material by itself.
 ```mermaid
 flowchart LR
     Raw["research/inbox<br/>.md · .txt · .pdf"] --> Intake["Content-addressed intake<br/>exact bytes"]
-    Git["public Git source<br/>URL · ref · full commit"] --> Snapshot["Bounded bare capture<br/>tree · blobs · hashes"]
+    Git["public GitHub/Git source<br/>URL · ref · full commit"] --> Snapshot["Bounded bare capture<br/>tree · blobs · hashes"]
     Snapshot --> Records
     Intake --> Records["Immutable research records"]
     Records --> Organize["Text sections · PDF pages · repository paths<br/>maps · duplicates · diagnostics"]
