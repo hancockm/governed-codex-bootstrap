@@ -107,6 +107,7 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
         "## Start In The Codex Desktop App",
         "## The Vault And The LLM Wiki Pattern",
         "## Owner-Scoped Orchestration",
+        "## Agent-To-Agent Discussions And Owner Direction",
         "## Close A Task Promptly And Rehydrate Correctly",
         "## What Is Unique Here",
         "## How The Architecture Is Opinionated",
@@ -121,7 +122,23 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
         "Sol Advisor is not required or installed",
     ):
         assert phrase in guide
-    assert guide.count("```mermaid") >= 5
+    assert guide.count("```mermaid") >= 7
+
+
+def test_system_user_guide_defines_a2a_authority_and_owner_direction() -> None:
+    guide = (ROOT / "docs/SYSTEM_USER_GUIDE.md").read_text(encoding="utf-8")
+    for phrase in (
+        "The requesting owner should say **what public outcome it needs and why**",
+        "receiving owner decides **whether and how",
+        "Strong words",
+        "do not make a point binding",
+        "Accepted` means the owner accepts the direction; it does not claim the code",
+        "awaiting_named_integrator",
+        "Common Agreement",
+        "All Remaining Disagreements",
+        "Core needs a third-party licensing disposition",
+    ):
+        assert phrase in guide
 
 
 def test_root_policy_requires_executable_mathematical_evidence() -> None:

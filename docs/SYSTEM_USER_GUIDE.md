@@ -266,6 +266,176 @@ Sol remains the only user-facing lane. Terra cannot push or expand scope.
 Luna cannot edit, commit, push, integrate, delete, or archive itself. A failed,
 blocked, or user-input-needed subordinate task remains visible.
 
+## Agent-To-Agent Discussions And Owner Direction
+
+Agent-to-agent (A2A) coordination is the typed boundary between independently
+owned areas. It is how one owner requests a public contract, evidence,
+disposition, or integration action without taking over the other owner's
+files or decisions.
+
+A2A is used for:
+
+- cross-owner boundary and public-contract requests;
+- implementation-plan critique and disagreement convergence;
+- owner responses and explicit dispositions;
+- exact branch and integration handoffs;
+- work-selection audits and completion evidence.
+
+It is not a shared implementation sandbox, an informal permission grant, or a
+way for one owner to direct another owner's private design. A published A2A
+record is source evidence. It becomes actionable only through the responsible
+owner's disposition and any user approval required by the proposed change.
+
+### Who decides the direction
+
+| Participant | Decides | Does not decide |
+| --- | --- | --- |
+| User | Project intent, material tradeoffs, plan approval, and authority expansions | The implementation details delegated to an owner unless the user chooses to constrain them |
+| Requesting owner | Its consumer need, observed gap, required public behavior, evidence, and acceptance conditions | How the receiving owner must implement its private internals |
+| Receiving owner | Meaning, design, sequencing, and disposition inside its activated scope | Another owner's semantics or a change to user intent |
+| Core | Shared contracts, canonical promotion, owner activation, architecture-wide constraints, primary-branch integration | A feature owner's private semantics, legal conclusion, audit judgment, or user-facing design merely to avoid a handoff |
+| Review or critique role | Weak assumptions, disagreements, risks, and a convergence proposal | Acceptance, implementation, promotion, or certification |
+| Terra and Luna | Packet-bounded implementation evidence and independent verification evidence | Scope, authority, owner direction, or publication |
+
+The requesting owner should say **what public outcome it needs and why**. The
+receiving owner decides **whether and how its owned surface should provide
+that outcome**. It may accept, narrow, reject, defer, or identify a user
+decision. Core may reject a proposed shared boundary that violates repository
+architecture, but it cannot manufacture the missing domain decision itself.
+
+When no active owner has the required authority, the work does not silently
+fall to Core or the nearest feature. Core and the user first recognize and
+activate a new owner through `docs/ROLE_BOOTSTRAP_AND_ACTIVATION.md`.
+
+### Evidence and decision order
+
+Each owner re-evaluates the request against current evidence. A useful order
+is:
+
+1. latest explicit user instruction and approval;
+2. current canonical Thesis, Architecture, Spec, and Roadmap;
+3. current source, tests, configuration, public contracts, and receipts;
+4. accepted A2A dispositions within their recorded scope;
+5. research and continuity as non-authoritative context.
+
+The owner records which assumptions are verified, invalidated, unverified, or
+dependent on another owner. A past transcript, forceful critique, or apparently
+complete proposal never outranks current repository evidence.
+
+```mermaid
+flowchart TD
+    Gap["Owner detects a cross-owner need"] --> Freeze["Freeze baseline and collect evidence"]
+    Freeze --> Request["Publish one atomic A2A boundary request"]
+    Request --> Review["Receiving owner validates scope, facts, and authority"]
+    Review --> Decision{"Owner disposition"}
+    Decision -->|"Accepted or narrowed"| OwnerPlan["Receiving owner prepares its own bounded plan"]
+    Decision -->|"Requires user approval"| User["User resolves intent or material tradeoff"]
+    User --> Review
+    Decision -->|"Deferred"| Active["Record stays active with trigger and next action"]
+    Decision -->|"Rejected"| Closed["Close with rationale and preserved evidence"]
+    OwnerPlan --> Approval["User approval when implementation is material"]
+    Approval --> Delivery["Owner-scoped implementation and verification"]
+    Delivery --> Evidence["Append exact completion and reconciliation evidence"]
+    Evidence --> Shared{"Shared doctrine or integration affected?"}
+    Shared -->|"Yes"| Core["Core promotes the shared contract or integrates delivery"]
+    Shared -->|"No"| Closed
+    Core --> Closed
+```
+
+### What an atomic boundary request contains
+
+A request should be small enough that the receiving owner can disposition it
+without reconstructing an entire chat. Record:
+
+- requesting owner, receiving owner, and exact request type;
+- frozen source or commit baseline;
+- observed gap and why it belongs across an owner boundary;
+- the public result, contract, evidence, or decision being requested;
+- known consumers and observable acceptance conditions;
+- exact supporting files, symbols, tests, receipts, or external sources;
+- explicit non-ownership and prohibited assumptions;
+- current disposition, next responsible owner, and reopening condition;
+- completion branch, commits, integration target, and reconciliation evidence
+  when implementation follows.
+
+Do not include credentials, private reasoning, another owner's full transcript,
+or a prescribed private implementation. Cross-owner context links to the
+owning evidence instead of copying it into a second continuity pack.
+
+### Critique must converge
+
+Plan critique is a special A2A record. It uses the five-part shape maintained
+by the coordination instruction hub:
+
+1. Common Agreement
+2. All Remaining Disagreements
+3. Critical Weak Points
+4. Convergence Move
+5. Decision Status
+
+List all known disagreements rather than revealing new objections after each
+round. A useful iteration removes or narrows at least one disagreement. The
+owning agent dispositions every substantive point as `Accepted`, `Partially
+accepted`, `Rejected`, `Deferred`, or `Requires user approval`. Strong words
+from a review model do not make a point binding.
+
+Create an immutable plan-critique handoff with:
+
+```powershell
+python tools/agent_to_agent_plan_handoff.py --topic "<topic>" --plan-file <path> --owner <owner> --apply
+```
+
+`tools/agent_to_agent_handoff.py` is the compatibility alias. Boundary
+requests and owner responses live as separate atomic coordination records;
+do not disguise a public-contract request as a plan critique.
+
+### A2A lifecycle and unresolved work
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> Published: committed and reachable
+    Published --> Dispositioned: receiving owner responds
+    Dispositioned --> Published: requires user or owner clarification
+    Dispositioned --> Planned: accepted or narrowed
+    Dispositioned --> Deferred: trigger recorded
+    Dispositioned --> Rejected: rationale recorded
+    Planned --> Implemented: approved owner cycle completes
+    Implemented --> Resolved: evidence lands and reconciles
+    Deferred --> Published: reopening trigger occurs
+    Rejected --> [*]
+    Resolved --> [*]
+```
+
+`Accepted` means the owner accepts the direction; it does not claim the code
+exists. `Implemented` means evidence exists; it does not claim the branch is
+landed. `Resolved` requires the exact completion evidence and any required
+Core integration. A deferred request stays visible with a named trigger.
+
+An integration handoff is narrower still. `awaiting_named_integrator` routes a
+published branch to Core, but it is a blocker rather than a terminal branch
+state. Core inspects the owner-authored disposition before integrating or
+superseding anything. Inbox membership is evidence requiring a decision, not
+automatic merge authority.
+
+### Practical boundary examples
+
+- A feature needs a new shared repository port. It requests the observable
+  contract from Core rather than creating a feature-local substitute.
+- A presentation owner needs a reference-safe status view. It states the
+  display need; the producing owner decides which public projection is safe.
+- Audit needs replay-stable evidence. It requests a public receipt from the
+  producing owner rather than reading that owner's private persistence state.
+- Core needs a third-party licensing disposition. It supplies exact artifact
+  evidence to the legal owner and does not infer the legal conclusion itself.
+
+Start with
+`Project_Obsidian_Vault/40_Coordination/Agent-to-Agent Discussions MOC.md`,
+then read the active-record index and only the records relevant to the current
+boundary. The coordination area preserves how a decision converged; accepted
+shared direction is promoted separately into canonical documents by the
+authorized owner.
+
 ## One Complete Work Cycle
 
 ### Discovery and planning
@@ -475,6 +645,7 @@ make the architecture recoverable.
 ### Work
 
 - Freeze the planning baseline.
+- Inspect relevant A2A requests and state every owner-dependent decision.
 - Ask for explicit plan approval before mutation.
 - Use the required Sol/Terra/Luna tier.
 - Use SymPy and NumPy witnesses for material mathematical claims; never rely
@@ -487,6 +658,8 @@ make the architecture recoverable.
 ### Finish
 
 - Prove the exact candidate and required checks.
+- Publish owner dispositions and completion evidence for every A2A touched by
+  the cycle.
 - Publish and integrate through the authorized owner.
 - Synchronize and reconcile Git.
 - Remove verified-clean temporary worktrees.
