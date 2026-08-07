@@ -59,12 +59,14 @@ def _prospective_profile(root: Path, *, malformed: bool = False, mismatched: boo
     return target
 
 
-def _packet(root: Path, *, task_id: str = "task-1", branch: str = "core/task-1", description: str = "bounded source change", worktree: str = ".worktrees/task-1", allowed: list[str] | None = None, prohibited: list[str] | None = None, requested_tier: str | None = None, subordinate_task_ids: dict[str, str] | None = None) -> dict[str, object]:
+def _packet(root: Path, *, task_id: str = "task-1", branch: str = "core/task-1", description: str = "bounded source change", worktree: str = ".worktrees/task-1", allowed: list[str] | None = None, prohibited: list[str] | None = None, requested_tier: str | None = None, subordinate_task_ids: dict[str, str] | None = None, runner_checks: list[str] | None = None) -> dict[str, object]:
     allowed_paths = allowed if allowed is not None else ["tools/"]
     tiers = ("orchestrator_only", "orchestrator_plus_implementer", "full_team")
     selected = orchestration.classify_task(description, allowed_paths)["tier"]
     if requested_tier:
         selected = max((selected, requested_tier), key=tiers.index)
+    execution_lane = selected != "orchestrator_only"
+    selected_runner_checks = runner_checks if runner_checks is not None else ([orchestration.LUNA_FULL_COMMAND] if selected == "full_team" else [])
     if subordinate_task_ids is None:
         subordinate_task_ids = {
             lane: f"host-{lane}-{task_id}"
@@ -75,7 +77,7 @@ def _packet(root: Path, *, task_id: str = "task-1", branch: str = "core/task-1",
         owner="core", task_id=task_id, approval_ref="user:approved", baseline="a" * 40,
         branch=branch, worktree=worktree, allowed_paths=allowed_paths,
         prohibited_paths=prohibited if prohibited is not None else ["governance_bootstrap/private/"], evidence_refs=["test:evidence"],
-        focused_checks=["focused"], broad_checks=["broad"], description=description, requested_tier=requested_tier,
+        focused_checks=["focused"] if execution_lane else [], broad_checks=["broad"] if execution_lane else [], runner_checks=selected_runner_checks, description=description, requested_tier=requested_tier,
         subordinate_task_ids=subordinate_task_ids, repo=root,
     )
 
@@ -93,11 +95,12 @@ def _bind_runner(packet: dict[str, object], implementer: dict[str, object], cand
 
 
 def _implementer(packet: dict[str, object], candidate: str = "b" * 40) -> dict[str, object]:
-    return {"schema_version": orchestration.IMPLEMENTER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "model": {"model": "gpt-5.6-terra", "reasoning_effort": "high"}, "candidate_commit": candidate, "changed_paths": ["tools/example.py"], "actions": ["write", "commit", "test"], "checks": _checks("focused"), "residual_issues": [], "outcome": "passed"}
+    commands = [*packet["focused_checks"], orchestration.TERRA_AFFECTED_COMMAND, *packet["broad_checks"]]
+    return {"schema_version": orchestration.IMPLEMENTER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "model": {"model": "gpt-5.6-terra", "reasoning_effort": "high"}, "candidate_commit": candidate, "changed_paths": ["tools/example.py"], "actions": ["write", "commit", "test"], "checks": [{"command": command, "outcome": "passed"} for command in commands], "residual_issues": [], "outcome": "passed"}
 
 
 def _runner(packet: dict[str, object], binding: dict[str, object], candidate: str = "b" * 40) -> dict[str, object]:
-    return {"schema_version": orchestration.RUNNER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "runner_binding_hash": binding["canonical_hash"], "model": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}, "candidate_commit": candidate, "actions": ["inspect", "test"], "checks": _checks("broad"), "environment_preflight": {"candidate_commit_verified": True, "model_binding_verified": True, "initial_worktree_clean": True}, "git_status": {"initial": "clean", "final": "clean"}, "reconciler_evidence": {"target": "origin/master", "candidate_commit": candidate, "state": "pre_publication_unlanded"}, "diagnostics": [], "residual_issues": [], "outcome": "passed"}
+    return {"schema_version": orchestration.RUNNER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "runner_binding_hash": binding["canonical_hash"], "model": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}, "candidate_commit": candidate, "actions": ["inspect", "test"], "checks": [{"command": command, "outcome": "passed"} for command in packet["runner_checks"]], "environment_preflight": {"candidate_commit_verified": True, "model_binding_verified": True, "initial_worktree_clean": True}, "git_status": {"initial": "clean", "final": "clean"}, "reconciler_evidence": {"target": "origin/master", "candidate_commit": candidate, "state": "pre_publication_unlanded"}, "diagnostics": [], "residual_issues": [], "outcome": "passed"}
 
 
 def _sol(packet: dict[str, object]) -> dict[str, object]:
@@ -346,16 +349,21 @@ def test_implementer_receipt_exact_shape_actions_and_checks(tmp_path: Path) -> N
     with pytest.raises(orchestration.OrchestrationError, match="forbidden"): orchestration.validate_receipts(packet, receipt, repo=root)
     receipt = _implementer(packet); receipt["actions"] = ["push"]
     with pytest.raises(orchestration.OrchestrationError, match="forbidden Git"): orchestration.validate_receipts(packet, receipt, repo=root)
-    for checks, error in [([], "exactly once"), (_checks("focused") * 2, "exactly once"), ([{"command": "focused", "outcome": "failed"}], "failed")]:
+    valid = _implementer(packet)["checks"]
+    for checks, error in [([], "exactly once"), ([*valid, valid[0]], "exactly once"), ([valid[1], valid[0], valid[2]], "exactly once"), ([{"command": valid[0]["command"], "outcome": "failed"}], "failed")]:
         receipt = _implementer(packet); receipt["checks"] = checks
         with pytest.raises(orchestration.OrchestrationError if error != "failed" else orchestration.InactiveOwnerError, match=error): orchestration.validate_receipts(packet, receipt, repo=root)
     receipt = _implementer(packet); receipt["residual_issues"] = ["token=private"]
     with pytest.raises(orchestration.OrchestrationError, match="credentials"): orchestration.validate_receipts(packet, receipt, repo=root)
 
 
-def test_full_team_hashes_runner_actions_and_broad_checks(tmp_path: Path) -> None:
+def test_full_team_requires_final_candidate_and_one_luna_full_check(tmp_path: Path) -> None:
     root = _repo(tmp_path); packet = _packet(root, description="runtime change"); implementer = _implementer(packet); binding = _bind_runner(packet, implementer, "b" * 40, root); runner = _runner(packet, binding)
+    assert packet["runner_checks"] == ["python tools/test_runner.py full"]
+    assert binding["candidate_posture"] == "sol_declared_final"
     orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
+    with pytest.raises(orchestration.OrchestrationError, match="full command exactly once"):
+        _packet(root, description="runtime change", runner_checks=[])
     binding["implementer_receipt_hash"] = "0" * 64; binding["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in binding.items() if key != "canonical_hash"})
     with pytest.raises(orchestration.OrchestrationError, match="implementer receipt hash"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
     binding = _bind_runner(packet, implementer, "b" * 40, root); binding["turn_context"]["channel"] = "projectless_task"; binding["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in binding.items() if key != "canonical_hash"})
@@ -364,8 +372,11 @@ def test_full_team_hashes_runner_actions_and_broad_checks(tmp_path: Path) -> Non
     with pytest.raises(orchestration.OrchestrationError, match="binding hash"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
     runner = _runner(packet, binding); runner["actions"] = ["commit"]
     with pytest.raises(orchestration.OrchestrationError, match="write action"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
-    runner = _runner(packet, binding); runner["checks"] = [{"command": "broad", "outcome": "failed"}]
+    runner = _runner(packet, binding); runner["checks"] = [{"command": orchestration.LUNA_FULL_COMMAND, "outcome": "failed"}]
     with pytest.raises(orchestration.InactiveOwnerError, match="failed"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
+    binding = _bind_runner(packet, implementer, "b" * 40, root); binding["candidate_posture"] = "candidate"; binding["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in binding.items() if key != "canonical_hash"})
+    with pytest.raises(orchestration.OrchestrationError, match="declared final candidate"): orchestration.validate_receipts(packet, implementer, binding, _runner(packet, binding), repo=root)
+    binding = _bind_runner(packet, implementer, "b" * 40, root)
     runner = _runner(packet, binding); runner["environment_preflight"]["initial_worktree_clean"] = False
     with pytest.raises(orchestration.OrchestrationError, match="environment_preflight"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
     runner = _runner(packet, binding); runner["git_status"]["final"] = "dirty"

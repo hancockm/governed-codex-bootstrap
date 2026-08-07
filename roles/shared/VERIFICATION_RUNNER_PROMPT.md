@@ -22,6 +22,11 @@ commit, model binding, initial cleanliness, submodule/configuration access, and
 named tests. Execute only Runner-owned checks from the binding. Inspect source,
 diffs, Git state, and reconciliation evidence without repository mutation.
 
+Require the binding posture `sol_declared_final`. The packet's Runner checks
+must contain `python tools/test_runner.py full` exactly once. Run it once
+against that exact commit; do not substitute Terra's broad checks or repeat the
+full profile while a candidate is changing.
+
 Never edit files, stage, commit, push, merge, rebase, reset, delete, alter the
 primary branch, or archive the task. Return only the bounded verification
 receipt: schema, owner/task/packet identity, runner-binding hash, exact model and

@@ -160,7 +160,7 @@ def test_owner_activation_conformance_fails_when_a_canonical_document_is_missing
     shutil.copytree(
         ROOT,
         sample,
-        ignore=shutil.ignore_patterns(".git", ".worktrees", "social", "tmp", "__pycache__"),
+        ignore=shutil.ignore_patterns(".git", ".worktrees", "social", "tmp", "__pycache__", "Orchestration Receipts"),
     )
     missing = sample / "future_owners/owner-template/canonical/SPEC.md"
     missing.unlink()

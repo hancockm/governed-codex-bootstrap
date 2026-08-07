@@ -32,11 +32,12 @@ from governance_bootstrap.common import (
 REGISTRY_SCHEMA = "owner_scoped_orchestration_v1"
 PATH_OWNERSHIP_SCHEMA = "path_ownership_registry_v1"
 PROFILE_SCHEMA = "owner_scoped_orchestration_owner_profile_v1"
-PACKET_SCHEMA = "owner_scoped_task_packet_v2"
+PACKET_SCHEMA = "owner_scoped_task_packet_v3"
 LEGACY_PACKET_SCHEMA = "owner_scoped_task_packet_v1"
-IMPLEMENTER_RECEIPT_SCHEMA = "owner_scoped_implementer_receipt_v1"
-RUNNER_BINDING_SCHEMA = "owner_scoped_runner_binding_v3"
-RUNNER_RECEIPT_SCHEMA = "owner_scoped_runner_receipt_v1"
+PREVIOUS_PACKET_SCHEMA = "owner_scoped_task_packet_v2"
+IMPLEMENTER_RECEIPT_SCHEMA = "owner_scoped_implementer_receipt_v2"
+RUNNER_BINDING_SCHEMA = "owner_scoped_runner_binding_v4"
+RUNNER_RECEIPT_SCHEMA = "owner_scoped_runner_receipt_v2"
 SOL_DISPOSITION_SCHEMA = "owner_scoped_sol_disposition_v1"
 RECORD_SCHEMA = "owner_scoped_orchestration_record_v2"
 ARCHIVE_MANIFEST_SCHEMA = "owner_scoped_subordinate_archive_manifest_v2"
@@ -69,10 +70,12 @@ RISK_TRIGGERS = {
 }
 RUNNER_WRITE_ACTIONS = frozenset({"write", "commit", "push", "merge", "rebase", "reset", "delete", "touch_master"})
 IMPLEMENTER_FORBIDDEN_ACTIONS = frozenset({"push", "merge", "rebase", "reset", "delete", "touch_master"})
+TERRA_AFFECTED_COMMAND = "python tools/test_runner.py affected --base origin/master"
+LUNA_FULL_COMMAND = "python tools/test_runner.py full"
 IMPLEMENTER_KEYS = frozenset({"schema_version", "owner", "task_id", "packet_hash", "model", "candidate_commit", "changed_paths", "actions", "checks", "residual_issues", "outcome"})
 RUNNER_KEYS = frozenset({"schema_version", "owner", "task_id", "packet_hash", "runner_binding_hash", "model", "candidate_commit", "actions", "checks", "environment_preflight", "git_status", "reconciler_evidence", "diagnostics", "residual_issues", "outcome"})
 SOL_KEYS = frozenset({"schema_version", "owner", "task_id", "packet_hash", "model", "disposition", "residual_issues", "outcome"})
-PACKET_KEYS = frozenset({"schema_version", "owner", "task_id", "user_approval_ref", "task_description", "baseline", "branch", "worktree", "allowed_paths", "prohibited_paths", "lane_models", "owner_profile_ref", "owner_profile_hash", "evidence_refs", "focused_checks", "broad_checks", "responsibilities", "git_requirements", "continuity_requirements", "classification", "subordinate_task_ids", "canonical_hash"})
+PACKET_KEYS = frozenset({"schema_version", "owner", "task_id", "user_approval_ref", "task_description", "baseline", "branch", "worktree", "allowed_paths", "prohibited_paths", "lane_models", "owner_profile_ref", "owner_profile_hash", "evidence_refs", "focused_checks", "broad_checks", "runner_checks", "responsibilities", "git_requirements", "continuity_requirements", "classification", "subordinate_task_ids", "canonical_hash"})
 PACKET_RESPONSIBILITIES = {"owner_orchestrator": "classify and publish", "implementer": "bounded candidate only", "runner": "inspect and test only"}
 
 
@@ -132,6 +135,7 @@ def load_registry(repo: str | Path | None = None) -> dict[str, Any]:
     _require_lane_bindings(value)
     _require_prompt_templates(value, root)
     _require_subordinate_lifecycle(value)
+    _require_test_lifecycle(value)
     load_runner_channel_workaround(root)
     return value
 
@@ -331,6 +335,25 @@ def _require_subordinate_lifecycle(registry: Mapping[str, Any]) -> None:
         raise OrchestrationError("registry subordinate-task lifecycle is incomplete")
 
 
+def _require_test_lifecycle(registry: Mapping[str, Any]) -> None:
+    """Require the fixed Terra triage order and final-candidate Luna command."""
+
+    expected = {
+        "implementer": {
+            "ordered_stages": ["focused", "affected", "broad_when_needed"],
+            "affected_command": TERRA_AFFECTED_COMMAND,
+            "broad_policy": "packet_declared_optional",
+        },
+        "runner": {
+            "candidate_posture": "sol_declared_final",
+            "required_command": LUNA_FULL_COMMAND,
+            "required_count": 1,
+        },
+    }
+    if registry.get("test_lifecycle") != expected:
+        raise OrchestrationError("registry test lifecycle must preserve Terra triage and one final Luna full run")
+
+
 def owner_config(owner: str, repo: str | Path | None = None, *, active: bool = False) -> dict[str, Any]:
     """Return one registered owner, optionally requiring active adoption."""
 
@@ -443,7 +466,7 @@ def compose_prompt(owner: str, task_packet: Mapping[str, Any], repo: str | Path 
     }
 
 
-def make_packet(*, owner: str, task_id: str, approval_ref: str, baseline: str, branch: str, worktree: str, allowed_paths: Iterable[str], prohibited_paths: Iterable[str], evidence_refs: Iterable[str], focused_checks: Iterable[str], broad_checks: Iterable[str], description: str, requested_tier: str | None = None, subordinate_task_ids: Mapping[str, str] | None = None, repo: str | Path | None = None) -> dict[str, Any]:
+def make_packet(*, owner: str, task_id: str, approval_ref: str, baseline: str, branch: str, worktree: str, allowed_paths: Iterable[str], prohibited_paths: Iterable[str], evidence_refs: Iterable[str], focused_checks: Iterable[str], broad_checks: Iterable[str], runner_checks: Iterable[str], description: str, requested_tier: str | None = None, subordinate_task_ids: Mapping[str, str] | None = None, repo: str | Path | None = None) -> dict[str, Any]:
     """Build a self-hashing active-owner packet from explicit public inputs."""
 
     root = repository_root(repo)
@@ -464,21 +487,24 @@ def make_packet(*, owner: str, task_id: str, approval_ref: str, baseline: str, b
     evidence = list(evidence_refs)
     focused = list(focused_checks)
     broad = list(broad_checks)
+    runner = list(runner_checks)
     _require_safe_string_list(evidence, "packet evidence_refs")
-    _require_safe_string_list(focused, "packet focused_checks")
-    _require_safe_string_list(broad, "packet broad_checks")
+    _require_safe_string_list(focused, "packet focused_checks", allow_empty=True)
+    _require_safe_string_list(broad, "packet broad_checks", allow_empty=True)
+    _require_safe_string_list(runner, "packet runner_checks", allow_empty=True)
     classification = classify_task(description, allowed)
     tiers = ("orchestrator_only", "orchestrator_plus_implementer", "full_team")
     if requested_tier and requested_tier not in tiers:
         raise OrchestrationError("unknown requested tier")
     effective = max((classification["tier"], requested_tier or classification["tier"]), key=tiers.index)
+    _validate_test_check_contract(effective, focused, broad, runner)
     subordinate_tasks = _validate_subordinate_task_ids(subordinate_task_ids, effective)
     payload = {
         "schema_version": PACKET_SCHEMA, "owner": config["name"], "task_id": task_id, "user_approval_ref": approval_ref, "task_description": description,
         "baseline": baseline, "branch": branch, "worktree": worktree, "allowed_paths": list(allowed), "prohibited_paths": list(prohibited),
         "lane_models": {lane: _lane_binding(load_registry(root), lane) for lane in ("owner_orchestrator", "implementer", "runner")},
         "owner_profile_ref": config["profile_path"], "owner_profile_hash": sha256_canonical(profile),
-        "evidence_refs": evidence, "focused_checks": focused, "broad_checks": broad,
+        "evidence_refs": evidence, "focused_checks": focused, "broad_checks": broad, "runner_checks": runner,
         "responsibilities": PACKET_RESPONSIBILITIES,
         "git_requirements": "Implementer may create a local candidate commit; Sol publishes and cleans owner worktrees; Core alone integrates master.",
         "continuity_requirements": "Owner orchestrator exports the full transcript; one packet-bound Terra/Luna host task is reused through every correction attempt and acknowledged before final closeout.",
@@ -491,8 +517,8 @@ def make_packet(*, owner: str, task_id: str, approval_ref: str, baseline: str, b
 def validate_packet(packet: Mapping[str, Any], repo: str | Path | None = None) -> None:
     """Fail closed unless a packet is internally and registry-consistent."""
 
-    if packet.get("schema_version") == LEGACY_PACKET_SCHEMA:
-        raise OrchestrationError("legacy packet lacks required stable subordinate task IDs; issue a v2 packet")
+    if packet.get("schema_version") in {LEGACY_PACKET_SCHEMA, PREVIOUS_PACKET_SCHEMA}:
+        raise OrchestrationError("legacy packet lacks required lane-specific test checks; issue a v3 packet")
     if set(packet) != PACKET_KEYS:
         raise OrchestrationError("packet has missing or forbidden fields")
     if packet.get("schema_version") != PACKET_SCHEMA:
@@ -523,8 +549,9 @@ def validate_packet(packet: Mapping[str, Any], repo: str | Path | None = None) -
     validate_owner_path_authority(config["name"], allowed, repo)
     _safe_worktree(str(packet.get("worktree", "")))
     _require_safe_string_list(packet.get("evidence_refs"), "packet evidence_refs")
-    _require_safe_string_list(packet.get("focused_checks"), "packet focused_checks")
-    _require_safe_string_list(packet.get("broad_checks"), "packet broad_checks")
+    _require_safe_string_list(packet.get("focused_checks"), "packet focused_checks", allow_empty=True)
+    _require_safe_string_list(packet.get("broad_checks"), "packet broad_checks", allow_empty=True)
+    _require_safe_string_list(packet.get("runner_checks"), "packet runner_checks", allow_empty=True)
     if packet.get("responsibilities") != PACKET_RESPONSIBILITIES:
         raise OrchestrationError("packet responsibilities mismatch")
     _require_safe_text(packet.get("git_requirements"), "packet git_requirements")
@@ -538,6 +565,7 @@ def validate_packet(packet: Mapping[str, Any], repo: str | Path | None = None) -
     tiers = ("orchestrator_only", "orchestrator_plus_implementer", "full_team")
     if classification.get("tier") not in tiers or tiers.index(classification["tier"]) < tiers.index(static["tier"]):
         raise OrchestrationError("packet classification tier downgrades static risk")
+    _validate_test_check_contract(classification["tier"], packet["focused_checks"], packet["broad_checks"], packet["runner_checks"])
     _validate_subordinate_task_ids(packet.get("subordinate_task_ids"), classification["tier"])
 
 
@@ -555,7 +583,7 @@ def bind_runner(packet: Mapping[str, Any], implementer_receipt: Mapping[str, Any
     runner_model = _lane_binding(load_registry(repo), "runner")
     runner_task_id = packet["subordinate_task_ids"]["runner"]
     validate_runner_channel(turn_context, runner_task_id, runner_task_id, runner_model, repo)
-    payload = {"schema_version": RUNNER_BINDING_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_receipt_hash": _payload_hash(implementer_receipt), "candidate_commit": candidate_commit, "runner_model": runner_model, "runner_task_id": runner_task_id, "turn_context": dict(turn_context)}
+    payload = {"schema_version": RUNNER_BINDING_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_receipt_hash": _payload_hash(implementer_receipt), "candidate_commit": candidate_commit, "candidate_posture": "sol_declared_final", "runner_model": runner_model, "runner_task_id": runner_task_id, "turn_context": dict(turn_context)}
     return {**payload, "canonical_hash": sha256_canonical(payload)}
 
 
@@ -582,7 +610,7 @@ def validate_receipts(packet: Mapping[str, Any], implementer_receipt: Mapping[st
     if runner_binding is None or runner_receipt is None:
         raise OrchestrationError("full-team packet requires runner binding and receipt")
     if runner_binding is not None:
-        binding_keys = {"schema_version", "owner", "task_id", "packet_hash", "implementer_receipt_hash", "candidate_commit", "runner_model", "runner_task_id", "turn_context", "canonical_hash"}
+        binding_keys = {"schema_version", "owner", "task_id", "packet_hash", "implementer_receipt_hash", "candidate_commit", "candidate_posture", "runner_model", "runner_task_id", "turn_context", "canonical_hash"}
         if set(runner_binding) != binding_keys:
             raise OrchestrationError("runner binding has missing or forbidden fields")
         expected = {key: value for key, value in runner_binding.items() if key != "canonical_hash"}
@@ -593,6 +621,8 @@ def validate_receipts(packet: Mapping[str, Any], implementer_receipt: Mapping[st
                 raise OrchestrationError(f"runner binding {field} mismatch")
         if runner_binding.get("candidate_commit") != implementer_receipt.get("candidate_commit"):
             raise OrchestrationError("runner binding candidate mismatch")
+        if runner_binding.get("candidate_posture") != "sol_declared_final":
+            raise OrchestrationError("runner binding requires Sol's declared final candidate")
         if runner_binding.get("implementer_receipt_hash") != _payload_hash(implementer_receipt):
             raise OrchestrationError("runner binding implementer receipt hash mismatch")
         if runner_binding.get("runner_model") != _lane_binding(load_registry(repo), "runner"):
@@ -944,7 +974,8 @@ def _validate_implementer_receipt(receipt: Mapping[str, Any], packet: Mapping[st
     actions = _string_list(receipt.get("actions"), "implementer actions")
     if set(actions) & IMPLEMENTER_FORBIDDEN_ACTIONS:
         raise OrchestrationError("implementer receipt declares a forbidden Git action")
-    _validate_checks(receipt.get("checks"), packet["focused_checks"], "implementer")
+    expected_checks = [*packet["focused_checks"], TERRA_AFFECTED_COMMAND, *packet["broad_checks"]]
+    _validate_checks(receipt.get("checks"), expected_checks, "implementer", ordered=True)
     _validate_safe_diagnostics(receipt.get("residual_issues"), "implementer residual_issues")
 
 
@@ -960,7 +991,7 @@ def _validate_runner_receipt(receipt: Mapping[str, Any], packet: Mapping[str, An
     actions = _string_list(receipt.get("actions"), "runner actions")
     if set(actions) & RUNNER_WRITE_ACTIONS:
         raise OrchestrationError("runner receipt declares a forbidden write action")
-    _validate_checks(receipt.get("checks"), packet["broad_checks"], "runner")
+    _validate_checks(receipt.get("checks"), packet["runner_checks"], "runner")
     _validate_runner_environment(receipt.get("environment_preflight"))
     _validate_runner_git_status(receipt.get("git_status"))
     _validate_reconciler_evidence(receipt.get("reconciler_evidence"), binding["candidate_commit"])
@@ -1009,7 +1040,7 @@ def _require_exact_keys(value: Mapping[str, Any], expected: frozenset[str], labe
         raise OrchestrationError(f"{label} has missing or forbidden fields")
 
 
-def _validate_checks(value: Any, expected_commands: Iterable[str], lane: str) -> None:
+def _validate_checks(value: Any, expected_commands: Iterable[str], lane: str, *, ordered: bool = False) -> None:
     """Require each packet check once and only once with a passed outcome."""
 
     if not isinstance(value, list):
@@ -1022,8 +1053,32 @@ def _validate_checks(value: Any, expected_commands: Iterable[str], lane: str) ->
             raise InactiveOwnerError(f"{lane} check failed")
         commands.append(item["command"])
     expected = list(expected_commands)
-    if len(commands) != len(set(commands)) or sorted(commands) != sorted(expected):
+    if len(commands) != len(set(commands)) or (commands != expected if ordered else sorted(commands) != sorted(expected)):
         raise OrchestrationError(f"{lane} checks must contain each packet check exactly once")
+
+
+def _validate_test_check_contract(tier: str, focused: Iterable[str], broad: Iterable[str], runner: Iterable[str]) -> None:
+    """Keep Terra's triage commands separate from Luna's final full run."""
+
+    focused_commands = list(focused)
+    broad_commands = list(broad)
+    runner_commands = list(runner)
+    terra_commands = [*focused_commands, TERRA_AFFECTED_COMMAND, *broad_commands]
+    if len(terra_commands) != len(set(terra_commands)):
+        raise OrchestrationError("Terra checks must be unique across focused, affected, and broad stages")
+    if LUNA_FULL_COMMAND in terra_commands:
+        raise OrchestrationError("Terra checks must not contain Luna's full command")
+    if tier == "orchestrator_only":
+        if focused_commands or broad_commands or runner_commands:
+            raise OrchestrationError("orchestrator-only packets cannot declare execution checks")
+        return
+    if not focused_commands:
+        raise OrchestrationError("Terra requires at least one focused check before affected triage")
+    if tier == "full_team":
+        if runner_commands.count(LUNA_FULL_COMMAND) != 1 or len(runner_commands) != len(set(runner_commands)):
+            raise OrchestrationError("full-team packets require Luna's full command exactly once")
+    elif runner_commands:
+        raise OrchestrationError("runner checks are permitted only for full-team packets")
 
 
 def _string_list(value: Any, label: str) -> tuple[str, ...]:
@@ -1107,11 +1162,11 @@ def _require_safe_text(value: Any, label: str) -> str:
     return value
 
 
-def _require_safe_string_list(value: Any, label: str) -> tuple[str, ...]:
-    """Return a nonempty list whose public strings pass safety validation."""
+def _require_safe_string_list(value: Any, label: str, *, allow_empty: bool = False) -> tuple[str, ...]:
+    """Return a string list whose public values pass safety validation."""
 
     values = _string_list(value, label)
-    if not values or any(not item.strip() for item in values):
+    if (not values and not allow_empty) or any(not item.strip() for item in values):
         raise OrchestrationError(f"{label} must be a non-empty string list")
     for item in values:
         _require_safe_text(item, label)
@@ -1350,7 +1405,7 @@ def _parser() -> argparse.ArgumentParser:
     prepare = commands.add_parser("prepare")
     for argument in ("owner", "task-id", "approval-ref", "baseline", "branch", "worktree", "description", "output"):
         prepare.add_argument(f"--{argument}", required=True)
-    for argument in ("allowed-path", "prohibited-path", "evidence-ref", "focused-check", "broad-check"):
+    for argument in ("allowed-path", "prohibited-path", "evidence-ref", "focused-check", "broad-check", "runner-check"):
         prepare.add_argument(f"--{argument}", action="append", default=[])
     prepare.add_argument("--requested-tier")
     prepare.add_argument("--implementer-task-id")
@@ -1388,7 +1443,7 @@ def main(argv: list[str] | None = None) -> int:
             result = {"outcome": "passed", "turn_context": turn_context}
         elif args.command == "prepare":
             subordinate_task_ids = {lane: value for lane, value in (("implementer", args.implementer_task_id), ("runner", args.runner_task_id)) if value}
-            result = make_packet(owner=args.owner, task_id=args.task_id, approval_ref=args.approval_ref, baseline=args.baseline, branch=args.branch, worktree=args.worktree, allowed_paths=args.allowed_path, prohibited_paths=args.prohibited_path, evidence_refs=args.evidence_ref, focused_checks=args.focused_check, broad_checks=args.broad_check, description=args.description, requested_tier=args.requested_tier, subordinate_task_ids=subordinate_task_ids, repo=root); _write_tmp(root, args.output, result)
+            result = make_packet(owner=args.owner, task_id=args.task_id, approval_ref=args.approval_ref, baseline=args.baseline, branch=args.branch, worktree=args.worktree, allowed_paths=args.allowed_path, prohibited_paths=args.prohibited_path, evidence_refs=args.evidence_ref, focused_checks=args.focused_check, broad_checks=args.broad_check, runner_checks=args.runner_check, description=args.description, requested_tier=args.requested_tier, subordinate_task_ids=subordinate_task_ids, repo=root); _write_tmp(root, args.output, result)
         elif args.command == "bind-runner":
             result = bind_runner(_load_json(args.packet), _load_json(args.implementer_receipt), args.candidate_commit, root, turn_context=_load_json(args.turn_context)); _write_tmp(root, args.output, result)
         elif args.command == "validate":

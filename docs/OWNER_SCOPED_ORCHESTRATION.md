@@ -103,6 +103,11 @@ python tools/owner_scoped_orchestration.py ownership --path <path> [--owner <own
 python tools/owner_scoped_orchestration.py prepare --owner <owner> --task-id <id> ...
 ```
 
+For a full-team packet, `prepare` must include
+`--runner-check "python tools/test_runner.py full"`. Terra's affected command
+is fixed by the registry and is inserted between the declared focused and broad
+checks when its receipt is validated.
+
 Bind, validate, and record:
 
 ```text
@@ -145,10 +150,21 @@ rebase, reset, delete, alter the primary branch, or archive itself.
 
 ## Correction And Verification
 
-Terra uses focused, cached-failed, affected, and broad profiles. Luna runs the
-authoritative full profile once for the final candidate. If full verification
-fails, return to serial failed triage, correct the candidate, and reuse Luna.
-Do not launch repeated full parallel runs while debugging.
+Terra uses the exact packet order: focused checks, then
+`python tools/test_runner.py affected --base origin/master`, then any broad
+checks Sol declared necessary. The Terra receipt is rejected if it changes
+that order, skips affected triage, duplicates a check, or runs the full suite.
+Operational policy and documentation paths use narrow explicit impact mappings;
+an [AGENTS.md](../AGENTS.md) change does not by itself expand Terra's mapped broad run to the
+entire repository.
+
+A full-team packet has separate Luna verification checks and is invalid unless
+they contain `python tools/test_runner.py full` exactly once. Sol binds Luna
+only after declaring the exact candidate final. Luna runs that full profile
+once against the bound commit. If it fails, return to Terra's serial failed and
+affected triage, correct the candidate, create a new final-candidate binding,
+and then reuse the same Luna chat for the replacement candidate's single final
+run. Do not launch repeated full parallel runs while debugging.
 
 Every replacement candidate receives a new binding and receipt. The previous
 receipt remains immutable and is marked superseded through the final bundle.

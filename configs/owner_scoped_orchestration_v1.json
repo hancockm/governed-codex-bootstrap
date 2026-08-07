@@ -40,6 +40,18 @@
     ],
     "visible_nonterminal_statuses": ["failed", "blocked", "user_input_needed"]
   },
+  "test_lifecycle": {
+    "implementer": {
+      "ordered_stages": ["focused", "affected", "broad_when_needed"],
+      "affected_command": "python tools/test_runner.py affected --base origin/master",
+      "broad_policy": "packet_declared_optional"
+    },
+    "runner": {
+      "candidate_posture": "sol_declared_final",
+      "required_command": "python tools/test_runner.py full",
+      "required_count": 1
+    }
+  },
   "owners": {
     "core": {
       "status": "active",

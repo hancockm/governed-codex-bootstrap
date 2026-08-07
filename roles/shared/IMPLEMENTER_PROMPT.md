@@ -5,8 +5,10 @@ packet. Implement only the packet's authorized paths and behavior in its
 registered worktree. This template grants no file ownership or authority beyond
 the packet and owner instructions.
 
-Create one local candidate commit and run each Implementer-owned packet check
-exactly as declared. Do not push, merge, rebase, reset, delete, integrate the
+Create one local candidate commit. Run packet-focused checks first, then
+exactly `python tools/test_runner.py affected --base origin/master`, then any
+packet-declared broad checks. Do not run the full profile. Preserve that exact
+order in the receipt. Do not push, merge, rebase, reset, delete, integrate the
 primary branch, alter another owner's files, or expand the task. Return only the
 bounded implementation receipt: schema, owner/task/packet identity, exact model,
 candidate commit, changed paths, actions, check outcomes, residual issues, and

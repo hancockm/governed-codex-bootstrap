@@ -19,15 +19,26 @@ def pytest_command(arguments: list[str]) -> list[str]:
 
 
 def changed_paths(base: str) -> list[str]:
-    """Return changed tracked paths for a Git comparison, including deletions."""
-    result = subprocess.run(["git", "diff", "--name-only", f"{base}...HEAD"], cwd=ROOT, text=True, capture_output=True, check=False)
-    if result.returncode:
-        raise RuntimeError(result.stderr.strip() or f"cannot compare against {base}")
-    return [line for line in result.stdout.splitlines() if line]
+    """Return changed tracked, indexed, deleted, and untracked paths."""
+
+    commands = [
+        ["git", "diff", "--name-only", "--diff-filter=ACMRD", base, "--"],
+        ["git", "ls-files", "--others", "--exclude-standard", "--"],
+    ]
+    paths: list[str] = []
+    for command in commands:
+        result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
+        if result.returncode:
+            raise RuntimeError(result.stderr.strip() or f"cannot compare against {base}")
+        paths.extend(line for line in result.stdout.splitlines() if line)
+    return list(dict.fromkeys(paths))
 
 
-def affected_targets(paths: list[str]) -> list[str]:
-    """Map changes to focused tests and fail closed to the broad boundary."""
+def affected_targets(paths: list[str], *, posture: str = "focused") -> list[str]:
+    """Map changes to focused or broad tests and fail closed to the broad boundary."""
+
+    if posture not in {"focused", "broad"}:
+        raise ValueError("test impact posture must be focused or broad")
     config = json.loads((ROOT / "configs/testing/test_impact_v1.json").read_text(encoding="utf-8"))
     selected: set[str] = set()
     unknown = False
@@ -35,8 +46,11 @@ def affected_targets(paths: list[str]) -> list[str]:
         matched = False
         for mapping in config["mappings"]:
             if any(fnmatch.fnmatch(path, pattern) for pattern in mapping["source_globs"]):
-                selected.update(mapping["focused"])
+                selected.update(mapping[posture])
                 matched = True
+        if not matched and path.startswith("tests/") and path.endswith(".py"):
+            selected.add(path)
+            matched = True
         if not matched and (path.endswith(".py") or path.startswith("configs/") or path.startswith("Project_Obsidian_Vault/00_Canonical/")):
             unknown = True
     if unknown:
@@ -69,7 +83,8 @@ def main() -> int:
         return run([*affected_targets(changed_paths(args.base)), "-x", "--tb=short"])
     policy = json.loads((ROOT / "configs/testing/execution_v1.json").read_text(encoding="utf-8"))
     if args.profile == "broad":
-        return run([*policy["broad"], "--maxfail=3"])
+        targets = affected_targets(changed_paths(args.base), posture="broad") if args.base else policy["broad"]
+        return run([*targets, "--maxfail=3"])
     full = policy["full"]
     parallel = run([*policy["parallel_safe"], "-n", "auto", "--maxprocesses", str(full["workers"]), "--dist", full["distribution"], "--max-worker-restart", str(full["max_worker_restart"])])
     if parallel:

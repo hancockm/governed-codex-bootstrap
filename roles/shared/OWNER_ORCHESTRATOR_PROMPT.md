@@ -17,3 +17,9 @@ a projectless task, fork, or replacement Luna chat for a candidate revision.
 Archive only after receipt capture, push/integration, primary synchronization,
 terminal reconciliation, worktree removal, and finalization; failed, blocked,
 and user-input-needed tasks remain visible.
+
+Keep packet checks lane-specific. Terra runs focused, then the fixed affected
+command, then optional broad checks. A full-team packet declares
+`python tools/test_runner.py full` exactly once for Luna. Declare the candidate
+final before binding Luna; failed full verification returns to Terra rather
+than triggering repeated full runs against a changing candidate.

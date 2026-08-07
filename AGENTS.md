@@ -209,6 +209,7 @@ python tools/test_runner.py focused <tests>
 python tools/test_runner.py failed
 python tools/test_runner.py affected --base <ref>
 python tools/test_runner.py broad
+python tools/test_runner.py broad --base <ref>
 python tools/test_runner.py full
 ```
 
@@ -218,6 +219,16 @@ versioned impact map. Broad runs stop after a bounded number of failures.
 Full runs parallel-safe tests once and then exclusive tests serially. A failed
 full run returns to serial failed triage; do not repeatedly relaunch all
 workers while debugging.
+
+In owner-scoped implementation, Terra runs packet-focused checks first, then
+exactly `python tools/test_runner.py affected --base origin/master`, then
+packet-declared broad checks only when required. Terra never runs `full`.
+Luna runs exactly `python tools/test_runner.py full` once, and only against the
+exact candidate Sol has declared final. Operational governance and
+documentation paths use narrow explicit impact mappings: changing
+[AGENTS.md](AGENTS.md)
+does not automatically select every test during Terra's affected or mapped
+broad triage. Luna's final full run remains the complete coverage boundary.
 
 ### Temporary Test Artifacts
 
@@ -271,6 +282,12 @@ continuity. Implementer (Terra) makes one packet-bounded local candidate.
 Verification Runner (Luna) independently verifies the exact candidate without
 repository writes. Required model bindings and risk escalation are fail-
 closed; no silent substitution is allowed.
+
+Packet checks are lane-specific and fail closed. Terra's receipt must preserve
+the ordered focused → affected → optional-broad lifecycle. Every full-team
+packet must declare `python tools/test_runner.py full` exactly once in its Luna
+checks, and the runner binding must identify the candidate posture as
+`sol_declared_final`; lower tiers cannot declare Luna checks.
 
 Each lane uses its owner-neutral shared prompt artifact from [roles/shared/](roles/shared),
 composed with the exact owner profile and task packet. Shared prompts cannot
