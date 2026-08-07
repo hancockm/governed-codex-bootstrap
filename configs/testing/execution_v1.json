@@ -3,7 +3,6 @@
   "parallel_safe": [
     "tests/test_conformance.py",
     "tests/test_research.py",
-    "tests/test_social_assets.py",
     "tests/test_workflow_tools.py",
     "tests/tools/test_agent_work_selection_audit.py",
     "tests/tools/test_capability_status.py",

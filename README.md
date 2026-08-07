@@ -1,4 +1,4 @@
-![Governed Codex Bootstrap — research to evidence to approval to delivery to continuity](assets/social/x/governed-codex-header-1500x500.png)
+![Governed Codex Bootstrap — research to evidence to approval to delivery to continuity](assets/governed-codex-header.png)
 
 # Governed Codex Bootstrap
 
@@ -30,15 +30,7 @@ The complete setup, provider-choice, egress, and disposition workflow is in
 | `tools/tool_parity.py`, `configs/tool_parity_v1.json` | Require an explicit complete counterpart, generic adaptation, or product-specific exclusion for every reference tool. |
 | `configs/documentation_system_v1.json`, `docs/DOCUMENTATION_SYSTEM_PARITY.md` | Enforce substantive project-neutral equivalents for the instruction, Core bootstrap, continuity, Git, vault, and owner-workflow system. |
 | `configs/` and `docs/` | Machine policy plus operational runbooks. |
-| `assets/social/` | Editable social-diagram sources, X-ready exports, launch order, and accessibility text. |
 | Folder-local `README.md` files | Explain each maintained directory, significant artifact, generated-content boundary, and change rule at the point of use. |
-
-The initial social launch catalog is documented in
-`assets/social/README.md`. Its SVG masters and PNG exports cover the six-plane
-architecture, research-first promotion, owner-scoped orchestration, governed
-PDF intake, test execution, portable continuity, and the X profile header.
-The complete twelve-post sequence, image assignments, and inspiration credits
-are in `assets/social/POSTING_SCHEDULE.md`.
 
 The cold start is research intake and organization; Core canonicalization; advisory selection audit and plan handoff; user approval; Sol packet classification; Terra candidate; one reused saved-project Luna task through corrections; authorized integration; Core synchronization; continuity export; then Sol finalization/archive acknowledgment.
 

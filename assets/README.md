@@ -2,18 +2,15 @@
 
 ## Purpose
 
-This directory contains reusable, publication-ready project visuals and their
-editable sources. Assets explain the governed development system without
-turning promotional copy into canonical project doctrine.
+This directory contains the publication-ready header displayed by the root
+GitHub README. It is a tracked project asset, not canonical project doctrine.
 
 ## Contents
 
-- `social/` contains the social-media catalog, vector sources, accessibility
-  text, and exported platform files.
+- `governed-codex-header.png` is the 1500×500 project and X profile header.
 
 ## Change Discipline
 
-Keep editable sources and export metadata together. Do not overwrite a
-published asset silently; create a versioned replacement and update the
-catalog. Validate exact dimensions, file type, accessibility text, and source
-identity before publishing.
+Do not overwrite a published header silently. Preserve its source separately,
+verify its dimensions and file type before replacement, and update the root
+README reference if its filename changes.
