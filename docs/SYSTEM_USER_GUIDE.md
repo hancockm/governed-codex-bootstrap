@@ -528,10 +528,15 @@ flowchart TD
     Activate --> FirstGoal["User may approve first owner implementation goal"]
 ```
 
-Before activation, the proposed owner may change only its authorized adoption
-surfaces. It cannot dispatch Terra or Luna for product implementation, claim
-capability maturity, or treat its branch as landed. Adoption confirms the
-owner accepts the boundary; Core activation creates dispatch authority.
+Before Core activation, the proposed owner may change only its authorized
+adoption surfaces. During this inactive adoption phase, it cannot dispatch
+Terra or Luna for product implementation, claim capability maturity, or treat
+its branch as landed. Adoption confirms that the owner accepts the boundary;
+Core activation creates dispatch authority. After activation, every owner—not
+only Core—receives the complete Sol/Terra/Luna orchestration lifecycle within
+its registered scope. Core remains the sole integrator of the primary branch;
+that integration role does not make Core the implementer of another owner's
+product work.
 
 ### Worked example: Database Layer Owner
 
