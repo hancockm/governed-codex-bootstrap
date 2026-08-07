@@ -345,8 +345,8 @@
     {
       "path": "Project_Obsidian_Vault/40_Coordination/Instructions/External Critique Handoff.md",
       "classification": "generic_adaptation",
-      "minimum_lines": 35,
-      "required_headings": ["## Purpose", "## Create The Handoff", "## Completion Evidence", "## Failure And Fallback", "## Publication"]
+      "minimum_lines": 120,
+      "required_headings": ["## Purpose", "## Provider Choice And Model Diversity", "## Local Environment Setup", "## Create The Handoff", "## Data Egress And Security", "## Completion Evidence", "## Failure And Fallback", "## Publication"]
     },
     {
       "path": "Project_Obsidian_Vault/90_Archive/README.md",

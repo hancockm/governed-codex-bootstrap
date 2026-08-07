@@ -8,11 +8,12 @@ import json
 import os
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Mapping
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,6 +21,9 @@ DISCUSSION_DIR = ROOT / "Project_Obsidian_Vault" / "40_Coordination"
 DEFAULT_ACTIVE_THREAD = DISCUSSION_DIR / "Generated" / "Active Records.md"
 UPDATE_LOG = DISCUSSION_DIR / "Generated" / "Critique Update Log.md"
 LOG_DIR = ROOT / "tmp" / "agent_handoff_logs"
+ENV_FILE = ROOT / ".env"
+EXTERNAL_PROVIDERS = ("agy", "claude", "codex", "gemini", "mmx")
+EXTERNAL_INPUT_MODES = ("argument", "stdin")
 MOC_START = "<!-- managed:moc-children:start -->"
 MOC_END = "<!-- managed:moc-children:end -->"
 PREAMBLE = (
@@ -69,7 +73,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--thread", type=Path, default=DEFAULT_ACTIVE_THREAD)
     parser.add_argument("--disagreement", default="")
     parser.add_argument("--critique-file", type=Path)
-    parser.add_argument("--invoke", choices=("agy", "mmx", "codex"))
+    parser.add_argument("--invoke", choices=EXTERNAL_PROVIDERS)
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args(argv)
@@ -170,27 +174,103 @@ def _redact_cli_text(text: str) -> str:
     return value
 
 
-def _invoke_external(provider: str, prompt: str, *, identity: str) -> str:
-    """Invoke one explicitly configured critique CLI and return validated Markdown."""
+def _unquote_env_value(value: str) -> str:
+    """Return one bounded dotenv value without interpolation or escape expansion."""
 
+    stripped = value.strip()
+    if len(stripped) >= 2 and stripped[0] == stripped[-1] and stripped[0] in {'"', "'"}:
+        return stripped[1:-1]
+    return stripped
+
+
+def load_local_provider_settings(
+    path: Path = ENV_FILE,
+    *,
+    environment: Mapping[str, str] | None = None,
+) -> dict[str, str]:
+    """Load allowlisted external-provider settings with process-env precedence.
+
+    Args:
+        path: Optional repository-local dotenv path.
+        environment: Existing environment used as the authoritative override.
+
+    Returns:
+        Recognized command and input-mode settings only.
+
+    Raises:
+        HandoffError: If a recognized setting is malformed or duplicated.
+    """
+
+    current = dict(os.environ if environment is None else environment)
+    recognized = {
+        f"PROJECT_{provider.upper()}_{suffix}"
+        for provider in EXTERNAL_PROVIDERS
+        for suffix in ("COMMAND", "INPUT_MODE", "MODEL_ID")
+    }
+    loaded: dict[str, str] = {}
+    if path.exists():
+        for line_number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+            line = raw.strip()
+            if not line or line.startswith("#"):
+                continue
+            if line.startswith("export "):
+                line = line[7:].lstrip()
+            if "=" not in line:
+                if line.startswith("PROJECT_"):
+                    raise HandoffError(f"malformed provider setting at .env line {line_number}")
+                continue
+            key, value = line.split("=", 1)
+            key = key.strip()
+            if key not in recognized:
+                continue
+            if key in loaded:
+                raise HandoffError(f"duplicate provider setting {key} in .env")
+            loaded[key] = _unquote_env_value(value)
+    loaded.update({key: current[key] for key in recognized if key in current})
+    return loaded
+
+
+def _invoke_external(
+    provider: str,
+    prompt: str,
+    *,
+    identity: str,
+) -> tuple[str, dict[str, str]]:
+    """Invoke one explicitly configured critique CLI and return safe evidence."""
+
+    settings = load_local_provider_settings()
     env_key = f"PROJECT_{provider.upper()}_COMMAND"
-    configured = os.environ.get(env_key, "").strip()
+    configured = settings.get(env_key, "").strip()
     if not configured:
-        raise HandoffError(f"{env_key} is required for --invoke {provider}")
+        raise HandoffError(f"{env_key} is required in process environment or .env for --invoke {provider}")
+    input_key = f"PROJECT_{provider.upper()}_INPUT_MODE"
+    input_mode = settings.get(input_key, "stdin").strip().lower()
+    if input_mode not in EXTERNAL_INPUT_MODES:
+        raise HandoffError(f"{input_key} must be one of: {', '.join(EXTERNAL_INPUT_MODES)}")
+    model_key = f"PROJECT_{provider.upper()}_MODEL_ID"
+    model_id = settings.get(model_key, "").strip()
+    if not model_id:
+        raise HandoffError(f"{model_key} is required for reproducible external critique evidence")
     command = shlex.split(configured, posix=os.name != "nt")
     if not command:
         raise HandoffError(f"{env_key} resolved to an empty command")
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     log = LOG_DIR / f"{provider}-{identity[:12]}.log"
-    result = subprocess.run(
-        command,
-        input=prompt,
-        text=True,
-        capture_output=True,
-        check=False,
-        timeout=600,
-        cwd=ROOT,
-    )
+    runtime_dir = LOG_DIR / f"runtime-{provider}-{identity[:12]}"
+    runtime_dir.mkdir(parents=True, exist_ok=False)
+    invocation = [*command, prompt] if input_mode == "argument" else command
+    try:
+        result = subprocess.run(
+            invocation,
+            input=None if input_mode == "argument" else prompt,
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=600,
+            cwd=runtime_dir,
+        )
+    finally:
+        shutil.rmtree(runtime_dir, ignore_errors=True)
     bounded = _redact_cli_text((result.stdout + "\n" + result.stderr)[-20000:])
     log.write_text(bounded, encoding="utf-8")
     if result.returncode != 0:
@@ -198,12 +278,21 @@ def _invoke_external(provider: str, prompt: str, *, identity: str) -> str:
     critique = result.stdout.strip()
     if not _valid_critique(critique):
         raise HandoffError(f"{provider} returned invalid critique Markdown")
-    return critique
+    command_hash = hashlib.sha256(
+        json.dumps(command, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return critique, {
+        "provider": provider,
+        "model_id": model_id,
+        "command_sha256": command_hash,
+        "input_mode": input_mode,
+    }
 
 
 def _render_record(
     *, topic: str, owner: str, plan_text: str, identity: str,
-    frozen_baseline: str, created_at: datetime, critique: str
+    frozen_baseline: str, created_at: datetime, critique: str,
+    external_invocation: Mapping[str, str]
 ) -> str:
     """Render the immutable handoff record and its explicit advisory state."""
 
@@ -218,6 +307,7 @@ def _render_record(
         "plan_sha256": hashlib.sha256(plan_text.encode("utf-8")).hexdigest(),
         "critique_sha256": hashlib.sha256(critique.encode("utf-8")).hexdigest() if critique else "",
         "status": "advisory_pending_owner_disposition",
+        "external_invocation": dict(external_invocation),
     }
     pending = "\n\n".join(f"{heading}\n\nPending." for heading in REQUIRED_HEADINGS)
     return (
@@ -361,12 +451,15 @@ def main(argv: list[str] | None = None) -> int:
             print(prompt)
             return 0
         critique = ""
+        external_invocation: dict[str, str] = {}
         if args.critique_file:
             critique = args.critique_file.read_text(encoding="utf-8")
             if not _valid_critique(critique):
                 raise HandoffError("critique file does not use the required structure")
         if args.invoke:
-            critique = _invoke_external(args.invoke, prompt, identity=identity)
+            critique, external_invocation = _invoke_external(
+                args.invoke, prompt, identity=identity
+            )
         record = _render_record(
             topic=args.topic,
             owner=args.owner,
@@ -375,6 +468,7 @@ def main(argv: list[str] | None = None) -> int:
             frozen_baseline=frozen_baseline,
             created_at=created_at,
             critique=critique,
+            external_invocation=external_invocation,
         )
         applied = publish_handoff(
             record_path=record_path,

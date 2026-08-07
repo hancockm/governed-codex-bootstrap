@@ -10,12 +10,18 @@ links. Shared owner instructions live under
 `Project_Obsidian_Vault/40_Coordination/Instructions/README.md`. Core vault
 cleanup follows `docs/CORE_VAULT_MAINTENANCE_PROTOCOL.md`.
 
+Optional external A2A critique is configured from `.env.example`. Copy it to
+the ignored `.env`, install and authenticate only the provider CLIs you intend
+to use, and keep credentials in provider or operating-system secret storage.
+The complete setup, provider-choice, egress, and disposition workflow is in
+`Project_Obsidian_Vault/40_Coordination/Instructions/External Critique Handoff.md`.
+
 ## Workflow substrate inventory
 
 | Surface | Role |
 | --- | --- |
 | `tools/research_intake.py`, `research_organizer.py` | Preserve and map source evidence without promotion. |
-| `tools/agent_work_selection_audit.py`, `agent_to_agent_plan_handoff.py` | Create frozen-baseline advisory selection and critique records. |
+| `tools/agent_work_selection_audit.py`, `agent_to_agent_plan_handoff.py` | Create frozen-baseline advisory selection and critique records; optionally capture an explicitly configured external-model response. |
 | `tools/owner_scoped_orchestration.py` | Classify, bind, validate, and immutably record complete Sol/Terra/Luna packet and receipt lifecycles without model invocation. |
 | `tools/test_runner.py`, `source_doc_audit.py`, `vault_maintainer.py` | Execute lifecycle tests, audit public source, and maintain safe navigation. |
 | `tools/origin_reconciler.py`, `capability_status.py`, `export_agent_thread_continuity.py` | Report delivery facts, maturity evidence, and complete bounded continuity archives. |

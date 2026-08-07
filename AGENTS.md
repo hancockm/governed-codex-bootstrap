@@ -153,6 +153,20 @@ External CLI invocation is optional, explicitly configured, and successful
 only when the assigned record changes; an empty response or zero process exit
 is not evidence of a completed critique.
 
+The local handoff record and the external critique are separate lifecycle
+steps. Configure an external provider only through the allowlisted
+`PROJECT_<PROVIDER>_COMMAND`, `PROJECT_<PROVIDER>_INPUT_MODE`, and
+`PROJECT_<PROVIDER>_MODEL_ID` settings in the ignored repository-root `.env`,
+using `.env.example` as the public template. The declared model identity must
+match the model selected by the configured command. Do not store provider
+credentials in `.env`; authenticate the installed CLI through its approved
+credential store or operating-system secret mechanism. Invocation transmits
+the complete handoff prompt to the selected provider and therefore requires an
+explicit data-egress, confidentiality, cost, and authorization decision.
+Different model families can provide useful independent failure profiles, but
+their output remains advisory and must be verified against repository evidence
+and dispositioned by the owning agent.
+
 ## Coding Discipline
 
 ### Think Before Coding

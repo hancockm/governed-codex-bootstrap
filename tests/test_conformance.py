@@ -44,6 +44,19 @@ def test_first_bootstrap_requires_native_capabilities_and_no_plugins() -> None:
     assert bootstrap["preflight"]["installation_requires_user_approval"] is True
 
 
+def test_external_a2a_configuration_is_nonsecret_and_opt_in() -> None:
+    ignored = (ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
+    example = (ROOT / ".env.example").read_text(encoding="utf-8")
+    assert "/.env" in ignored
+    assert "!/.env.example" in ignored
+    for provider in ("CLAUDE", "GEMINI", "MMX", "AGY", "CODEX"):
+        assert f"PROJECT_{provider}_COMMAND=" in example
+        assert f"PROJECT_{provider}_INPUT_MODE=" in example
+        assert f"PROJECT_{provider}_MODEL_ID=" in example
+    assert "Do not put API keys" in example
+    assert "PROJECT_CLAUDE_API_KEY" not in example
+
+
 def test_orchestration_has_exact_model_bindings_and_separate_sol_finalization() -> None:
     orchestration = json.loads((ROOT / "configs/owner_scoped_orchestration_v1.json").read_text(encoding="utf-8"))
     bindings = orchestration["model_binding"]
@@ -110,6 +123,7 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
         "## Owner-Scoped Orchestration",
         "## Agent-To-Agent Discussions And Owner Direction",
         "### Set Up A2A Coordination From The Bootstrap",
+        "### Optional External-Model Critique",
         "## Close A Task Promptly And Rehydrate Correctly",
         "### Why continuity is stored in Git",
         "### Rehydrate in a fresh task or on another device",
@@ -127,6 +141,9 @@ def test_system_user_guide_explains_operation_instead_of_only_listing_assets() -
         "Responsibility transferred to another employee",
         "The owner is therefore a durable project role",
         "Git supplies portability, provenance, integrity history, and distribution",
+        "Different model families",
+        "Copy-Item .env.example .env",
+        "External invocation is data egress",
     ):
         assert phrase in guide
     assert guide.count("```mermaid") >= 7
@@ -194,6 +211,8 @@ def test_system_user_guide_defines_a2a_authority_and_owner_direction() -> None:
         "40_Coordination/Generated/Active Records.md",
         "The owner publishes a separate",
         "generated files are never",
+        "PROJECT_<PROVIDER>_COMMAND",
+        "--invoke claude",
     ):
         assert phrase in guide
 

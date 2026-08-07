@@ -22,7 +22,7 @@ section during daily operation.
 | [The Vault And The LLM Wiki Pattern](#the-vault-and-the-llm-wiki-pattern) | Explains how source, canonical knowledge, coordination, continuity, and archives remain distinct but navigable. |
 | [Owner-Scoped Orchestration](#owner-scoped-orchestration) | Defines the Sol, Terra, and Luna lanes and their immutable packet, verification, and archival boundaries. |
 | [Create And Activate A New Owner](#create-and-activate-a-new-owner) | Shows when a separate owner is justified, what Core scaffolds, what prompt the user receives, and how adoption becomes active authority. |
-| [Agent-To-Agent Discussions And Owner Direction](#agent-to-agent-discussions-and-owner-direction) | Shows how separate owners request boundaries, decide direction, converge critiques, and set up A2A delivery. |
+| [Agent-To-Agent Discussions And Owner Direction](#agent-to-agent-discussions-and-owner-direction) | Shows how owners request boundaries, decide direction, publish durable handoffs, and optionally obtain a `.env`-configured Claude, Gemini, MiniMax, or other external-model critique. |
 | [One Complete Work Cycle](#one-complete-work-cycle) | Follows one approved outcome from discovery through implementation, verification, delivery, and integrated closeout. |
 | [Close A Task Promptly And Rehydrate Correctly](#close-a-task-promptly-and-rehydrate-correctly) | Preserves portable owner history in Git before archiving and rehydrates it across tasks, devices, or employees. |
 | [What Is Unique Here](#what-is-unique-here) | Summarizes the distinctive composition of otherwise familiar development practices. |
@@ -614,6 +614,89 @@ python tools/agent_to_agent_plan_handoff.py --topic "<topic>" --plan-file <path>
 requests and owner responses live as separate atomic coordination records;
 do not disguise a public-contract request as a plan critique.
 
+### Optional External-Model Critique
+
+The durable A2A record does not require an external model. The optional
+external-critique step sends the complete generated handoff prompt through a
+configured provider CLI or API wrapper and captures a structurally validated
+response in the advisory record.
+
+Why do this when the owner already runs in Codex? Different model families
+have different training, tools, context behavior, costs, and failure modes. A
+Claude, Gemini, or MiniMax review can expose a different weak assumption. That
+is useful diversity, not extra authority. Model abilities change by exact
+version and deployment, so evaluate them on sealed project examples instead
+of assuming a permanent specialty from a provider name.
+
+| Optional path | Typical reason to evaluate it | Important limitation |
+| --- | --- | --- |
+| Claude Code | Alternate vendor/model perspective for long architecture, policy, and edge-case review | Quality varies by model and release; output is advisory |
+| Gemini CLI | Alternate model and tool stack, including a potentially different context or multimodal perspective | Authentication, models, and features vary by account |
+| MiniMax CLI (`mmx`) | Lower-cost second review for routine plans | Cost does not establish reliability |
+| Antigravity (`agy`) | Local wrapper for another configured provider/model | Review the wrapper's exact command, permissions, and egress |
+| Codex CLI | Captured-output fallback | Less independent than a different provider family |
+
+The repository tracks `.env.example` and ignores `.env`. Set up a provider as
+follows:
+
+1. Install its CLI from the official source and verify the exact version.
+2. Authenticate through the CLI's credential store or an operating-system
+   secret mechanism. Do **not** place API keys, tokens, or passwords in
+   `.env`.
+3. Copy the public command template:
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+4. Retain only the provider commands you have installed, authorized, and
+   tested. The accepted settings are
+   `PROJECT_<PROVIDER>_COMMAND`,
+   `PROJECT_<PROVIDER>_INPUT_MODE=argument|stdin`, and
+   `PROJECT_<PROVIDER>_MODEL_ID`. Configure the command to select the same
+   exact model identity; the tool fails closed when the identity is absent.
+5. Inspect the exact prompt locally with `--dry-run`. Confirm that its plan,
+   topic, disagreement, and record reference are permitted to leave the
+   repository boundary.
+6. Invoke one reviewer explicitly:
+
+   ```powershell
+   python tools/agent_to_agent_plan_handoff.py `
+     --topic "Storage boundary plan" `
+     --plan-file tmp/a2a/storage-plan.md `
+     --owner core `
+     --invoke claude `
+     --apply
+   ```
+
+   Substitute `gemini`, `mmx`, `agy`, or `codex` only when that path is
+   separately configured and authorized.
+
+The tool loads only allowlisted non-secret settings, gives process-environment
+settings precedence, performs no variable interpolation, executes no shell,
+and runs the provider in an isolated temporary directory. It records a command
+hash rather than the command text. In `argument` mode the prompt may still be
+visible in the local process list while the command runs; prefer `stdin` when
+the exact CLI supports it.
+
+A reviewed local wrapper may call a provider HTTP API instead of a vendor CLI,
+provided it obeys the same stdin/final-argument input and structured-stdout
+contract. Its SDK, authentication, and data path remain separate governed
+artifacts; the handoff tool does not become a provider secret manager.
+
+External invocation is data egress. The tool cannot determine the provider's
+retention, training, residency, subprocessors, account terms, or cost. Those
+must be authorized before the call. Never send secrets, private reasoning,
+regulated content, or confidential research merely because the CLI is logged
+in.
+
+The returned Markdown must contain the required preamble and five critique
+headings. A zero exit code, fluent prose, or a local log does not establish
+success. Sol verifies repository claims and dispositions every substantive
+point before any accepted conclusion changes a plan. See
+`Project_Obsidian_Vault/40_Coordination/Instructions/External Critique Handoff.md`
+for the complete operator contract and official provider references.
+
 ### A2A lifecycle and unresolved work
 
 ```mermaid
@@ -754,10 +837,10 @@ Run the identical `--apply` command again. It must return the same record and
 identity with `applied: false`; different content under the same identity is
 rejected. Do not hand-edit the generated indexes.
 
-An external critique provider is optional. `--invoke` is used only after its
-command, data access, cost, and user authorization are configured. Without an
-external provider, the record remains a valid advisory handoff awaiting an
-owner's disposition.
+An external critique provider is optional. Follow
+[Optional External-Model Critique](#optional-external-model-critique) before
+using `--invoke`. Without an external provider, the record remains a valid
+advisory handoff awaiting an owner's disposition.
 
 #### 4. Verify human and agent discovery
 

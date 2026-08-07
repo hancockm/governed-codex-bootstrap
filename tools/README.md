@@ -12,7 +12,7 @@ repository maintenance; they do not create product authority.
 | --- | --- |
 | `__init__.py` | Makes the directory importable so tests and other tools can reuse public helpers without shelling out. |
 | `agent_to_agent_handoff.py` | Compatibility entry point for the canonical plan-handoff command. It preserves older operator commands without maintaining a second workflow. |
-| `agent_to_agent_plan_handoff.py` | Creates immutable, content-addressed plan-critique requests and optionally captures configured external critique results. |
+| `agent_to_agent_plan_handoff.py` | Creates immutable, content-addressed plan-critique requests and optionally invokes an allowlisted Claude, Gemini, MiniMax, Antigravity, or Codex CLI configured through the ignored `.env`; it validates critique shape and records only a command hash and safe invocation posture. |
 | `agent_work_selection_audit.py` | Records the frozen evidence, ownership, prerequisites, and disposition behind a substantial next-step selection. |
 | `architecture_conformance.py` | Runs the repository-wide six-plane and documentation conformance check. This is the principal bootstrap acceptance command. |
 | `capability_status.py` | Validates and reports machine-readable capability maturity without inferring implementation from prose. |
