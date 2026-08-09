@@ -322,6 +322,36 @@ def test_legacy_closeout_rejects_missing_and_mutated_recorded_bundle(tmp_path: P
         orchestration.finalize_legacy_v3_closeout(packet, manifest, acknowledgment, record, delivery, root)
 
 
+@pytest.mark.parametrize("section,field,value", [("terminal_reconciliation", "disposition", "superseded"), ("primary_branch_sync", "verified", False), ("worktree_removal", "worktree", ".worktrees/wrong")])
+def test_legacy_closeout_rejects_terminal_delivery_mutations(tmp_path: Path, section: str, field: str, value: object) -> None:
+    root = _repo(tmp_path); packet, manifest, acknowledgment, record, delivery = _legacy_v3_artifacts(root, f"legacy-{field}")
+    delivery[section][field] = value; delivery["canonical_hash"] = orchestration.sha256_canonical({key: item for key, item in delivery.items() if key != "canonical_hash"})
+    with pytest.raises(orchestration.OrchestrationError):
+        orchestration.finalize_legacy_v3_closeout(packet, manifest, acknowledgment, record, delivery, root)
+
+
+def test_legacy_closeout_rejects_unsafe_acknowledgment_and_cross_hash(tmp_path: Path) -> None:
+    root = _repo(tmp_path); packet, manifest, acknowledgment, record, delivery = _legacy_v3_artifacts(root, "legacy-ack")
+    acknowledgment["correction_pending"] = True; acknowledgment["canonical_hash"] = orchestration.sha256_canonical({key: item for key, item in acknowledgment.items() if key != "canonical_hash"})
+    with pytest.raises(orchestration.OrchestrationError, match="acknowledgment"):
+        orchestration.finalize_legacy_v3_closeout(packet, manifest, acknowledgment, record, delivery, root)
+    packet, manifest, acknowledgment, record, delivery = _legacy_v3_artifacts(root, "legacy-hash")
+    record["runner_receipt_hash"] = "0" * 64; record["canonical_hash"] = orchestration.sha256_canonical({key: item for key, item in record.items() if key != "canonical_hash"})
+    with pytest.raises(orchestration.OrchestrationError, match="differs|cross-hashes"):
+        orchestration.finalize_legacy_v3_closeout(packet, manifest, acknowledgment, record, delivery, root)
+
+
+def test_legacy_closeout_rejects_extra_binding_or_delivery_fields(tmp_path: Path) -> None:
+    root = _repo(tmp_path); packet, manifest, acknowledgment, record, delivery = _legacy_v3_artifacts(root, "legacy-extra")
+    bundle = root / "receipts" / packet["task_id"] / packet["canonical_hash"]; binding_path = bundle / "runner_binding.json"; binding = json.loads(binding_path.read_text(encoding="utf-8")); binding["extra"] = True; binding["canonical_hash"] = orchestration.sha256_canonical({key: item for key, item in binding.items() if key != "canonical_hash"}); binding_path.write_bytes((orchestration.canonical_json(binding) + "\n").encode("utf-8"))
+    with pytest.raises(orchestration.OrchestrationError, match="runner binding"):
+        orchestration.finalize_legacy_v3_closeout(packet, manifest, acknowledgment, record, delivery, root)
+    packet, manifest, acknowledgment, record, delivery = _legacy_v3_artifacts(root, "legacy-delivery-extra")
+    delivery["terminal_reconciliation"]["extra"] = True; delivery["canonical_hash"] = orchestration.sha256_canonical({key: item for key, item in delivery.items() if key != "canonical_hash"})
+    with pytest.raises(orchestration.OrchestrationError):
+        orchestration.finalize_legacy_v3_closeout(packet, manifest, acknowledgment, record, delivery, root)
+
+
 def test_packet_shape_task_id_and_static_risk_cannot_be_self_hashed_away(tmp_path: Path) -> None:
     root = _repo(tmp_path)
     assert _packet(root, task_id="a" * 128)["task_id"] == "a" * 128
