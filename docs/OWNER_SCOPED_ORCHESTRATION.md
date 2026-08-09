@@ -170,7 +170,9 @@ entire repository.
 A full-team packet has separate Luna verification checks and is invalid unless
 they contain `python tools/test_runner.py full` exactly once. Sol binds Luna
 only after declaring the exact candidate final. Luna runs that full profile
-once against the bound commit. If it fails, return to Terra's serial failed and
+once against the bound commit. If it fails, Sol sends an exact mechanical
+correction to the fixed Low task. If eligibility is uncertain or the work is
+not bounded, Sol returns it to the existing Primary High task and
 affected triage, correct the candidate, create a new final-candidate binding,
 and then reuse the same Luna chat for the replacement candidate's single final
 run. Do not launch repeated full parallel runs while debugging.

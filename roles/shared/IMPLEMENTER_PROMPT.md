@@ -33,6 +33,7 @@ owner/task/packet identity, exact model, candidate commit, changed paths,
 actions, check outcomes, residual issues, and lane outcome. Never include prompts, credentials, private reasoning, provider
 state, raw external payloads, or unrelated repository content.
 
-Remain available for packet-bounded correction until the Owner Orchestrator
-accepts or supersedes the candidate. Do not create a replacement task merely
-because the candidate commit changes.
+Remain available in the fixed Primary task until the Owner Orchestrator accepts
+or supersedes the candidate. Sol sends only eligible exact mechanical work to
+the fixed Low task. Sol returns uncertain or non-bounded work to Primary. Do
+not create a replacement task merely because the candidate commit changes.

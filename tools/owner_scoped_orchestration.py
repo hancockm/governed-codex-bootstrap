@@ -986,6 +986,16 @@ def finalize_legacy_v3_closeout(packet: Mapping[str, Any], archive_manifest: Map
     root = repository_root(repo)
     _validate_legacy_v3_closeout_inputs(packet, archive_manifest, archive_acknowledgment, record, delivery_evidence, root)
     profile = load_active_owner_profile(str(packet["owner"]), root)
+    legacy_models = {"owner_orchestrator": _lane_binding(load_registry(root), "owner_orchestrator"), "implementer": _lane_binding(load_registry(root), "implementer", "primary"), "runner": _lane_binding(load_registry(root), "runner")}
+    if packet.get("lane_models") != legacy_models or packet.get("owner_profile_ref") != owner_config(str(packet["owner"]), root, active=True)["profile_path"] or packet.get("owner_profile_hash") != sha256_canonical(profile):
+        raise OrchestrationError("legacy closeout packet model or profile mismatch")
+    allowed = _safe_paths(packet.get("allowed_paths", []), "legacy packet allowed path")
+    prohibited = _safe_paths(packet.get("prohibited_paths", []), "legacy packet prohibited path")
+    validate_owner_path_authority(packet["owner"], allowed, root)
+    static = classify_task(packet["task_description"], allowed)
+    if _path_scopes_overlap(allowed, prohibited) or packet["classification"].get("schema_version") != static["schema_version"] or tuple(packet["classification"].get("triggers", ())) != static["triggers"] or not _safe_worktree(str(packet.get("worktree", ""))):
+        raise OrchestrationError("legacy closeout packet path or classification mismatch")
+    _validate_test_check_contract("full_team", packet["focused_checks"], packet["broad_checks"], packet["runner_checks"])
     payload = {"schema_version": LEGACY_V3_FINALIZATION_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "historical_record_hash": record["canonical_hash"], "historical_archive_manifest_hash": archive_manifest["canonical_hash"], "historical_archive_acknowledgment_hash": archive_acknowledgment["canonical_hash"], "historical_delivery_evidence_hash": delivery_evidence["canonical_hash"], "outcome": "closed"}
     finalization = {**payload, "canonical_hash": sha256_canonical(payload)}
     directory = root / profile["continuity_receipts_root"] / packet["task_id"] / "legacy_v3_finalizations" / finalization["canonical_hash"]
@@ -1047,12 +1057,19 @@ def _validate_legacy_v3_closeout_inputs(packet: Mapping[str, Any], manifest: Map
             raise OrchestrationError(f"legacy closeout {label} identity mismatch")
     if implementer.get("model") != _lane_binding(load_registry(root), "implementer", "primary") or implementer.get("candidate_commit") is None or not HEX40.fullmatch(str(implementer.get("candidate_commit"))) or implementer.get("changed_paths") == []:
         raise OrchestrationError("legacy closeout High receipt is unsafe")
+    changed = _safe_paths(implementer["changed_paths"], "legacy implementer changed path")
+    if any(not _path_is_within(path, allowed) for path in changed) or any(_path_is_within(path, prohibited) for path in changed) or set(_string_list(implementer["actions"], "legacy implementer actions")) & IMPLEMENTER_FORBIDDEN_ACTIONS or implementer.get("outcome") != "passed":
+        raise OrchestrationError("legacy closeout High receipt actions or paths are unsafe")
+    _validate_safe_diagnostics(implementer["residual_issues"], "legacy implementer diagnostics")
     _validate_checks(implementer.get("checks"), [*packet["focused_checks"], TERRA_AFFECTED_COMMAND, *packet["broad_checks"]], "legacy implementer", ordered=True)
     if binding.get("implementer_receipt_hash") != _payload_hash(implementer) or binding.get("candidate_commit") != implementer["candidate_commit"] or binding.get("runner_task_id") != task_ids["runner"] or binding.get("runner_model") != _lane_binding(load_registry(root), "runner"):
         raise OrchestrationError("legacy closeout runner binding mismatch")
     validate_runner_channel(binding.get("turn_context"), binding["runner_task_id"], task_ids["runner"], binding["runner_model"], root)
     if runner.get("runner_binding_hash") != binding.get("canonical_hash") or runner.get("candidate_commit") != implementer["candidate_commit"]:
         raise OrchestrationError("legacy closeout runner receipt mismatch")
+    if runner.get("model") != _lane_binding(load_registry(root), "runner") or runner.get("outcome") != "passed" or set(_string_list(runner["actions"], "legacy runner actions")) & RUNNER_WRITE_ACTIONS:
+        raise OrchestrationError("legacy closeout runner actions or model are unsafe")
+    _validate_runner_environment(runner["environment_preflight"]); _validate_runner_git_status(runner["git_status"]); _validate_reconciler_evidence(runner["reconciler_evidence"], implementer["candidate_commit"]); _validate_safe_diagnostics(runner["diagnostics"], "legacy runner diagnostics"); _validate_safe_diagnostics(runner["residual_issues"], "legacy runner residual issues")
     _validate_checks(runner.get("checks"), packet["runner_checks"], "legacy runner")
     hashes = {"implementer_receipt_hash": _payload_hash(implementer), "runner_binding_hash": binding["canonical_hash"], "runner_receipt_hash": _payload_hash(runner)}
     if any(record.get(key) != value for key, value in hashes.items()) or record.get("archive_manifest_hash") != manifest["canonical_hash"] or delivery.get("receipt_record_hash") != record["canonical_hash"]:
@@ -1062,7 +1079,7 @@ def _validate_legacy_v3_closeout_inputs(packet: Mapping[str, Any], manifest: Map
         raise OrchestrationError("legacy closeout manifest lane identities mismatch")
     if acknowledgment.get("archive_manifest_hash") != manifest["canonical_hash"] or acknowledgment.get("acknowledged_by") != "owner_orchestrator" or acknowledgment.get("correction_pending") is not False:
         raise OrchestrationError("legacy closeout acknowledgment is unsafe")
-    if not isinstance(acknowledgment.get("lane_dispositions"), list) or len(acknowledgment["lane_dispositions"]) != 2 or any(item.get("lane") != expected["lane"] or item.get("subordinate_task_id") != expected["subordinate_task_id"] or item.get("disposition") not in {"archived", "superseded"} for item, expected in zip(acknowledgment["lane_dispositions"], expected_lanes, strict=True)):
+    if not isinstance(acknowledgment.get("lane_dispositions"), list) or len(acknowledgment["lane_dispositions"]) != 2 or any(set(item) != {"lane", "subordinate_task_id", "disposition", "supersession_ref"} or item.get("lane") != expected["lane"] or item.get("subordinate_task_id") != expected["subordinate_task_id"] or item.get("disposition") not in {"archived", "superseded"} or (item.get("disposition") == "archived" and item.get("supersession_ref") != "") for item, expected in zip(acknowledgment["lane_dispositions"], expected_lanes, strict=True)):
         raise OrchestrationError("legacy closeout acknowledgment lane disposition mismatch")
     expected_delivery = {"implementer": hashes["implementer_receipt_hash"], "runner_binding": hashes["runner_binding_hash"], "runner": hashes["runner_receipt_hash"]}
     if delivery.get("candidate_commit") != implementer["candidate_commit"] or delivery.get("captured_receipt_hashes") != expected_delivery:
