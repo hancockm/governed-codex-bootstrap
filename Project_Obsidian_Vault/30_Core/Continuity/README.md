@@ -4,6 +4,11 @@
 << Previous: none | Up: [[30_Core/Continuity/Core Continuity MOC]] | Next: [[30_Core/Continuity/Protocols/README]] >>
 <!-- generated:breadcrumbs:end -->
 
+## Typed Implementer Closeout
+
+Closeout records both packet-bound Implementer task IDs. It records either an
+accepted cumulative Low receipt or an unused or Primary-superseded Low task.
+
 Core continuity preserves the bounded evidence needed to resume work. It does
 not become a second canonical architecture.
 

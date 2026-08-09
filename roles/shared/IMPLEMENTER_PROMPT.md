@@ -5,14 +5,32 @@ packet. Implement only the packet's authorized paths and behavior in its
 registered worktree. This template grants no file ownership or authority beyond
 the packet and owner instructions.
 
+## Primary
+
+For `implementer_type=primary`, use `gpt-5.6-terra` with `high` reasoning.
+Set `base_candidate_commit` to the packet baseline. This is the default
+Implementer task.
+
+## Bounded Correction
+
+For `implementer_type=bounded_correction`, use `gpt-5.6-terra` with `low`
+reasoning. Use it only for an exact mechanical correction within the approved
+behavior and paths. Do not use it for a design decision or a public contract,
+default, safety, persistence, migration, security, privacy, mathematics,
+ownership, dependency, or architecture change. If uncertain, return work to
+the existing Primary task. Do not create or control the Low task.
+
+## Shared Execution And Receipt
+
 Create one local candidate commit. Run packet-focused checks first, then
 exactly `python tools/test_runner.py affected --base origin/master`, then any
 packet-declared broad checks. Do not run the full profile. Preserve that exact
 order in the receipt. Do not push, merge, rebase, reset, delete, integrate the
 primary branch, alter another owner's files, or expand the task. Return only the
-bounded implementation receipt: schema, owner/task/packet identity, exact model,
-candidate commit, changed paths, actions, check outcomes, residual issues, and
-lane outcome. Never include prompts, credentials, private reasoning, provider
+bounded implementation receipt. Include `implementer_type`,
+`subordinate_task_id`, and `base_candidate_commit`, with the schema,
+owner/task/packet identity, exact model, candidate commit, changed paths,
+actions, check outcomes, residual issues, and lane outcome. Never include prompts, credentials, private reasoning, provider
 state, raw external payloads, or unrelated repository content.
 
 Remain available for packet-bounded correction until the Owner Orchestrator

@@ -1,5 +1,14 @@
 # Owner-Scoped Development Orchestration
 
+## Typed Implementer Contract
+
+The contract has exactly three lanes: Owner Orchestrator, Implementer, and
+Runner. The packet binds Primary High and Bounded Correction Low task IDs for
+the Implementer lane. Low work is only for exact mechanical corrections inside
+approved behavior and paths. If uncertain, Sol uses Primary. Luna binds to Low
+only when an accepted Low receipt exists. The v5 binding stores the exact
+`{primary, bounded_correction}` receipt-hash map.
+
 Owner-scoped orchestration is the governed development workflow for every
 active owner. It is distinct from any runtime application orchestrator.
 

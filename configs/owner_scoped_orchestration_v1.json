@@ -5,7 +5,13 @@
   "model_binding": {
     "enforcement": "fail_closed",
     "owner_orchestrator": {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"},
-    "implementer": {"model": "gpt-5.6-terra", "reasoning_effort": "high"},
+    "implementer": {
+      "default_type": "primary",
+      "types": {
+        "primary": {"model": "gpt-5.6-terra", "reasoning_effort": "high"},
+        "bounded_correction": {"model": "gpt-5.6-terra", "reasoning_effort": "low"}
+      }
+    },
     "runner": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}
   },
   "prompt_templates": {

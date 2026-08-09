@@ -12,6 +12,13 @@ repository_baseline_commit: bootstrap_initial
 << Previous: [[30_Core/README]] | Up: [[30_Core/Core MOC]] | Next: [[30_Core/Core Protocols]] >>
 <!-- generated:breadcrumbs:end -->
 
+## Typed Implementer Route
+
+Use the packet's Primary High task for initial implementation. Use the fixed
+Bounded Correction Low task only for exact mechanical corrections. If work is
+not bounded, return to the existing Primary task. Keep Luna as one reusable
+task and bind it only to Sol's final candidate.
+
 Copy the following prompt into a new Core task after context loss, on another
 device, or when initializing a project from this bootstrap.
 

@@ -23,3 +23,10 @@ command, then optional broad checks. A full-team packet declares
 `python tools/test_runner.py full` exactly once for Luna. Declare the candidate
 final before binding Luna; failed full verification returns to Terra rather
 than triggering repeated full runs against a changing candidate.
+
+Issue both packet-bound Implementer task IDs. Use Primary High work first. Use
+Bounded Correction Low work only for an exact mechanical correction inside the
+approved behavior and paths. If it is not bounded, stop Low work and return to
+the existing Primary task. Bind Luna to the accepted Low candidate only when a
+Low receipt exists. Otherwise bind Luna to the Primary candidate. Archive,
+acknowledgment, delivery, and finalization records include both task IDs.

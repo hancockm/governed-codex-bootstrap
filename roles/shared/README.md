@@ -19,3 +19,7 @@ reference without copying into each role.
 Shared prompts cannot grant owner-specific authority. Keep them aligned with
 the orchestration registry and root policy, and validate every active owner
 after a shared prompt changes.
+
+The Implementer prompt defines Primary High work and Bounded Correction Low
+work. The registry still has exactly three lane keys: Owner Orchestrator,
+Implementer, and Verification Runner.

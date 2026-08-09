@@ -1,5 +1,13 @@
 # Governed Project System User Guide
 
+## Typed Implementer Work
+
+Each implementation packet has Primary High and Bounded Correction Low Terra
+task IDs. Use Low only for an exact mechanical correction inside approved
+behavior and paths. If a correction needs a design decision or changes a
+public contract, default, safety, persistence, migration, security, privacy,
+mathematics, ownership, dependency, or architecture, return to Primary.
+
 This guide explains how to operate the complete development-governance system
 from the Codex desktop app. It is written for a project that begins with
 research, has only Core active, and later grows into separately owned product

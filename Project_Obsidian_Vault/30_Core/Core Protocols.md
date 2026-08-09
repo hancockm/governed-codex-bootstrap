@@ -4,6 +4,12 @@
 << Previous: [[30_Core/Core Bootstrap]] | Up: [[30_Core/Core MOC]] | Next: [[30_Core/Core Vault Maintenance Protocol]] >>
 <!-- generated:breadcrumbs:end -->
 
+## Typed Implementer Contract
+
+Primary High implementation and Bounded Correction Low implementation share
+one Implementer lane. Low work is limited to exact mechanical corrections
+inside approved behavior and paths. Other corrections return to Primary.
+
 Core owns canonical promotion, shared governance contracts, primary
 integration, future-owner activation, and the Core continuity pack. It
 publishes packets and dispositions without treating advisory discussion as

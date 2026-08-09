@@ -59,7 +59,7 @@ def _prospective_profile(root: Path, *, malformed: bool = False, mismatched: boo
     return target
 
 
-def _packet(root: Path, *, task_id: str = "task-1", branch: str = "core/task-1", description: str = "bounded source change", worktree: str = ".worktrees/task-1", allowed: list[str] | None = None, prohibited: list[str] | None = None, requested_tier: str | None = None, subordinate_task_ids: dict[str, str] | None = None, runner_checks: list[str] | None = None) -> dict[str, object]:
+def _packet(root: Path, *, task_id: str = "task-1", branch: str = "core/task-1", description: str = "bounded source change", worktree: str = ".worktrees/task-1", allowed: list[str] | None = None, prohibited: list[str] | None = None, requested_tier: str | None = None, subordinate_task_ids: dict[str, object] | None = None, runner_checks: list[str] | None = None) -> dict[str, object]:
     allowed_paths = allowed if allowed is not None else ["tools/"]
     tiers = ("orchestrator_only", "orchestrator_plus_implementer", "full_team")
     selected = orchestration.classify_task(description, allowed_paths)["tier"]
@@ -68,11 +68,11 @@ def _packet(root: Path, *, task_id: str = "task-1", branch: str = "core/task-1",
     execution_lane = selected != "orchestrator_only"
     selected_runner_checks = runner_checks if runner_checks is not None else ([orchestration.LUNA_FULL_COMMAND] if selected == "full_team" else [])
     if subordinate_task_ids is None:
-        subordinate_task_ids = {
-            lane: f"host-{lane}-{task_id}"
-            for lane in ("implementer", "runner")
-            if lane == "implementer" and selected != "orchestrator_only" or lane == "runner" and selected == "full_team"
-        }
+        subordinate_task_ids = {}
+        if selected != "orchestrator_only":
+            subordinate_task_ids["implementer"] = {"primary": f"host-primary-{task_id}", "bounded_correction": f"host-correction-{task_id}"}
+        if selected == "full_team":
+            subordinate_task_ids["runner"] = f"host-runner-{task_id}"
     return orchestration.make_packet(
         owner="core", task_id=task_id, approval_ref="user:approved", baseline="a" * 40,
         branch=branch, worktree=worktree, allowed_paths=allowed_paths,
@@ -96,7 +96,16 @@ def _bind_runner(packet: dict[str, object], implementer: dict[str, object], cand
 
 def _implementer(packet: dict[str, object], candidate: str = "b" * 40) -> dict[str, object]:
     commands = [*packet["focused_checks"], orchestration.TERRA_AFFECTED_COMMAND, *packet["broad_checks"]]
-    return {"schema_version": orchestration.IMPLEMENTER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "model": {"model": "gpt-5.6-terra", "reasoning_effort": "high"}, "candidate_commit": candidate, "changed_paths": ["tools/example.py"], "actions": ["write", "commit", "test"], "checks": [{"command": command, "outcome": "passed"} for command in commands], "residual_issues": [], "outcome": "passed"}
+    return {"schema_version": orchestration.IMPLEMENTER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_type": "primary", "subordinate_task_id": packet["subordinate_task_ids"]["implementer"]["primary"], "model": {"model": "gpt-5.6-terra", "reasoning_effort": "high"}, "base_candidate_commit": packet["baseline"], "candidate_commit": candidate, "changed_paths": ["tools/example.py"], "actions": ["write", "commit", "test"], "checks": [{"command": command, "outcome": "passed"} for command in commands], "residual_issues": [], "outcome": "passed"}
+
+
+def _bounded_correction(packet: dict[str, object], primary: dict[str, object], candidate: str = "c" * 40) -> dict[str, object]:
+    receipt = _implementer(packet, candidate)
+    receipt["implementer_type"] = "bounded_correction"
+    receipt["subordinate_task_id"] = packet["subordinate_task_ids"]["implementer"]["bounded_correction"]
+    receipt["model"] = {"model": "gpt-5.6-terra", "reasoning_effort": "low"}
+    receipt["base_candidate_commit"] = primary["candidate_commit"]
+    return receipt
 
 
 def _runner(packet: dict[str, object], binding: dict[str, object], candidate: str = "b" * 40) -> dict[str, object]:
@@ -117,7 +126,7 @@ def _archive_acknowledgment(manifest: dict[str, object]) -> dict[str, object]:
         "acknowledged_by": "owner_orchestrator",
         "correction_pending": False,
         "lane_dispositions": [
-            {"lane": lane["lane"], "subordinate_task_id": lane["subordinate_task_id"], "disposition": "archived", "supersession_ref": ""}
+            {"lane": lane["lane"], "implementer_type": lane["implementer_type"], "subordinate_task_id": lane["subordinate_task_id"], "disposition": "unused_no_correction_requested" if lane["implementer_type"] == "bounded_correction" and lane["receipt_hash"] is None else "archived", "supersession_ref": None}
             for lane in manifest["lanes"]
         ],
     }
@@ -134,7 +143,8 @@ def _delivery_evidence(packet: dict[str, object], implementer: dict[str, object]
         "candidate_commit": implementer["candidate_commit"],
         "receipt_record_hash": record["canonical_hash"],
         "captured_receipt_hashes": {
-            "implementer": orchestration._payload_hash(implementer),
+            "primary": orchestration._payload_hash(implementer),
+            "bounded_correction": None,
             "runner_binding": binding["canonical_hash"],
             "runner": orchestration._payload_hash(runner),
         },
@@ -176,6 +186,21 @@ def test_packet_binds_description_models_and_active_profile(tmp_path: Path) -> N
     with pytest.raises(orchestration.OrchestrationError, match="lane model"): orchestration.validate_packet(tampered, root)
     tampered = dict(packet); tampered["owner_profile_hash"] = "0" * 64; tampered["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in tampered.items() if key != "canonical_hash"})
     with pytest.raises(orchestration.OrchestrationError, match="profile identity"): orchestration.validate_packet(tampered, root)
+
+
+def test_typed_implementer_binding_uses_low_candidate_only_when_accepted(tmp_path: Path) -> None:
+    root = _repo(tmp_path)
+    packet = _packet(root, description="runtime change")
+    primary = _implementer(packet)
+    no_correction = _bind_runner(packet, primary, "b" * 40, root)
+    assert no_correction["implementer_receipt_hashes"] == {"primary": orchestration._payload_hash(primary), "bounded_correction": None}
+    correction = _bounded_correction(packet, primary)
+    binding = orchestration.bind_runner(packet, primary, "c" * 40, root, turn_context=_turn_context(packet), bounded_correction_receipt=correction)
+    assert binding["candidate_commit"] == correction["candidate_commit"]
+    assert binding["implementer_receipt_hashes"]["bounded_correction"] == orchestration._payload_hash(correction)
+    correction["base_candidate_commit"] = "d" * 40
+    with pytest.raises(orchestration.OrchestrationError, match="base_candidate_commit"):
+        orchestration.bind_runner(packet, primary, "c" * 40, root, turn_context=_turn_context(packet), bounded_correction_receipt=correction)
 
 
 def test_packet_shape_task_id_and_static_risk_cannot_be_self_hashed_away(tmp_path: Path) -> None:
@@ -364,7 +389,7 @@ def test_full_team_requires_final_candidate_and_one_luna_full_check(tmp_path: Pa
     orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
     with pytest.raises(orchestration.OrchestrationError, match="full command exactly once"):
         _packet(root, description="runtime change", runner_checks=[])
-    binding["implementer_receipt_hash"] = "0" * 64; binding["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in binding.items() if key != "canonical_hash"})
+    binding["implementer_receipt_hashes"] = {"primary": "0" * 64, "bounded_correction": None}; binding["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in binding.items() if key != "canonical_hash"})
     with pytest.raises(orchestration.OrchestrationError, match="implementer receipt hash"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
     binding = _bind_runner(packet, implementer, "b" * 40, root); binding["turn_context"]["channel"] = "projectless_task"; binding["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in binding.items() if key != "canonical_hash"})
     with pytest.raises(orchestration.OrchestrationError, match="route_integrity_failed"): orchestration.validate_receipts(packet, implementer, binding, runner, repo=root)
@@ -421,8 +446,8 @@ def test_closeout_requires_exact_receipts_reconciliation_cleanup_and_archival(tm
     assert finalization["outcome"] == "closed"
     assert finalization["captured_receipt_hashes"] == evidence["captured_receipt_hashes"]
     assert finalization["subordinate_task_dispositions"] == [
-        {"lane": "implementer", "subordinate_task_id": packet["subordinate_task_ids"]["implementer"], "disposition": "archived"},
-        {"lane": "runner", "subordinate_task_id": packet["subordinate_task_ids"]["runner"], "disposition": "archived"},
+        {"lane": item["lane"], "implementer_type": item["implementer_type"], "subordinate_task_id": item["subordinate_task_id"], "disposition": item["disposition"]}
+        for item in acknowledgment["lane_dispositions"]
     ]
     assert finalization["terminal_reconciliation"]["disposition"] == "landed"
     assert finalization["primary_branch_sync"]["verified"] is True

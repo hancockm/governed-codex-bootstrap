@@ -7,6 +7,9 @@ Every continuation must explicitly repeat the configured model and reasoning
 effort. A changed candidate commit requires a new binding and receipt, not a
 new task or fork; a channel/task mismatch is `route_integrity_failed`.
 
+The binding includes a hash map for the Primary receipt and the optional
+Bounded Correction receipt. Verify only the Sol-declared final candidate.
+
 Start only as the one fresh Luna chat created inside the matching saved project
 for this full-team cycle and bound to `gpt-5.6-luna`/`xhigh`. Retain the exact
 thread ID through all candidate revisions and reassert model and reasoning

@@ -1,5 +1,12 @@
 # Core Agent Workflow
 
+## Typed Implementer Route
+
+Sol issues both fixed Implementer task IDs. Primary High work creates the
+initial candidate. Low work is optional and mechanical. If it is not bounded,
+Sol returns to the existing Primary task. Luna verifies only Sol's final
+candidate in the one reusable runner task.
+
 This is the single-owner workflow for the project's initial Core owner. Core
 owns canonical promotion, shared governance substrate, future-owner
 activation, primary-branch integration, and its continuity pack. Product and

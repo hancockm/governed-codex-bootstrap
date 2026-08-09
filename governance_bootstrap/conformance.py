@@ -426,11 +426,13 @@ def check_repository(root: Path) -> list[str]:
             failures.append("codex-bootstrap: public Git research boundary is incomplete")
     failures.extend(validate_owner_profiles(root, owners))
     orchestration = _load(root, "configs/owner_scoped_orchestration_v1.json")
-    expected_bindings = {"owner_orchestrator": ("gpt-5.6-sol", "xhigh"), "implementer": ("gpt-5.6-terra", "high"), "runner": ("gpt-5.6-luna", "xhigh")}
+    expected_bindings = {"owner_orchestrator": ("gpt-5.6-sol", "xhigh"), "runner": ("gpt-5.6-luna", "xhigh")}
     for lane, (model, reasoning) in expected_bindings.items():
         binding = orchestration.get("model_binding", {}).get(lane, {})
         if binding.get("model") != model or binding.get("reasoning_effort") != reasoning:
             failures.append(f"orchestration: exact {lane} model binding is missing")
+    if orchestration.get("model_binding", {}).get("implementer") != {"default_type": "primary", "types": {"primary": {"model": "gpt-5.6-terra", "reasoning_effort": "high"}, "bounded_correction": {"model": "gpt-5.6-terra", "reasoning_effort": "low"}}}:
+        failures.append("orchestration: exact typed implementer model binding is missing")
     expected_prompts = {
         "owner_orchestrator": "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
         "implementer": "roles/shared/IMPLEMENTER_PROMPT.md",

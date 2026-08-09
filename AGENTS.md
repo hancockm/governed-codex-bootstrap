@@ -283,6 +283,15 @@ Verification Runner (Luna) independently verifies the exact candidate without
 repository writes. Required model bindings and risk escalation are fail-
 closed; no silent substitution is allowed.
 
+The Implementer lane has two fixed task types. Primary uses
+`gpt-5.6-terra`/`high`. Bounded Correction uses `gpt-5.6-terra`/`low` only for
+an exact mechanical correction inside approved behavior and paths. If a
+correction changes a public contract, default, safety, persistence, migration,
+security, privacy, mathematics, ownership, dependency, or architecture, Sol
+returns work to the existing Primary task. The packet binds both Implementer
+task IDs. Luna uses the accepted Low candidate when present. Otherwise Luna
+uses the Primary candidate.
+
 Packet checks are lane-specific and fail closed. Terra's receipt must preserve
 the ordered focused → affected → optional-broad lifecycle. Every full-team
 packet must declare `python tools/test_runner.py full` exactly once in its Luna
