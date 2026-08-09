@@ -280,6 +280,24 @@ def test_typed_closeout_distinguishes_unused_low_and_primary_supersession(tmp_pa
     orchestration.validate_archive_acknowledgment(acknowledgment, manifest)
 
 
+def test_accepted_cumulative_low_receipt_flows_through_full_closeout(tmp_path: Path) -> None:
+    root = _repo(tmp_path); packet = _packet(root, task_id="low-closeout", description="runtime change"); primary = _implementer(packet); low = _bounded_correction(packet, primary)
+    binding = orchestration.bind_runner(packet, primary, low["candidate_commit"], root, turn_context=_turn_context(packet), bounded_correction_receipt=low); runner = _runner(packet, binding, low["candidate_commit"])
+    record = orchestration.record_bundle(packet, primary, binding, runner, repo=root, bounded_correction_receipt=low)
+    manifest = json.loads((root / "receipts" / packet["task_id"] / packet["canonical_hash"] / "subordinate_archive_manifest.json").read_text(encoding="utf-8")); acknowledgment = _archive_acknowledgment(manifest)
+    payload = {"schema_version": orchestration.CLOSEOUT_DELIVERY_EVIDENCE_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "branch": packet["branch"], "candidate_commit": low["candidate_commit"], "receipt_record_hash": record["canonical_hash"], "captured_receipt_hashes": {"primary": orchestration._payload_hash(primary), "bounded_correction": orchestration._payload_hash(low), "runner_binding": binding["canonical_hash"], "runner": orchestration._payload_hash(runner)}, "terminal_reconciliation": {"target": "origin/master", "disposition": "landed", "evidence_ref": "test:landed"}, "primary_branch_sync": {"verified": True, "evidence_ref": "test:sync"}, "worktree_removal": {"worktree": packet["worktree"], "removed": True, "evidence_ref": "test:worktree"}, "acknowledged_by": "owner_orchestrator"}; delivery = {**payload, "canonical_hash": orchestration.sha256_canonical(payload)}
+    finalization = orchestration.finalize_closeout(packet, primary, binding, runner, manifest, acknowledgment, record, delivery, root, bounded_correction_receipt=low)
+    assert binding["implementer_receipt_hashes"] == {"primary": orchestration._payload_hash(primary), "bounded_correction": orchestration._payload_hash(low)}
+    assert finalization["captured_receipt_hashes"]["bounded_correction"] == orchestration._payload_hash(low)
+
+
+def test_replacement_primary_finalization_marks_unused_low_superseded(tmp_path: Path) -> None:
+    root = _repo(tmp_path); packet = _packet(root, task_id="primary-replacement", description="runtime change"); primary = _implementer(packet, "c" * 40); binding = _bind_runner(packet, primary, "c" * 40, root); runner = _runner(packet, binding, "c" * 40); record = orchestration.record_bundle(packet, primary, binding, runner, repo=root)
+    manifest = json.loads((root / "receipts" / packet["task_id"] / packet["canonical_hash"] / "subordinate_archive_manifest.json").read_text(encoding="utf-8")); acknowledgment = _archive_acknowledgment(manifest); acknowledgment["lane_dispositions"][1].update({"disposition": "superseded_by_primary", "supersession_ref": orchestration._payload_hash(primary)}); acknowledgment["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in acknowledgment.items() if key != "canonical_hash"})
+    delivery = _delivery_evidence(packet, primary, binding, runner, record); finalization = orchestration.finalize_closeout(packet, primary, binding, runner, manifest, acknowledgment, record, delivery, root)
+    assert finalization["subordinate_task_dispositions"][1]["disposition"] == "superseded_by_primary"
+
+
 def test_new_work_rejects_v3_packet_but_explicit_legacy_finalization_closes_recorded_bundle(tmp_path: Path) -> None:
     root = _repo(tmp_path); packet, manifest, acknowledgment, record, delivery = _legacy_v3_artifacts(root)
     with pytest.raises(orchestration.OrchestrationError, match="issue a v4 packet"):
