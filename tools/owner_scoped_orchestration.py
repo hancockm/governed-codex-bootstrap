@@ -1056,6 +1056,7 @@ def _validate_legacy_v3_closeout_inputs(packet: Mapping[str, Any], manifest: Map
     _require_exact_keys(manifest, frozenset({"schema_version", "owner", "task_id", "packet_hash", "authority", "transport", "runner_binding_hash", "lanes", "canonical_hash"}), "legacy manifest")
     _require_exact_keys(acknowledgment, frozenset({"schema_version", "owner", "task_id", "packet_hash", "archive_manifest_hash", "acknowledged_by", "correction_pending", "lane_dispositions", "canonical_hash"}), "legacy acknowledgment")
     _require_exact_keys(delivery, frozenset({"schema_version", "owner", "task_id", "packet_hash", "branch", "candidate_commit", "receipt_record_hash", "captured_receipt_hashes", "terminal_reconciliation", "primary_branch_sync", "worktree_removal", "acknowledged_by", "canonical_hash"}), "legacy delivery")
+    _require_exact_keys(binding, frozenset({"schema_version", "owner", "task_id", "packet_hash", "implementer_receipt_hash", "candidate_commit", "candidate_posture", "runner_model", "runner_task_id", "turn_context", "canonical_hash"}), "legacy runner binding")
     if record.get("tier") != "full_team" or record.get("sol_disposition_hash") != "":
         raise OrchestrationError("legacy closeout record tier or Sol hash is unsafe")
     _require_exact_keys(implementer, frozenset({"schema_version", "owner", "task_id", "packet_hash", "model", "candidate_commit", "changed_paths", "actions", "checks", "residual_issues", "outcome"}), "legacy implementer receipt")
@@ -1091,11 +1092,14 @@ def _validate_legacy_v3_closeout_inputs(packet: Mapping[str, Any], manifest: Map
         raise OrchestrationError("legacy closeout acknowledgment is unsafe")
     if not isinstance(acknowledgment.get("lane_dispositions"), list) or len(acknowledgment["lane_dispositions"]) != 2 or any(set(item) != {"lane", "subordinate_task_id", "disposition", "supersession_ref"} or item.get("lane") != expected["lane"] or item.get("subordinate_task_id") != expected["subordinate_task_id"] or item.get("disposition") not in {"archived", "superseded"} or (item.get("disposition") == "archived" and item.get("supersession_ref") != "") for item, expected in zip(acknowledgment["lane_dispositions"], expected_lanes, strict=True)):
         raise OrchestrationError("legacy closeout acknowledgment lane disposition mismatch")
+    for item in acknowledgment["lane_dispositions"]:
+        if item["disposition"] == "superseded":
+            _require_safe_text(item["supersession_ref"], "legacy closeout supersession_ref")
     expected_delivery = {"implementer": hashes["implementer_receipt_hash"], "runner_binding": hashes["runner_binding_hash"], "runner": hashes["runner_receipt_hash"]}
-    if delivery.get("candidate_commit") != implementer["candidate_commit"] or delivery.get("captured_receipt_hashes") != expected_delivery:
+    if delivery.get("branch") != packet["branch"] or delivery.get("acknowledged_by") != "owner_orchestrator" or delivery.get("candidate_commit") != implementer["candidate_commit"] or delivery.get("captured_receipt_hashes") != expected_delivery:
         raise OrchestrationError("legacy closeout delivery hashes mismatch")
     target = f"{load_registry(root)['git']['canonical_remote']}/{load_registry(root)['git']['canonical_branch']}"
-    if delivery.get("terminal_reconciliation", {}).get("target") != target or delivery.get("terminal_reconciliation", {}).get("disposition") != "landed":
+    if set(delivery.get("terminal_reconciliation", {})) != {"target", "disposition", "evidence_ref"} or set(delivery.get("primary_branch_sync", {})) != {"verified", "evidence_ref"} or set(delivery.get("worktree_removal", {})) != {"worktree", "removed", "evidence_ref"} or delivery.get("terminal_reconciliation", {}).get("target") != target or delivery.get("terminal_reconciliation", {}).get("disposition") != "landed":
         raise OrchestrationError("legacy closeout requires landed reconciliation")
     for evidence in (delivery["terminal_reconciliation"], delivery["primary_branch_sync"], delivery["worktree_removal"]):
         _require_safe_text(evidence.get("evidence_ref"), "legacy closeout evidence_ref")

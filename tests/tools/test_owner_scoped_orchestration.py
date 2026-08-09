@@ -240,6 +240,20 @@ def test_typed_implementer_receipts_bind_low_final_candidate_with_exact_base(tmp
         bad = dict(low); bad["implementer_type"] = "primary"; orchestration.bind_runner(packet, primary, "c" * 40, root, turn_context=_turn_context(packet), bounded_correction_receipt=bad)
 
 
+@pytest.mark.parametrize("field,value", [("implementer_type", "wrong"), ("subordinate_task_id", "wrong-task"), ("model", {"model": "wrong", "reasoning_effort": "high"})])
+def test_typed_implementer_receipt_rejects_type_task_and_model_mismatch(tmp_path: Path, field: str, value: object) -> None:
+    root = _repo(tmp_path); packet = _packet(root, description="runtime change"); primary = _implementer(packet); bad = dict(primary); bad[field] = value
+    with pytest.raises(orchestration.OrchestrationError):
+        orchestration.bind_runner(packet, bad, "b" * 40, root, turn_context=_turn_context(packet))
+
+
+def test_typed_packet_rejects_missing_duplicate_and_swapped_task_ids(tmp_path: Path) -> None:
+    root = _repo(tmp_path); packet = _packet(root, description="runtime change")
+    for tasks in ({"implementer": {"primary": "a"}}, {"implementer": {"primary": "same", "bounded_correction": "same"}, "runner": "runner"}):
+        bad = dict(packet); bad["subordinate_task_ids"] = tasks; bad["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in bad.items() if key != "canonical_hash"})
+        with pytest.raises(orchestration.OrchestrationError): orchestration.validate_packet(bad, root)
+
+
 def test_typed_closeout_distinguishes_unused_low_and_primary_supersession(tmp_path: Path) -> None:
     root = _repo(tmp_path); packet = _packet(root, description="runtime change"); primary = _implementer(packet); binding = _bind_runner(packet, primary, "b" * 40, root); runner = _runner(packet, binding)
     manifest = orchestration.build_subordinate_archive_manifest(packet, primary, binding, runner, root)
