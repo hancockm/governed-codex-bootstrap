@@ -254,6 +254,22 @@ def test_typed_packet_rejects_missing_duplicate_and_swapped_task_ids(tmp_path: P
         with pytest.raises(orchestration.OrchestrationError): orchestration.validate_packet(bad, root)
 
 
+@pytest.mark.parametrize("field,value", [("subordinate_task_id", "wrong-low-task"), ("model", {"model": "wrong", "reasoning_effort": "low"}), ("model", {"model": "gpt-5.6-terra", "reasoning_effort": "high"}), ("base_candidate_commit", "d" * 40)])
+def test_low_receipt_rejects_task_model_effort_and_base_mismatch(tmp_path: Path, field: str, value: object) -> None:
+    root = _repo(tmp_path); packet = _packet(root, description="runtime change"); primary = _implementer(packet); low = _bounded_correction(packet, primary); low[field] = value
+    with pytest.raises(orchestration.OrchestrationError):
+        orchestration.bind_runner(packet, primary, "c" * 40, root, turn_context=_turn_context(packet), bounded_correction_receipt=low)
+
+
+def test_primary_receipt_rejects_wrong_base_and_swapped_packet_task_ids(tmp_path: Path) -> None:
+    root = _repo(tmp_path); packet = _packet(root, description="runtime change"); primary = _implementer(packet); primary["base_candidate_commit"] = "d" * 40
+    with pytest.raises(orchestration.OrchestrationError, match="base_candidate_commit"):
+        orchestration.bind_runner(packet, primary, "b" * 40, root, turn_context=_turn_context(packet))
+    packet = _packet(root, task_id="swapped", description="runtime change"); primary = _implementer(packet); swapped = dict(packet); ids = dict(packet["subordinate_task_ids"]); ids["implementer"] = {"primary": ids["implementer"]["bounded_correction"], "bounded_correction": ids["implementer"]["primary"]}; swapped["subordinate_task_ids"] = ids; swapped["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in swapped.items() if key != "canonical_hash"})
+    with pytest.raises(orchestration.OrchestrationError, match="task ID"):
+        orchestration.bind_runner(swapped, primary, "b" * 40, root, turn_context={**_turn_context(packet), "thread_id": swapped["subordinate_task_ids"]["runner"]})
+
+
 def test_typed_closeout_distinguishes_unused_low_and_primary_supersession(tmp_path: Path) -> None:
     root = _repo(tmp_path); packet = _packet(root, description="runtime change"); primary = _implementer(packet); binding = _bind_runner(packet, primary, "b" * 40, root); runner = _runner(packet, binding)
     manifest = orchestration.build_subordinate_archive_manifest(packet, primary, binding, runner, root)
