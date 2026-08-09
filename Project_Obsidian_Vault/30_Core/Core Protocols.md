@@ -4,12 +4,6 @@
 << Previous: [[30_Core/Core Bootstrap]] | Up: [[30_Core/Core MOC]] | Next: [[30_Core/Core Vault Maintenance Protocol]] >>
 <!-- generated:breadcrumbs:end -->
 
-## Typed Implementer Contract
-
-Primary High implementation and Bounded Correction Low implementation share
-one Implementer lane. Low work is limited to exact mechanical corrections
-inside approved behavior and paths. Other corrections return to Primary.
-
 Core owns canonical promotion, shared governance contracts, primary
 integration, future-owner activation, and the Core continuity pack. It
 publishes packets and dispositions without treating advisory discussion as
@@ -32,6 +26,12 @@ repository snapshot once the architectural conclusion is stable.
 ## Implementation
 
 Accepted work uses the risk tier in the owner-scoped orchestration policy.
+Sol sends one Implementation Context Brief in the existing Terra dispatch.
+Terra reads required repository and full target-document context before
+narrative edits and reports each document role and integration point. Primary
+High work is normal. Bounded Correction Low work is only for final exact
+replacement text at an exact location with no remaining reordering, semantic,
+audience, relationship, or prose choice. Other corrections return to Primary.
 Core reviews Terra's packet-bounded candidate and Luna's exact-commit receipt,
 then performs authorized publication and integration. Documentation, registry,
 coordination, navigation, Git reconciliation, and continuity closeout remain
@@ -54,7 +54,10 @@ paths before Core records activation.
 Core is the sole primary-branch integrator. It inspects the integration inbox,
 proves terminal branch dispositions, synchronizes a clean primary checkout by
 fast-forward only, verifies equality with the configured remote primary, and
-removes only verified-clean temporary worktrees.
+removes only verified-clean temporary worktrees. Before Luna verifies the final
+candidate, Sol reads each changed narrative document in full against the
+baseline for audience, placement, hierarchy, flow, links, source fidelity, and
+detached or duplicate sections.
 
 ## Continuity
 

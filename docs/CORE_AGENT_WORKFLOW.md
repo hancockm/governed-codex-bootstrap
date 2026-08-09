@@ -1,12 +1,5 @@
 # Core Agent Workflow
 
-## Typed Implementer Route
-
-Sol issues both fixed Implementer task IDs. Primary High work creates the
-initial candidate. Low work is optional and mechanical. If it is not bounded,
-Sol returns to the existing Primary task. Luna verifies only Sol's final
-candidate in the one reusable runner task.
-
 This is the single-owner workflow for the project's initial Core owner. Core
 owns canonical promotion, shared governance substrate, future-owner
 activation, primary-branch integration, and its continuity pack. Product and
@@ -136,17 +129,24 @@ After explicit approval:
 1. synchronize a clean primary checkout and verify the Core inbox;
 2. create a repository-local Core worktree from current remote primary;
 3. classify risk and create the immutable Sol packet;
-4. have Terra implement only the allowed paths and focused checks;
+4. send Terra one Implementation Context Brief in the existing dispatch
+   message, then have Terra reorient and implement only the allowed paths and
+   focused checks;
 5. review the candidate diff and receipt;
-6. bind Luna to the exact candidate in the saved project;
-7. run full verification once when required;
-8. return failures to Terra and reuse the same Luna task;
-9. update source docs, canonical docs, registry, A2A records, and navigation in
-   the same cycle;
-10. integrate through Core, prove terminal reconciliation, synchronize the
-    primary checkout, and clear the inbox;
-11. export continuity, validate it, and archive accepted/superseded
-    subordinate tasks after cleanup.
+6. read each changed narrative document in full against the baseline for
+   audience, placement, hierarchy, flow, links, source fidelity, and detached
+   or duplicate sections;
+7. bind Luna to the exact candidate in the saved project;
+8. run full verification once when required;
+9. return a failed candidate to Primary High work unless Sol supplies the
+   final exact Bounded Correction Low replacement text and location with no
+   remaining prose or semantic choice; reuse the same Luna task;
+10. update source docs, canonical docs, registry, A2A records, and navigation
+   in the same cycle;
+11. integrate through Core, prove terminal reconciliation, synchronize the
+   primary checkout, and clear the inbox;
+12. export continuity, validate it, and archive accepted/superseded
+   subordinate tasks after cleanup.
 
 Use focused, failed, affected, and broad testing during iteration. Do not use
 repeated full-suite runs as a debugger.

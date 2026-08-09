@@ -1,14 +1,5 @@
 # Owner-Scoped Development Orchestration
 
-## Typed Implementer Contract
-
-The contract has exactly three lanes: Owner Orchestrator, Implementer, and
-Runner. The packet binds Primary High and Bounded Correction Low task IDs for
-the Implementer lane. Low work is only for exact mechanical corrections inside
-approved behavior and paths. If uncertain, Sol uses Primary. Luna binds to Low
-only when an accepted Low receipt exists. The v5 binding stores the exact
-`{primary, bounded_correction}` receipt-hash map.
-
 Owner-scoped orchestration is the governed development workflow for every
 active owner. It is distinct from any runtime application orchestrator.
 
@@ -17,12 +8,26 @@ active owner. It is distinct from any runtime application orchestrator.
 | Lane | Binding | Responsibility | Repository writes |
 | --- | --- | --- | --- |
 | Owner Orchestrator | Sol / `xhigh` | Authority, scope, review, publication, continuity | Owner publication and closeout |
-| Implementer | Terra / `high` | Packet-bounded implementation and focused checks | Candidate worktree and local commit |
+| Implementer | Terra Primary / `high`; Bounded Correction / `low` | Packet-bounded implementation and focused checks | Candidate worktree and local commit |
 | Verification Runner | Luna / `xhigh` | Independent exact-candidate verification | None |
 
 Bindings are exact and fail-closed. No lane silently substitutes a different
 model or reasoning tier. Sol remains user-facing and owns the transcript.
 Terra and Luna return bounded receipts without private reasoning or secrets.
+
+The Implementer lane has Primary High and Bounded Correction Low task types.
+Sol uses Primary for normal implementation. Low is eligible only for a
+mechanical correction in approved behavior and paths when Sol supplies the
+final exact replacement text and exact insertion, replacement, or removal
+location. No reordering, semantic, audience, relationship, or prose choice
+may remain. Otherwise Sol returns work to Primary. Luna uses an accepted Low
+candidate only when its Low receipt exists.
+
+Sol sends one bounded Implementation Context Brief in the existing dispatch
+message to Terra. The brief states the repository purpose and change relation,
+affected subsystem and authoritative contracts, target-document audience,
+purpose, authority, repository role, and owning section, user or operator
+outcome, direct links, and exclusions. It is not a packet or receipt field.
 
 The registry binds one reusable owner-neutral prompt artifact to each lane:
 
@@ -77,7 +82,8 @@ packet hash, owner, task, candidate commit, worktree, or model binding fails clo
 Sol selects and plans
 → user approval
 → Sol classifies and prepares packet
-→ Terra implements and commits locally
+→ Sol sends the Implementation Context Brief with the Terra dispatch
+→ Terra reorients, implements, and commits locally
 → Sol reviews candidate and receipt
 → Sol binds saved-project Luna task to exact candidate
 → Luna verifies exact candidate
@@ -95,6 +101,14 @@ and residual issues. Luna's receipt additionally includes runner binding,
 environment preflight, exact commands/results, initial/final Git status,
 reconciliation evidence, project/task identity, and outcome. A receipt cannot
 authorize itself.
+
+Before narrative edits, Terra reads the repository policy and README, owner
+profile and packet, nearest documentation README or index when present, each
+full target document, and directly relevant linked contracts. Terra confirms
+each target document's role and integration point in task commentary. If
+evidence conflicts with the brief, Terra stops narrative work and reports to
+Sol. Sol may correct the brief inside approved scope. A scope, public-contract,
+default, or safety-behavior change requires new user approval.
 
 ## Command Guide
 
@@ -171,11 +185,17 @@ A full-team packet has separate Luna verification checks and is invalid unless
 they contain `python tools/test_runner.py full` exactly once. Sol binds Luna
 only after declaring the exact candidate final. Luna runs that full profile
 once against the bound commit. If it fails, Sol sends an exact mechanical
-correction to the fixed Low task. If eligibility is uncertain or the work is
-not bounded, Sol returns it to the existing Primary High task and
-affected triage, correct the candidate, create a new final-candidate binding,
-and then reuse the same Luna chat for the replacement candidate's single final
-run. Do not launch repeated full parallel runs while debugging.
+correction to the fixed Low task only when the exact Low eligibility condition
+is met. If eligibility is uncertain or the work is not bounded, Sol returns it
+to the existing Primary High task and affected triage, correct the candidate,
+create a new final-candidate binding, and then reuse the same Luna chat for the
+replacement candidate's single final run. Do not launch repeated full parallel
+runs while debugging.
+
+After implementation, Sol reads each changed narrative document in full
+against the baseline for audience, placement, hierarchy, flow, links, source
+fidelity, and detached or duplicate sections. Luna verifies only the final
+candidate Sol declares.
 
 Every replacement candidate receives a new binding and receipt. The previous
 receipt remains immutable and is marked superseded through the final bundle.

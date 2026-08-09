@@ -4,11 +4,6 @@
 << Previous: none | Up: [[30_Core/Continuity/Core Continuity MOC]] | Next: [[30_Core/Continuity/Protocols/README]] >>
 <!-- generated:breadcrumbs:end -->
 
-## Typed Implementer Closeout
-
-Closeout records both packet-bound Implementer task IDs. It records either an
-accepted cumulative Low receipt or an unused or Primary-superseded Low task.
-
 Core continuity preserves the bounded evidence needed to resume work. It does
 not become a second canonical architecture.
 
@@ -51,6 +46,13 @@ Implementer and verification tasks produce compact packet-bound receipts in
 the owning pack. They do not create duplicate continuity owners. Completed or
 superseded subordinate tasks are archived only after durable receipt capture,
 delivery, terminal reconciliation, and worktree cleanup.
+
+Closeout records both packet-bound Implementer task dispositions. It records
+an accepted cumulative Bounded Correction Low receipt when that work occurred.
+Otherwise it records the Bounded Correction Low task as unused or Primary-
+superseded. The Primary receipt starts from the packet baseline, and an
+accepted Bounded Correction Low receipt starts from the accepted Primary
+candidate.
 
 Start at [[30_Core/Continuity/Core Continuity MOC]] and open only the
 protocol relevant to the present task.

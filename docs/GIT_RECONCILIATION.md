@@ -1,12 +1,5 @@
 # Git Reconciliation Guide
 
-## Typed Implementer Candidates
-
-The Primary receipt starts from the packet baseline. An accepted Low receipt
-starts from the accepted Primary candidate. Archive and finalization evidence
-contains both Implementer task IDs, including unused or Primary-superseded Low
-work.
-
 This guide explains the universal Git reconciler. Binding Git authority lives
 in root [AGENTS.md](../AGENTS.md); this document supplies commands, evidence interpretation,
 and recovery procedures.
@@ -79,6 +72,12 @@ python tools/origin_reconciler.py closeout \
   --branch <owner/slice> \
   --disposition landed
 ```
+
+For a typed Implementer cycle, the Primary receipt starts from the packet
+baseline. An accepted Bounded Correction Low receipt starts from the accepted
+Primary candidate. Archive and finalization evidence records both Implementer
+task dispositions, including unused or Primary-superseded Bounded Correction
+Low work. This lineage is evidence; it does not authorize a branch disposition.
 
 ### Landed
 

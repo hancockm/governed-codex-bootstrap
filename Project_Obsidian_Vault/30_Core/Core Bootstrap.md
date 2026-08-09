@@ -12,13 +12,6 @@ repository_baseline_commit: bootstrap_initial
 << Previous: [[30_Core/README]] | Up: [[30_Core/Core MOC]] | Next: [[30_Core/Core Protocols]] >>
 <!-- generated:breadcrumbs:end -->
 
-## Typed Implementer Route
-
-Use the packet's Primary High task for initial implementation. Use the fixed
-Bounded Correction Low task only for exact mechanical corrections. If work is
-not bounded, return to the existing Primary task. Keep Luna as one reusable
-task and bind it only to Sol's final candidate.
-
 Copy the following prompt into a new Core task after context loss, on another
 device, or when initializing a project from this bootstrap.
 
@@ -117,11 +110,22 @@ For authorized implementation:
 
 1. Use the smallest sufficient change and explicit acceptance conditions.
 2. Use owner-scoped orchestration at the risk tier required by the change.
-3. Keep Terra inside packet paths and Luna read-only on the exact candidate.
-4. Reuse one saved-project Luna task through correction cycles.
-5. Use focused/failed/affected/broad testing while iterating and full once on
+3. Send one Implementation Context Brief in the existing Sol-to-Terra dispatch
+   message. Before narrative edits, Terra reads the required repository and
+   target-document context and reports each document role and integration
+   point.
+4. Use Primary High for normal implementation. Use Bounded Correction Low only
+   when Sol supplies final exact replacement text and location with no
+   remaining reordering, semantic, audience, relationship, or prose choice.
+   Otherwise return work to Primary.
+5. Keep Terra inside packet paths and Luna read-only on the exact candidate.
+6. Reuse one saved-project Luna task through correction cycles.
+7. Before Luna binding, read each changed narrative document in full against
+   the baseline for audience, placement, hierarchy, flow, links, source
+   fidelity, and detached or duplicate sections.
+8. Use focused/failed/affected/broad testing while iterating and full once on
    the final candidate when required.
-6. Complete code, tests, docs, registry, A2A, navigation, Git delivery, and
+9. Complete code, tests, docs, registry, A2A, navigation, Git delivery, and
    continuity within the same implementation cycle.
 
 Before completing substantial Core work:

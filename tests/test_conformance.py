@@ -41,6 +41,24 @@ def _outside_fences(path: Path) -> list[tuple[int, str]]:
     return lines
 
 
+def _normalized_h2_section(text: str, heading: str) -> str:
+    """Return one H2 section with normalized whitespace."""
+
+    marker = f"## {heading}"
+    start = text.index(marker)
+    following = re.search(r"^## ", text[start + len(marker):], flags=re.MULTILINE)
+    end = start + len(marker) + following.start() if following else len(text)
+    return re.sub(r"\s+", " ", text[start:end])
+
+
+def _normalized_block(text: str, start_marker: str, end_marker: str) -> str:
+    """Return a marked block with normalized whitespace."""
+
+    start = text.index(start_marker)
+    end = text.index(end_marker, start)
+    return re.sub(r"\s+", " ", text[start:end])
+
+
 def _existing_reference(path: Path, value: str) -> Path | None:
     if value == "README.md" or any(token in value for token in ("<", ">", "*", "|")):
         return None
@@ -174,8 +192,12 @@ def test_active_markdown_uses_typed_terra_contract_without_stale_single_task_wor
         "roles/shared/IMPLEMENTER_PROMPT.md",
         "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
         "roles/shared/README.md",
+        "docs/SYSTEM_USER_GUIDE.md",
+        "docs/CORE_AGENT_WORKFLOW.md",
+        "docs/GIT_RECONCILIATION.md",
         "Project_Obsidian_Vault/30_Core/Core Bootstrap.md",
         "Project_Obsidian_Vault/30_Core/Core Protocols.md",
+        "Project_Obsidian_Vault/30_Core/Continuity/README.md",
     ]
     stale = ("one Terra task", "one Implementer task ID", "return to Terra's")
     for relative in contract_files:
@@ -184,6 +206,121 @@ def test_active_markdown_uses_typed_terra_contract_without_stale_single_task_wor
     for relative in contract_files:
         text = (ROOT / relative).read_text(encoding="utf-8")
         assert "Primary" in text and "Bounded Correction" in text, relative
+
+
+def test_typed_implementer_contract_uses_native_document_sections() -> None:
+    """Keep typed work details in each document's existing operating section."""
+
+    detached_opening_sections = {
+        "docs/OWNER_SCOPED_ORCHESTRATION.md": "## Typed Implementer Contract",
+        "docs/SYSTEM_USER_GUIDE.md": "## Typed Implementer Work",
+        "docs/CORE_AGENT_WORKFLOW.md": "## Typed Implementer Route",
+        "docs/GIT_RECONCILIATION.md": "## Typed Implementer Candidates",
+        "Project_Obsidian_Vault/30_Core/Core Bootstrap.md": "## Typed Implementer Route",
+        "Project_Obsidian_Vault/30_Core/Core Protocols.md": "## Typed Implementer Contract",
+        "Project_Obsidian_Vault/30_Core/Continuity/README.md": "## Typed Implementer Closeout",
+    }
+    for relative, heading in detached_opening_sections.items():
+        assert heading not in (ROOT / relative).read_text(encoding="utf-8"), relative
+
+    policy = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    policy_section = _normalized_h2_section(policy, "Owner-Scoped Orchestration")
+    assert "Sol sends one bounded Implementation Context Brief" in policy_section
+    assert "Before narrative edits, Terra reads root policy and README" in policy_section
+    assert "After implementation, Sol reads each changed narrative document in full" in policy_section
+
+    runbook = (ROOT / "docs/OWNER_SCOPED_ORCHESTRATION.md").read_text(encoding="utf-8")
+    operating_shape = _normalized_h2_section(runbook, "Operating Shape")
+    packet_flow = _normalized_h2_section(runbook, "Packet And Receipt Flow")
+    correction = _normalized_h2_section(runbook, "Correction And Verification")
+    assert "The Implementer lane has Primary High and Bounded Correction Low task types" in operating_shape
+    assert "Sol sends one bounded Implementation Context Brief" in operating_shape
+    assert "Terra's receipt includes packet hash" in packet_flow
+    assert "Before narrative edits, Terra reads the repository policy and README" in packet_flow
+    assert "exact Low eligibility condition" in correction
+    assert "After implementation, Sol reads each changed narrative document in full" in correction
+
+    guide = (ROOT / "docs/SYSTEM_USER_GUIDE.md").read_text(encoding="utf-8")
+    preflight = _normalized_h2_section(guide, "Start In The Codex Desktop App")
+    guide_orchestration = _normalized_h2_section(guide, "Owner-Scoped Orchestration")
+    assert "Implementer binding: Terra Primary / `high`; Bounded Correction / `low`" in preflight
+    assert "Implementer | Terra Primary / `high`; Bounded Correction / `low`" in guide_orchestration
+    assert "Terra normally uses Primary work with high reasoning" in guide_orchestration
+    assert guide.startswith("# Governed Project System User Guide\n\nThis guide explains")
+
+    workflow = (ROOT / "docs/CORE_AGENT_WORKFLOW.md").read_text(encoding="utf-8")
+    workflow_section = _normalized_h2_section(workflow, "Implementation Routine")
+    assert "send Terra one Implementation Context Brief" in workflow_section
+    assert "return a failed candidate to Primary High work" in workflow_section
+    assert "read each changed narrative document in full" in workflow_section
+
+    git_guide = (ROOT / "docs/GIT_RECONCILIATION.md").read_text(encoding="utf-8")
+    closeout = _normalized_h2_section(git_guide, "Durable closeout evidence")
+    assert "Primary receipt starts from the packet baseline" in closeout
+    assert "Bounded Correction Low receipt starts from the accepted Primary candidate" in closeout
+
+    bootstrap = (ROOT / "Project_Obsidian_Vault/30_Core/Core Bootstrap.md").read_text(encoding="utf-8")
+    authorized_implementation = _normalized_block(
+        bootstrap,
+        "For authorized implementation:",
+        "Before completing substantial Core work:",
+    )
+    assert "Send one Implementation Context Brief" in authorized_implementation
+    assert "Use Primary High for normal implementation" in authorized_implementation
+    assert "Before Luna binding, read each changed narrative document in full" in authorized_implementation
+
+    protocols = (ROOT / "Project_Obsidian_Vault/30_Core/Core Protocols.md").read_text(encoding="utf-8")
+    implementation = _normalized_h2_section(protocols, "Implementation")
+    delivery = _normalized_h2_section(protocols, "Delivery")
+    assert "Sol sends one Implementation Context Brief" in implementation
+    assert "Bounded Correction Low work" in implementation
+    assert "Sol reads each changed narrative document in full" in delivery
+
+    continuity = (ROOT / "Project_Obsidian_Vault/30_Core/Continuity/README.md").read_text(encoding="utf-8")
+    receipts = _normalized_h2_section(continuity, "Subordinate Receipts")
+    assert "both packet-bound Implementer task dispositions" in receipts
+    assert "Bounded Correction Low receipt starts from the accepted Primary candidate" in receipts
+
+    shared_readme = (ROOT / "roles/shared/README.md").read_text(encoding="utf-8")
+    change_discipline = _normalized_h2_section(shared_readme, "Change Discipline")
+    assert "Sol sends the Implementation Context Brief" in change_discipline
+    assert "Terra uses the Implementer prompt to reorient" in change_discipline
+
+
+def test_shared_prompts_order_context_and_exact_low_eligibility() -> None:
+    """Require the Sol dispatch brief and Terra reorientation before lane work."""
+
+    sol = (ROOT / "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md").read_text(encoding="utf-8")
+    terra = (ROOT / "roles/shared/IMPLEMENTER_PROMPT.md").read_text(encoding="utf-8")
+    assert sol.index("## Implementation Context Brief") < sol.index("For each full-team cycle")
+    assert terra.index("## Repository And Document Reorientation") < terra.index("## Primary")
+    exact_low = (
+        "final exact replacement text and exact insertion, replacement, or removal location"
+    )
+    normalized_sol = re.sub(r"\s+", " ", sol)
+    normalized_terra = re.sub(r"\s+", " ", terra)
+    assert exact_low in normalized_sol
+    assert exact_low in normalized_terra
+    assert "no reordering, semantic, audience, relationship, or prose choice remains" in normalized_sol
+    assert "no reordering, semantic, audience, relationship, or prose choice remains" in normalized_terra
+
+
+def test_sol_context_and_full_document_review_are_role_specific() -> None:
+    """Keep dispatch, reorientation, and review duties with their responsible lane."""
+
+    policy = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    sol = (ROOT / "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md").read_text(encoding="utf-8")
+    terra = (ROOT / "roles/shared/IMPLEMENTER_PROMPT.md").read_text(encoding="utf-8")
+    runbook = (ROOT / "docs/OWNER_SCOPED_ORCHESTRATION.md").read_text(encoding="utf-8")
+    assert "Sol sends one bounded Implementation Context Brief" in policy
+    assert "Before narrative edits, Terra reads root policy and README" in policy
+    assert "After implementation, Sol reads each changed narrative document in full" in policy
+    assert "Do not add this brief to a\npacket or receipt" in sol
+    assert "Confirm each\ntarget document's audience" in terra
+    assert "After implementation, read each changed narrative document in full" in sol
+    assert runbook.index("The Implementer lane has Primary High") < runbook.index("## Risk Tiers")
+    assert runbook.index("Sol sends one bounded Implementation Context Brief") < runbook.index("## Risk Tiers")
+    assert runbook.index("After implementation, Sol reads each changed narrative document in full") > runbook.index("## Correction And Verification")
 
 
 def test_owner_dependency_profiles_keep_examples_inactive_and_non_authorizing() -> None:
@@ -420,6 +557,37 @@ def test_system_user_guide_has_a_clean_ordered_narrative_map() -> None:
         "### Set Up A2A Coordination From The Bootstrap"
     )
     assert "This section shows their\nnormal operating sequence" in guide
+
+
+def test_system_user_guide_keeps_typed_work_in_its_user_facing_section() -> None:
+    """Keep the introduction clean and explain typed work only to system users."""
+
+    guide = (ROOT / "docs/SYSTEM_USER_GUIDE.md").read_text(encoding="utf-8")
+    h2_sections = re.findall(r"^## (.+)$", guide, flags=re.MULTILINE)
+    assert h2_sections == [
+        "The System In One View",
+        "Start In The Codex Desktop App",
+        "The Vault And The LLM Wiki Pattern",
+        "Owner-Scoped Orchestration",
+        "Create And Activate A New Owner",
+        "Agent-To-Agent Discussions And Owner Direction",
+        "One Complete Work Cycle",
+        "Close A Task Promptly And Rehydrate Correctly",
+        "What Is Unique Here",
+        "How The Architecture Is Opinionated",
+        "When To Simplify",
+        "Daily Operator Checklist",
+    ]
+    assert guide.startswith("# Governed Project System User Guide\n\nThis guide explains")
+    start = guide.index("## Owner-Scoped Orchestration")
+    end = guide.index("## Create And Activate A New Owner")
+    typed_section = guide[start:end]
+    outside_typed_section = guide[:start] + guide[end:]
+    assert "Terra normally uses Primary work with high reasoning" in typed_section
+    assert "small\nexact correction to Bounded Correction work with low reasoning" in typed_section
+    assert "Luna verifies only the final\ncandidate that Sol declares" in typed_section
+    assert "Bounded Correction work" not in outside_typed_section
+    assert "task IDs" not in typed_section
 
 
 def test_system_user_guide_explains_new_owner_scaffold_and_prompt_handoff() -> None:

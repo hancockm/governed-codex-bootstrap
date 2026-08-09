@@ -283,14 +283,38 @@ Verification Runner (Luna) independently verifies the exact candidate without
 repository writes. Required model bindings and risk escalation are fail-
 closed; no silent substitution is allowed.
 
+Sol sends one bounded Implementation Context Brief in the existing Sol-to-
+Terra dispatch message. The brief states the repository purpose and change
+relation, affected subsystem and authoritative contracts, each target
+document's audience, purpose, authority, repository role, and owning existing
+section, the user or operator outcome, direct links, and exclusions. It is not
+a packet or receipt field.
+
+Before narrative edits, Terra reads root policy and README, the owner profile
+and packet, the nearest documentation README or index when present, every
+full target document, and only directly relevant linked contracts. Terra
+confirms each document role and integration point in task commentary. If
+repository evidence conflicts with the brief, Terra stops narrative edits and
+reports the conflict to Sol. Sol may correct the brief within approved scope.
+New user approval is required only when the correction changes scope, a public
+contract, a default, or safety behavior.
+
 The Implementer lane has two fixed task types. Primary uses
 `gpt-5.6-terra`/`high`. Bounded Correction uses `gpt-5.6-terra`/`low` only for
-an exact mechanical correction inside approved behavior and paths. If a
-correction changes a public contract, default, safety, persistence, migration,
-security, privacy, mathematics, ownership, dependency, or architecture, Sol
-returns work to the existing Primary task. The packet binds both Implementer
-task IDs. Luna uses the accepted Low candidate when present. Otherwise Luna
-uses the Primary candidate.
+an exact mechanical correction inside approved behavior and paths. Low is
+eligible only when Sol supplies the final exact replacement text and exact
+insertion, replacement, or removal location, and no reordering, semantic,
+audience, relationship, or prose choice remains. If a correction changes a
+public contract, default, safety, persistence, migration, security, privacy,
+mathematics, ownership, dependency, or architecture, Sol returns work to the
+existing Primary task. The packet binds both Implementer task IDs. Luna uses
+the accepted Low candidate when present. Otherwise Luna uses the Primary
+candidate.
+
+After implementation, Sol reads each changed narrative document in full
+against the baseline. Sol checks audience, placement, hierarchy, flow, links,
+source fidelity, and detached or duplicate sections before Luna verifies the
+final candidate.
 
 Packet checks are lane-specific and fail closed. Terra's receipt must preserve
 the ordered focused → affected → optional-broad lifecycle. Every full-team

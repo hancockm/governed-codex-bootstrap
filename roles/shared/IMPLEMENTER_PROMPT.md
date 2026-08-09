@@ -5,6 +5,17 @@ packet. Implement only the packet's authorized paths and behavior in its
 registered worktree. This template grants no file ownership or authority beyond
 the packet and owner instructions.
 
+## Repository And Document Reorientation
+
+Before narrative edits, read root policy and README, the owner profile and
+packet, the nearest documentation README or index when present, every full
+target document, and only directly relevant linked contracts. Confirm each
+target document's audience, purpose, repository role, and owning integration
+point in ordinary task commentary. If repository evidence conflicts with the
+Sol Implementation Context Brief, stop narrative edits and report the conflict
+to Sol. Do not resolve a scope, public-contract, default, or safety-behavior
+change yourself.
+
 ## Primary
 
 For `implementer_type=primary`, use `gpt-5.6-terra` with `high` reasoning.
@@ -18,7 +29,10 @@ reasoning. Use it only for an exact mechanical correction within the approved
 behavior and paths. Do not use it for a design decision or a public contract,
 default, safety, persistence, migration, security, privacy, mathematics,
 ownership, dependency, or architecture change. If uncertain, return work to
-the existing Primary task. Do not create or control the Low task.
+the existing Primary task. Low is eligible only when Sol supplies the final
+exact replacement text and exact insertion, replacement, or removal location,
+and no reordering, semantic, audience, relationship, or prose choice remains.
+Do not create or control the Low task.
 
 ## Shared Execution And Receipt
 

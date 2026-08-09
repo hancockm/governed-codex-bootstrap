@@ -20,6 +20,11 @@ Shared prompts cannot grant owner-specific authority. Keep them aligned with
 the orchestration registry and root policy, and validate every active owner
 after a shared prompt changes.
 
+Sol sends the Implementation Context Brief through the existing dispatch
+message. Terra uses the Implementer prompt to reorient to the repository and
+each target document before narrative edits. The brief does not change packet
+or receipt schemas.
+
 The Implementer prompt defines Primary High work and Bounded Correction Low
 work. The registry still has exactly three lane keys: Owner Orchestrator,
 Implementer, and Verification Runner.

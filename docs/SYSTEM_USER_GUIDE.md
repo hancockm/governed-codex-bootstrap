@@ -1,13 +1,5 @@
 # Governed Project System User Guide
 
-## Typed Implementer Work
-
-Each implementation packet has Primary High and Bounded Correction Low Terra
-task IDs. Use Low only for an exact mechanical correction inside approved
-behavior and paths. If a correction needs a design decision or changes a
-public contract, default, safety, persistence, migration, security, privacy,
-mathematics, ownership, dependency, or architecture, return to Primary.
-
 This guide explains how to operate the complete development-governance system
 from the Codex desktop app. It is written for a project that begins with
 research, has only Core active, and later grows into separately owned product
@@ -124,7 +116,7 @@ native Codex and repository capabilities:
 | Repository [AGENTS.md](../AGENTS.md) discovery | Cold start and every owner task |
 | Git and repository-local worktrees | Implementation and delivery |
 | Sol / `xhigh` owner binding | Owner orchestration |
-| Terra / `high` binding | Any tier that uses the Implementer |
+| Implementer binding: Terra Primary / `high`; Bounded Correction / `low` | Any tier that uses the Implementer |
 | Luna / `xhigh` binding | Full-team verification |
 | Saved-project subordinate-task coordination | Delegated implementation and reverification |
 | Subordinate-task archival | Successful orchestration closeout |
@@ -328,8 +320,15 @@ Every active owner receives a logical development team:
 | Lane | Binding | Job |
 | --- | --- | --- |
 | Owner Orchestrator | Sol / `xhigh` | Rehydrate, plan, protect authority, review, publish, integrate when Core, and close continuity |
-| Implementer | Terra / `high` | Make one packet-bounded candidate commit and run focused checks |
+| Implementer | Terra Primary / `high`; Bounded Correction / `low` | Make one packet-bounded candidate commit and run focused checks |
 | Verification Runner | Luna / `xhigh` | Independently verify the exact candidate without repository writes |
+
+Terra normally uses Primary work with high reasoning. Sol can send a small
+exact correction to Bounded Correction work with low reasoning only when the
+approved behavior is unchanged and the correction needs no judgment. If the
+correction needs a contract change, another behavior choice, or other
+judgment, Sol returns it to Primary work. Luna verifies only the final
+candidate that Sol declares.
 
 This is related to the advisor/worker pattern demonstrated by
 [Sol Advisor](https://sol-advisor.space/getting-started.html), which uses a
@@ -360,12 +359,12 @@ sequenceDiagram
     participant Core as Core Integrator
     User->>Sol: Approve bounded plan
     Sol->>Sol: Classify risk and seal packet
-    Sol->>Terra: Implement packet in registered worktree
+    Sol->>Terra: Send context and packet for implementation
     Terra-->>Sol: Candidate commit + receipt
     Sol->>Luna: Bind exact candidate in saved project
     Luna-->>Sol: Read-only verification receipt
     alt correction required
-        Sol->>Terra: Bounded correction
+        Sol->>Terra: Send exact bounded correction when eligible
         Terra-->>Sol: Replacement candidate
         Sol->>Luna: New binding, same Luna task
         Luna-->>Sol: Replacement verification receipt
