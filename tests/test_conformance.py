@@ -165,6 +165,27 @@ def test_orchestration_has_exact_model_bindings_and_separate_sol_finalization() 
     assert "/.worktrees/" in (ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
 
 
+def test_active_markdown_uses_typed_terra_contract_without_stale_single_task_wording() -> None:
+    """Keep approved active orchestration text synchronized with typed Terra work."""
+
+    contract_files = [
+        "AGENTS.md",
+        "docs/OWNER_SCOPED_ORCHESTRATION.md",
+        "roles/shared/IMPLEMENTER_PROMPT.md",
+        "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
+        "roles/shared/README.md",
+        "Project_Obsidian_Vault/30_Core/Core Bootstrap.md",
+        "Project_Obsidian_Vault/30_Core/Core Protocols.md",
+    ]
+    stale = ("one Terra task", "one Implementer task ID", "return to Terra's")
+    for relative in contract_files:
+        text = (ROOT / relative).read_text(encoding="utf-8")
+        assert not any(phrase in text for phrase in stale), relative
+    for relative in contract_files:
+        text = (ROOT / relative).read_text(encoding="utf-8")
+        assert "Primary" in text and "Bounded Correction" in text, relative
+
+
 def test_owner_dependency_profiles_keep_examples_inactive_and_non_authorizing() -> None:
     owners = json.loads((ROOT / "configs/owners_v1.json").read_text(encoding="utf-8"))["owners"]
     required_canonical_documents = {
