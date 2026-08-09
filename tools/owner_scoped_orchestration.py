@@ -1031,6 +1031,16 @@ def _validate_legacy_v3_closeout_inputs(packet: Mapping[str, Any], manifest: Map
     if not isinstance(task_ids, Mapping) or set(task_ids) != {"implementer", "runner"} or not _is_opaque_task_id(task_ids.get("implementer")) or not _is_opaque_task_id(task_ids.get("runner")) or task_ids["implementer"] == task_ids["runner"]:
         raise OrchestrationError("legacy closeout packet task IDs are invalid")
     profile = load_active_owner_profile(str(packet["owner"]), root)
+    legacy_models = {"owner_orchestrator": _lane_binding(load_registry(root), "owner_orchestrator"), "implementer": _lane_binding(load_registry(root), "implementer", "primary"), "runner": _lane_binding(load_registry(root), "runner")}
+    if packet.get("lane_models") != legacy_models or packet.get("owner_profile_ref") != owner_config(str(packet["owner"]), root, active=True)["profile_path"] or packet.get("owner_profile_hash") != sha256_canonical(profile):
+        raise OrchestrationError("legacy closeout packet model or profile mismatch")
+    allowed = _safe_paths(packet.get("allowed_paths", []), "legacy packet allowed path")
+    prohibited = _safe_paths(packet.get("prohibited_paths", []), "legacy packet prohibited path")
+    validate_owner_path_authority(packet["owner"], allowed, root)
+    static = classify_task(packet["task_description"], allowed)
+    if _path_scopes_overlap(allowed, prohibited) or packet["classification"].get("schema_version") != static["schema_version"] or tuple(packet["classification"].get("triggers", ())) != static["triggers"] or not _safe_worktree(str(packet.get("worktree", ""))):
+        raise OrchestrationError("legacy closeout packet path or classification mismatch")
+    _validate_test_check_contract("full_team", packet["focused_checks"], packet["broad_checks"], packet["runner_checks"])
     bundle = root / profile["continuity_receipts_root"] / packet["task_id"] / packet["canonical_hash"]
     values = {name: _require_legacy_bundle_file(bundle / name, supplied) for name, supplied in {"packet.json": packet, "record.json": record, "subordinate_archive_manifest.json": manifest}.items()}
     for name in ("implementer_receipt.json", "runner_binding.json", "runner_receipt.json"):

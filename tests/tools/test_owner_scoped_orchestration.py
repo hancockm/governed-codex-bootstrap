@@ -203,6 +203,24 @@ def test_typed_implementer_binding_uses_low_candidate_only_when_accepted(tmp_pat
         orchestration.bind_runner(packet, primary, "c" * 40, root, turn_context=_turn_context(packet), bounded_correction_receipt=correction)
 
 
+def test_typed_implementer_receipts_bind_low_final_candidate_with_exact_base(tmp_path: Path) -> None:
+    root = _repo(tmp_path); packet = _packet(root, description="runtime change"); primary = _implementer(packet); low = _bounded_correction(packet, primary)
+    assert low["subordinate_task_id"] == packet["subordinate_task_ids"]["implementer"]["bounded_correction"]
+    assert low["base_candidate_commit"] == primary["candidate_commit"]
+    with pytest.raises(orchestration.OrchestrationError, match="type mismatch"):
+        bad = dict(low); bad["implementer_type"] = "primary"; orchestration.bind_runner(packet, primary, "c" * 40, root, turn_context=_turn_context(packet), bounded_correction_receipt=bad)
+
+
+def test_typed_closeout_distinguishes_unused_low_and_primary_supersession(tmp_path: Path) -> None:
+    root = _repo(tmp_path); packet = _packet(root, description="runtime change"); primary = _implementer(packet); binding = _bind_runner(packet, primary, "b" * 40, root); runner = _runner(packet, binding)
+    manifest = orchestration.build_subordinate_archive_manifest(packet, primary, binding, runner, root)
+    acknowledgment = _archive_acknowledgment(manifest)
+    assert acknowledgment["lane_dispositions"][1]["disposition"] == "unused_no_correction_requested"
+    acknowledgment["lane_dispositions"][1].update({"disposition": "superseded_by_primary", "supersession_ref": orchestration._payload_hash(primary)})
+    acknowledgment["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in acknowledgment.items() if key != "canonical_hash"})
+    orchestration.validate_archive_acknowledgment(acknowledgment, manifest)
+
+
 def test_packet_shape_task_id_and_static_risk_cannot_be_self_hashed_away(tmp_path: Path) -> None:
     root = _repo(tmp_path)
     assert _packet(root, task_id="a" * 128)["task_id"] == "a" * 128
