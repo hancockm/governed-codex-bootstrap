@@ -283,9 +283,9 @@ Verification Runner (Luna) independently verifies the exact candidate without
 repository writes. Required model bindings and risk escalation are fail-
 closed; no silent substitution is allowed.
 
-Sol sends one bounded Implementation Context Brief in the existing Sol-to-
-Terra dispatch message. The brief states the repository purpose and change
-relation, affected subsystem and authoritative contracts, each target
+Sol sends one bounded Implementation Context Brief in the existing
+Sol-to-Terra dispatch message. The brief states the repository purpose and
+change relation, affected subsystem and authoritative contracts, each target
 document's audience, purpose, authority, repository role, and owning existing
 section, the user or operator outcome, direct links, and exclusions. It is not
 a packet or receipt field.

@@ -9,10 +9,11 @@ the packet and owner instructions.
 
 Before narrative edits, read root policy and README, the owner profile and
 packet, the nearest documentation README or index when present, every full
-target document, and only directly relevant linked contracts. Confirm each
-target document's audience, purpose, repository role, and owning integration
-point in ordinary task commentary. If repository evidence conflicts with the
-Sol Implementation Context Brief, stop narrative edits and report the conflict
+target document, and only directly relevant linked contracts.
+Use this context to identify each target document's audience, purpose, prose,
+authority, repository role, and owning integration point. Confirm that document role and integration point in ordinary task commentary. If repository evidence
+conflicts with the Sol Implementation Context Brief, stop narrative edits and
+report the conflict
 to Sol. Do not resolve a scope, public-contract, default, or safety-behavior
 change yourself.
 

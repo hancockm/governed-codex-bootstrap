@@ -299,6 +299,7 @@ def test_shared_prompts_order_context_and_exact_low_eligibility() -> None:
     )
     normalized_sol = re.sub(r"\s+", " ", sol)
     normalized_terra = re.sub(r"\s+", " ", terra)
+    assert "audience, purpose, prose, authority, repository role" in normalized_terra
     assert exact_low in normalized_sol
     assert exact_low in normalized_terra
     assert "no reordering, semantic, audience, relationship, or prose choice remains" in normalized_sol
@@ -316,7 +317,7 @@ def test_sol_context_and_full_document_review_are_role_specific() -> None:
     assert "Before narrative edits, Terra reads root policy and README" in policy
     assert "After implementation, Sol reads each changed narrative document in full" in policy
     assert "Do not add this brief to a\npacket or receipt" in sol
-    assert "Confirm each\ntarget document's audience" in terra
+    assert "Confirm that document role and integration point" in terra
     assert "After implementation, read each changed narrative document in full" in sol
     assert runbook.index("The Implementer lane has Primary High") < runbook.index("## Risk Tiers")
     assert runbook.index("Sol sends one bounded Implementation Context Brief") < runbook.index("## Risk Tiers")
