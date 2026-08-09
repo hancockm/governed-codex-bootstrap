@@ -156,6 +156,35 @@ def _delivery_evidence(packet: dict[str, object], implementer: dict[str, object]
     return {**payload, "canonical_hash": orchestration.sha256_canonical(payload)}
 
 
+def _legacy_v3_artifacts(root: Path, task_id: str = "legacy-v3") -> tuple[dict[str, object], dict[str, object], dict[str, object], dict[str, object], dict[str, object]]:
+    packet = _packet(root, task_id=task_id, description="runtime change")
+    packet["schema_version"] = "owner_scoped_task_packet_v3"
+    packet["lane_models"] = {"owner_orchestrator": {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"}, "implementer": {"model": "gpt-5.6-terra", "reasoning_effort": "high"}, "runner": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}}
+    packet["responsibilities"] = {"owner_orchestrator": "classify and publish", "implementer": "bounded candidate only", "runner": "inspect and test only"}
+    packet["subordinate_task_ids"] = {"implementer": f"legacy-terra-{task_id}", "runner": f"legacy-luna-{task_id}"}
+    packet["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in packet.items() if key != "canonical_hash"})
+    commands = [*packet["focused_checks"], orchestration.TERRA_AFFECTED_COMMAND, *packet["broad_checks"]]
+    implementer = {"schema_version": "owner_scoped_implementer_receipt_v2", "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "model": {"model": "gpt-5.6-terra", "reasoning_effort": "high"}, "candidate_commit": "b" * 40, "changed_paths": ["tools/example.py"], "actions": ["write", "commit", "test"], "checks": [{"command": command, "outcome": "passed"} for command in commands], "residual_issues": [], "outcome": "passed"}
+    binding_payload = {"schema_version": "owner_scoped_runner_binding_v4", "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_receipt_hash": orchestration._payload_hash(implementer), "candidate_commit": implementer["candidate_commit"], "candidate_posture": "sol_declared_final", "runner_model": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}, "runner_task_id": packet["subordinate_task_ids"]["runner"], "turn_context": {"source": "host_recorded", "channel": "saved_project_reusable_chat", "project_context": "matching_saved_project", "thread_id": packet["subordinate_task_ids"]["runner"], "model": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}}}
+    binding = {**binding_payload, "canonical_hash": orchestration.sha256_canonical(binding_payload)}
+    runner = _runner(packet, binding)
+    record_payload = {"schema_version": "owner_scoped_orchestration_record_v2", "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "tier": "full_team", "implementer_receipt_hash": orchestration._payload_hash(implementer), "runner_binding_hash": binding["canonical_hash"], "runner_receipt_hash": orchestration._payload_hash(runner), "sol_disposition_hash": "", "archive_manifest_hash": ""}
+    lanes = [{"lane": "implementer", "subordinate_task_id": packet["subordinate_task_ids"]["implementer"], "receipt_hash": orchestration._payload_hash(implementer), "action": "archive", "status": "ready_after_owner_receipt_capture"}, {"lane": "runner", "subordinate_task_id": packet["subordinate_task_ids"]["runner"], "receipt_hash": orchestration._payload_hash(runner), "action": "archive", "status": "ready_after_owner_receipt_capture"}]
+    manifest_payload = {"schema_version": "owner_scoped_subordinate_archive_manifest_v2", "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "authority": "owner_orchestrator", "transport": "host_task_management_surface", "runner_binding_hash": binding["canonical_hash"], "lanes": lanes}
+    manifest = {**manifest_payload, "canonical_hash": orchestration.sha256_canonical(manifest_payload)}
+    record_payload["archive_manifest_hash"] = manifest["canonical_hash"]
+    record = {**record_payload, "canonical_hash": orchestration.sha256_canonical(record_payload)}
+    acknowledgment_payload = {"schema_version": "owner_scoped_subordinate_archive_acknowledgment_v1", "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "archive_manifest_hash": manifest["canonical_hash"], "acknowledged_by": "owner_orchestrator", "correction_pending": False, "lane_dispositions": [{"lane": item["lane"], "subordinate_task_id": item["subordinate_task_id"], "disposition": "archived", "supersession_ref": ""} for item in lanes]}
+    acknowledgment = {**acknowledgment_payload, "canonical_hash": orchestration.sha256_canonical(acknowledgment_payload)}
+    delivery_payload = {"schema_version": "owner_scoped_closeout_delivery_evidence_v1", "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "branch": packet["branch"], "candidate_commit": implementer["candidate_commit"], "receipt_record_hash": record["canonical_hash"], "captured_receipt_hashes": {"implementer": orchestration._payload_hash(implementer), "runner_binding": binding["canonical_hash"], "runner": orchestration._payload_hash(runner)}, "terminal_reconciliation": {"target": "origin/master", "disposition": "landed", "evidence_ref": "test:landed"}, "primary_branch_sync": {"verified": True, "evidence_ref": "test:sync"}, "worktree_removal": {"worktree": packet["worktree"], "removed": True, "evidence_ref": "test:worktree"}, "acknowledged_by": "owner_orchestrator"}
+    delivery = {**delivery_payload, "canonical_hash": orchestration.sha256_canonical(delivery_payload)}
+    bundle = root / "receipts" / packet["task_id"] / packet["canonical_hash"]
+    bundle.mkdir(parents=True)
+    for name, value in {"packet.json": packet, "implementer_receipt.json": implementer, "runner_binding.json": binding, "runner_receipt.json": runner, "subordinate_archive_manifest.json": manifest, "record.json": record}.items():
+        (bundle / name).write_bytes((orchestration.canonical_json(value) + "\n").encode("utf-8"))
+    return packet, manifest, acknowledgment, record, delivery
+
+
 def test_registry_and_exact_sol_prompt_composition(tmp_path: Path) -> None:
     root = _repo(tmp_path); registry = orchestration.load_registry(root); packet = _packet(root)
     assert registry["model_binding"]["owner_orchestrator"] == {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"}
@@ -219,6 +248,30 @@ def test_typed_closeout_distinguishes_unused_low_and_primary_supersession(tmp_pa
     acknowledgment["lane_dispositions"][1].update({"disposition": "superseded_by_primary", "supersession_ref": orchestration._payload_hash(primary)})
     acknowledgment["canonical_hash"] = orchestration.sha256_canonical({key: value for key, value in acknowledgment.items() if key != "canonical_hash"})
     orchestration.validate_archive_acknowledgment(acknowledgment, manifest)
+
+
+def test_new_work_rejects_v3_packet_but_explicit_legacy_finalization_closes_recorded_bundle(tmp_path: Path) -> None:
+    root = _repo(tmp_path); packet, manifest, acknowledgment, record, delivery = _legacy_v3_artifacts(root)
+    with pytest.raises(orchestration.OrchestrationError, match="issue a v4 packet"):
+        orchestration.validate_packet(packet, root)
+    finalization = orchestration.finalize_legacy_v3_closeout(packet, manifest, acknowledgment, record, delivery, root)
+    path = root / "receipts" / packet["task_id"] / "legacy_v3_finalizations" / finalization["canonical_hash"] / "legacy_closeout_finalization.json"
+    assert path.is_file()
+    with pytest.raises(orchestration.OrchestrationError, match="no-overwrite"):
+        orchestration.finalize_legacy_v3_closeout(packet, manifest, acknowledgment, record, delivery, root)
+
+
+def test_legacy_closeout_rejects_missing_and_mutated_recorded_bundle(tmp_path: Path) -> None:
+    root = _repo(tmp_path); packet, manifest, acknowledgment, record, delivery = _legacy_v3_artifacts(root, "legacy-mutate")
+    bundle = root / "receipts" / packet["task_id"] / packet["canonical_hash"]
+    (bundle / "runner_receipt.json").unlink()
+    with pytest.raises(orchestration.OrchestrationError, match="runner_receipt.json"):
+        orchestration.finalize_legacy_v3_closeout(packet, manifest, acknowledgment, record, delivery, root)
+    packet, manifest, acknowledgment, record, delivery = _legacy_v3_artifacts(root, "legacy-bytes")
+    packet_path = root / "receipts" / "legacy-bytes" / packet["canonical_hash"] / "packet.json"
+    packet_path.write_text("{}", encoding="utf-8")
+    with pytest.raises(orchestration.OrchestrationError, match="canonical bundle bytes"):
+        orchestration.finalize_legacy_v3_closeout(packet, manifest, acknowledgment, record, delivery, root)
 
 
 def test_packet_shape_task_id_and_static_risk_cannot_be_self_hashed_away(tmp_path: Path) -> None:
