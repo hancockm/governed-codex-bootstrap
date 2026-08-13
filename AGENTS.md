@@ -223,9 +223,13 @@ workers while debugging.
 In owner-scoped implementation, Terra runs packet-focused checks first, then
 exactly `python tools/test_runner.py affected --base origin/master`, then
 packet-declared broad checks only when required. Terra never runs `full`.
-Luna runs exactly `python tools/test_runner.py full` once, and only against the
-exact candidate Sol has declared final. Operational governance and
-documentation paths use narrow explicit impact mappings: changing
+During category-sliced work, Luna may run Sol-declared focused category checks
+against SHA-pinned checkpoint commits. These interim runs never use `full` and
+do not create the final runner receipt. Luna runs exactly
+`python tools/test_runner.py full` once, and only against the exact candidate
+Sol has declared final. Luna uses the same task for all category checks,
+corrections, and final verification. Operational governance and documentation
+paths use narrow explicit impact mappings: changing
 [AGENTS.md](AGENTS.md)
 does not automatically select every test during Terra's affected or mapped
 broad triage. Luna's final full run remains the complete coverage boundary.
@@ -278,10 +282,36 @@ wide Core canon or another owner's public contract.
 ## Owner-Scoped Orchestration
 
 Owner Orchestrator (Sol) controls authority, scope, review, publication, and
-continuity. Implementer (Terra) makes one packet-bounded local candidate.
-Verification Runner (Luna) independently verifies the exact candidate without
-repository writes. Required model bindings and risk escalation are fail-
-closed; no silent substitution is allowed.
+continuity. Implementer (Terra) makes packet-bounded cumulative category
+checkpoints and one final candidate when the plan has multiple categories.
+Verification Runner (Luna) independently verifies exact checkpoint commits and
+the final candidate without repository writes. Required model bindings and
+risk escalation are fail-closed; no silent substitution is allowed.
+
+**Required category-slice directive:** If an approved plan contains multiple
+implementation categories, Sol must divide the Primary work into ordered
+category slices before dispatch. One category slice covers one coherent
+implementation area. It can contain multiple related invariants and files.
+Sol must define its purpose, allowed paths, dependencies, acceptance tests,
+and stop condition. Sol must not force a category slice to contain only one
+invariant or one file.
+
+For category N, Terra Primary writes or updates the focused tests, creates a
+cumulative SHA-pinned checkpoint commit, and gives Sol the commit and exact
+test commands. Sol sends the checkpoint and commands to the same Luna task.
+Luna runs the category tests and reports to Sol. Terra Primary may begin
+category N+1 while Luna tests category N only when N+1 does not depend on
+unverified behavior from N. Otherwise, Sol waits for Luna. These interim Luna
+runs do not use `full` and do not replace the final runner receipt.
+
+After two category slices are complete, Sol must review their cross-category
+behavior before it sends category N+2. Sol must plan all identified
+cross-category changes. If a change is exact and mechanical, Sol sends it to
+Bounded Correction, and Luna runs its written focused tests. If a change
+requires broad reasoning but spans only categories N and N+1, Sol waits for
+Terra Primary to complete N+1 and then sends one cross-category slice to the
+same Primary task. If the change alters approved scope, a public contract, a
+default, or safety behavior, Sol must request new user approval.
 
 Sol sends one bounded Implementation Context Brief in the existing
 Sol-to-Terra dispatch message. The brief states the repository purpose and
