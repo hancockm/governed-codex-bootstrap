@@ -310,6 +310,10 @@ def test_agents_requires_category_rewrite_control_and_frozen_test_order() -> Non
     assert "Luna must rerun the same frozen selectors against the implementation checkpoint" in section
     assert "Sol must not change a test only to make an implementation pass" in section
     assert "A required test change invalidates the freeze and counts as a rewrite" in section
+    assert "Sol must select the host's Standard speed" in section
+    assert "Sol must not select Fast speed" in section
+    assert "Host speed is separate from model identity and reasoning effort" in section
+    assert "must report `route_integrity_failed`" in section
 
 
 def test_shared_prompts_order_context_and_exact_low_eligibility() -> None:

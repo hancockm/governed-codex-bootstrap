@@ -336,6 +336,13 @@ checkpoint. Sol must not accept an implementation commit that changes the
 frozen tests, and Sol must not change a test only to make an implementation
 pass. A required test change invalidates the freeze and counts as a rewrite.
 
+When Sol creates a Terra or Luna task, Sol must select the host's Standard
+speed. Sol must not select Fast speed. Host speed is separate from model
+identity and reasoning effort. Sol must record host evidence that Standard
+speed was selected. If the host does not expose verifiable Standard-speed
+selection, Sol must not create the subordinate task and must report
+`route_integrity_failed`.
+
 Sol sends one bounded Implementation Context Brief in the existing
 Sol-to-Terra dispatch message. The brief states the repository purpose and
 change relation, affected subsystem and authoritative contracts, each target
