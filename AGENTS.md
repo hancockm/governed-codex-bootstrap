@@ -313,6 +313,29 @@ Terra Primary to complete N+1 and then sends one cross-category slice to the
 same Primary task. If the change alters approved scope, a public contract, a
 default, or safety behavior, Sol must request new user approval.
 
+**Required category rewrite-control directive:** Sol must record a rewrite
+count for each category and subcategory. Initial test authoring and the first
+implementation against frozen tests are not rewrites. A rewrite occurs when
+Sol rejects a dispatched test or implementation checkpoint and asks Terra to
+replace it. After the first rewrite, Sol must record one primary cause:
+`incomplete_direction`, `test_conformance`,
+`hidden_cross_category_dependency`, or `implementation_defect`.
+
+If a second rewrite is required, Sol must stop the category before more edits.
+Sol must record the stopped parent category and split the remaining work into
+independently testable subcategories. Each new subcategory gets its own
+rewrite count, but the stopped parent history remains visible.
+
+For each new or split category, Terra Primary must first commit contract tests
+without implementation changes. Luna must run those exact tests against the
+pre-implementation checkpoint and report the expected controlled failures.
+Sol must then review and freeze the test commit, selectors, and acceptance
+rules. Terra Primary must implement against the frozen tests without changing
+them. Luna must rerun the same frozen selectors against the implementation
+checkpoint. Sol must not accept an implementation commit that changes the
+frozen tests, and Sol must not change a test only to make an implementation
+pass. A required test change invalidates the freeze and counts as a rewrite.
+
 Sol sends one bounded Implementation Context Brief in the existing
 Sol-to-Terra dispatch message. The brief states the repository purpose and
 change relation, affected subsystem and authoritative contracts, each target

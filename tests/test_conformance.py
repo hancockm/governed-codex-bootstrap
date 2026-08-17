@@ -287,6 +287,31 @@ def test_typed_implementer_contract_uses_native_document_sections() -> None:
     assert "Terra uses the Implementer prompt to reorient" in change_discipline
 
 
+def test_agents_requires_category_rewrite_control_and_frozen_test_order() -> None:
+    policy = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    section = _normalized_h2_section(policy, "Owner-Scoped Orchestration")
+
+    assert "record a rewrite count for each category and subcategory" in section
+    assert all(
+        cause in section
+        for cause in (
+            "incomplete_direction",
+            "test_conformance",
+            "hidden_cross_category_dependency",
+            "implementation_defect",
+        )
+    )
+    assert "If a second rewrite is required, Sol must stop the category before more edits." in section
+    assert "split the remaining work into independently testable subcategories" in section
+    assert "Terra Primary must first commit contract tests without implementation changes" in section
+    assert "Luna must run those exact tests against the pre-implementation checkpoint" in section
+    assert "Sol must then review and freeze the test commit, selectors, and acceptance rules" in section
+    assert "Terra Primary must implement against the frozen tests without changing them" in section
+    assert "Luna must rerun the same frozen selectors against the implementation checkpoint" in section
+    assert "Sol must not change a test only to make an implementation pass" in section
+    assert "A required test change invalidates the freeze and counts as a rewrite" in section
+
+
 def test_shared_prompts_order_context_and_exact_low_eligibility() -> None:
     """Require the Sol dispatch brief and Terra reorientation before lane work."""
 
