@@ -51,6 +51,24 @@ def _normalized_h2_section(text: str, heading: str) -> str:
     return re.sub(r"\s+", " ", text[start:end])
 
 
+def _normalized_markdown_section(text: str, heading: str) -> str:
+    """Return one Markdown section with normalized whitespace."""
+
+    match = re.search(
+        rf"^(?P<level>#+)\s+{re.escape(heading)}\s*$",
+        text,
+        flags=re.IGNORECASE | re.MULTILINE,
+    )
+    assert match is not None, f"missing {heading.lower()} policy section"
+    following = re.search(
+        rf"^#{{1,{len(match.group('level'))}}}\s+",
+        text[match.end():],
+        flags=re.MULTILINE,
+    )
+    end = match.end() + following.start() if following else len(text)
+    return re.sub(r"\s+", " ", text[match.start():end])
+
+
 def _normalized_block(text: str, start_marker: str, end_marker: str) -> str:
     """Return a marked block with normalized whitespace."""
 
@@ -314,6 +332,28 @@ def test_agents_requires_category_rewrite_control_and_frozen_test_order() -> Non
     assert "Sol must not select Fast speed" in section
     assert "Host speed is separate from model identity and reasoning effort" in section
     assert "must report `route_integrity_failed`" in section
+
+
+def test_agents_requires_terminal_failure_evidence_rule() -> None:
+    """Require the bounded terminal-failure evidence policy."""
+
+    policy = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    section = _normalized_markdown_section(policy, "Terminal Failure Evidence")
+    for clause in (
+        "one terminal failure observation per failed bounded operation",
+        "capture it before destructive cleanup",
+        "stable operation, phase, invariant, and component codes plus the cleanup result",
+        "preserve the first failure if cleanup also fails",
+        "propagate bounded evidence across child-process, adapter, and repository boundaries",
+        "fixed-safe public error messages",
+        "exclude credentials, content bodies, environment values, local paths, provider-private state, and arbitrary exception text",
+        "no retry until the first failure observation is durable or returned to the owning parent",
+        "verify failure evidence and cleanup in tests",
+        "record once at the bounded-operation owner, not at every stack frame",
+        "any caught, replaced, or sanitized terminal error that crosses a boundary must retain the safe evidence",
+        "internal exceptions which do not cross a bounded-operation boundary can propagate to that owner without duplicate evidence",
+    ):
+        assert clause in section.casefold()
 
 
 def test_shared_prompts_order_context_and_exact_low_eligibility() -> None:
