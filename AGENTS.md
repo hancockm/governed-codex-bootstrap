@@ -199,6 +199,24 @@ exercise invalid inputs for validators, and establish before/after evidence
 for refactors. Iterate with the narrowest checks, then run the broader boundary
 required by risk. Report unrelated failures without absorbing them into scope.
 
+### Terminal Failure Evidence
+
+- Create one terminal failure observation per failed bounded operation. Capture
+  it before destructive cleanup. Include stable operation, phase, invariant,
+  and component codes plus the cleanup result.
+- Preserve the first failure if cleanup also fails. Propagate bounded evidence
+  across child-process, adapter, and repository boundaries. Use fixed-safe
+  public error messages.
+- Exclude credentials, content bodies, environment values, local paths,
+  provider-private state, and arbitrary exception text. No retry until the
+  first failure observation is durable or returned to the owning parent.
+- Verify failure evidence and cleanup in tests. Record once at the
+  bounded-operation owner, not at every stack frame. Internal exceptions which
+  do not cross a bounded-operation boundary can propagate to that owner without
+  duplicate evidence.
+- Any caught, replaced, or sanitized terminal error that crosses a boundary
+  must retain the safe evidence.
+
 ### Test Execution Workflow
 
 Use the repository runner rather than repeating the full suite during active
