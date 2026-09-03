@@ -8,6 +8,4 @@ Generated, immutable plan handoffs and selection audits are indexed here. They a
 
 <!-- managed:moc-children:start -->
 - [[40_Coordination/Generated/Work Selection Audits/README]] — Directory guide for immutable generated work-selection audits.
-- [[40_Coordination/Generated/Work Selection Audits/bootstrap-research-first-7ded3ebd43b9]] — Retrospective fixture pinning the research-first cold start.
-- [[40_Coordination/Generated/Work Selection Audits/bootstrap-research-first-813cbeb1e332]] — Live Core coverage record for the research-first cold start.
 <!-- managed:moc-children:end -->

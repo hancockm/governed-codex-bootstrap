@@ -8,6 +8,7 @@ from urllib.parse import unquote
 
 from governance_bootstrap.conformance import (
     check_repository,
+    validate_clean_bootstrap_evidence,
     validate_documentation_system,
     validate_owner_profiles,
     validate_project_license,
@@ -124,9 +125,19 @@ def test_research_is_the_first_cold_start_evidence_lane() -> None:
     policy = json.loads((ROOT / "configs/conformance_v1.json").read_text(encoding="utf-8"))
     owners = json.loads((ROOT / "configs/owners_v1.json").read_text(encoding="utf-8"))["owners"]
     assert (ROOT / policy["research_first"]["research_dir"] / "records").is_dir()
-    assert list((ROOT / "research/records").glob("*.md"))
+    assert sorted(path.name for path in (ROOT / "research/records").iterdir()) == [".gitkeep", "README.md"]
     assert [name for name, item in owners.items() if item["active"]] == ["core"]
     assert policy["research_first"]["cold_start_sequence"][:3] == ["research_intake", "research_organization", "core_canonicalization"]
+
+
+def test_distributed_bootstrap_contains_no_seeded_operational_evidence(tmp_path: Path) -> None:
+    assert validate_clean_bootstrap_evidence(ROOT) == []
+    evidence = tmp_path / "research/records/example.json"
+    evidence.parent.mkdir(parents=True)
+    evidence.write_text("{}", encoding="utf-8")
+    assert validate_clean_bootstrap_evidence(tmp_path) == [
+        "seeded research record: research/records/example.json"
+    ]
 
 
 def test_first_bootstrap_requires_native_capabilities_and_no_plugins() -> None:
@@ -168,6 +179,11 @@ def test_external_a2a_configuration_is_nonsecret_and_opt_in() -> None:
         assert f"PROJECT_{provider}_MODEL_ID=" in example
     assert "Do not put API keys" in example
     assert "PROJECT_CLAUDE_API_KEY" not in example
+
+
+def test_vault_local_obsidian_state_is_ignored() -> None:
+    ignored = (ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
+    assert "/Project_Obsidian_Vault/.obsidian/" in ignored
 
 
 def test_orchestration_has_exact_model_bindings_and_separate_sol_finalization() -> None:

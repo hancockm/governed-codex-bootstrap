@@ -1,0 +1,8 @@
+{
+  "roles": {
+    "luna": {"required_stages": ["full"]},
+    "sol": {"required_stages": ["packet", "receipt"]},
+    "terra": {"required_stages": ["focused", "affected"]}
+  },
+  "schema_version": "role_validation_policy_v1"
+}

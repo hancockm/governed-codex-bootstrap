@@ -21,6 +21,7 @@ tools validate.
 | [runner_channel_workaround_v1.json](runner_channel_workaround_v1.json) | Records the active saved-project runner-channel workaround and its strict removal evidence. |
 | [owners_v1.json](owners_v1.json) | Registers active and inactive owners and their dependency profiles. |
 | [risk_classification_v1.json](risk_classification_v1.json) | Maps change triggers to required orchestration tiers. |
+| [role_validation_v1.json](role_validation_v1.json) | Defines the required evidence stages for each public governance role. |
 | [tool_parity_v1.json](tool_parity_v1.json) | Records the disposition of each reference and bootstrap tool. |
 | [vault_maintenance_registry_v1.json](vault_maintenance_registry_v1.json) | Registers maintained vault scopes, owners, schemas, and generated navigation. |
 | [work_selection_audit_v1.json](work_selection_audit_v1.json) | Defines the advisory work-selection audit schema and fixtures. |

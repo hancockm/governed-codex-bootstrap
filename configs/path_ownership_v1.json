@@ -19,6 +19,7 @@
     {"kind": "directory_prefix", "path": "roles", "authority": "owner", "owner": "core"},
     {"kind": "directory_prefix", "path": "tests", "authority": "owner", "owner": "core"},
     {"kind": "directory_prefix", "path": "third_party", "authority": "owner", "owner": "core"},
+    {"kind": "directory_prefix", "path": "toolkit", "authority": "owner", "owner": "core"},
     {"kind": "directory_prefix", "path": "tools", "authority": "owner", "owner": "core"},
     {"kind": "directory_prefix", "path": "Project_Obsidian_Vault/00_Canonical", "authority": "owner", "owner": "core"},
     {"kind": "directory_prefix", "path": "Project_Obsidian_Vault/00_Home", "authority": "owner", "owner": "core"},

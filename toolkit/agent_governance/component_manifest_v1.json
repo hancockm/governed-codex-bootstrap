@@ -1,0 +1,8 @@
+{
+  "bundle": "agent_governance",
+  "dependency_profile": "toolkit/agent_governance/dependency_profile_v1.json",
+  "development_only": true,
+  "network_egress": false,
+  "schema_version": "agent_governance_component_manifest_v1",
+  "verifier": "tools/governance_toolkit.py"
+}

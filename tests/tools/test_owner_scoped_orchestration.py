@@ -501,6 +501,7 @@ def test_every_tracked_path_has_exactly_one_owner_or_shared_route() -> None:
     resolutions = [orchestration.resolve_path_ownership(path, PROJECT_ROOT) for path in tracked]
     assert len(resolutions) == len(tracked)
     assert all(rule["authority"] in {"owner", "shared_routed"} for rule in resolutions)
+    assert orchestration.resolve_path_ownership("toolkit/agent_governance/component_manifest_v1.json", PROJECT_ROOT)["owner"] == "core"
 
 
 def test_runner_channel_workaround_requires_reusable_saved_project_route(tmp_path: Path) -> None:

@@ -2,13 +2,13 @@
 
 ## Purpose
 
-This directory contains content-addressed source records created by
+This directory receives content-addressed source records created by
 [research_intake.py](../../tools/research_intake.py) and reviewed or mapped by
 [research_organizer.py](../../tools/research_organizer.py).
 
 ## Contents
 
-Each record preserves the source hash, provenance, title, origin, and review
+No record exists in a clean bootstrap. Each future record preserves the source hash, provenance, title, origin, and review
 state. Markdown, plain text, and PDFs remain source material, not canonical
 doctrine. PDF page text is a derived candidate projection; the exact PDF bytes
 remain authoritative. Empty/image-only pages remain explicit diagnostics and

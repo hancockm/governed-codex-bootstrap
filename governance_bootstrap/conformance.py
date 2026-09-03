@@ -300,6 +300,28 @@ def validate_owner_profiles(root: Path, owners: dict[str, Any]) -> list[str]:
     return failures
 
 
+def validate_clean_bootstrap_evidence(root: Path) -> list[str]:
+    """Return seeded operational-evidence files that a clean bootstrap forbids."""
+
+    roots = {
+        "orchestration receipt payload": root / "Project_Obsidian_Vault/30_Core/Continuity/Orchestration Receipts",
+        "work-selection audit record": root / "Project_Obsidian_Vault/40_Coordination/Generated/Work Selection Audits",
+        "research record": root / "research/records",
+        "transcript record": root / "continuity/core/transcripts",
+    }
+    failures: list[str] = []
+    for label, evidence_root in roots.items():
+        if not evidence_root.exists():
+            continue
+        for path in sorted(item for item in evidence_root.rglob("*") if item.is_file()):
+            if path.name in {"README.md", ".gitkeep"}:
+                continue
+            failures.append(
+                f"seeded {label}: {path.relative_to(root).as_posix()}"
+            )
+    return failures
+
+
 def check_repository(root: Path) -> list[str]:
     """Return deterministic violations of the bootstrap architecture."""
     config = _load(root, "configs/conformance_v1.json")
@@ -337,8 +359,12 @@ def check_repository(root: Path) -> list[str]:
     research_policy = config["research_first"]
     research = root / research_policy["research_dir"]
     records = research / "records"
-    if not research.is_dir() or not records.is_dir() or not list(records.glob("*.md")):
-        failures.append("research-first: immutable source material is missing")
+    if not research.is_dir() or not records.is_dir():
+        failures.append("research-first: intake directories are missing")
+    failures.extend(
+        f"bootstrap-evidence: {item}"
+        for item in validate_clean_bootstrap_evidence(root)
+    )
     if research_policy.get("cold_start_sequence") != ["research_intake", "research_organization", "core_canonicalization", "core_delivery", "future_owner_activation"]:
         failures.append("research-first: cold-start sequence is not canonical")
     owners = _load(root, "configs/owners_v1.json")["owners"]

@@ -7,7 +7,9 @@
     "tests/tools/test_agent_work_selection_audit.py",
     "tests/tools/test_capability_status.py",
     "tests/tools/test_export_agent_thread_continuity.py",
+    "tests/tools/test_governance_toolkit.py",
     "tests/tools/test_owner_scoped_orchestration.py",
+    "tests/tools/test_role_validation.py",
     "tests/tools/test_tool_parity.py",
     "tests/tools/test_vault_maintainer.py"
   ],

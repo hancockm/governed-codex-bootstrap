@@ -9,13 +9,15 @@ immutable records before any interpretation or canonical promotion.
 ## Contents
 
 - [inbox/](inbox) stages exact user-supplied sources.
-- [records/](records) contains content-addressed source bytes and provenance metadata.
+- [records/](records) receives content-addressed source bytes and provenance metadata after intake.
 - `derived/` contains reproducible organizer output.
 - `reviews/` contains separate human/Core dispositions.
 - [schema.json](schema.json) describes file-intake metadata.
 - [git_snapshot_schema.json](git_snapshot_schema.json) describes exact repository/ref/commit/tree/blob
   lineage and bounded file selection.
-- [example-record.json](example-record.json) is only an example.
+
+No research record exists in a clean bootstrap. Add approved source material to
+[inbox/](inbox), then run the intake command to create the first record.
 
 Markdown and plain-text organization uses the base install. PDF organization
 requires user approval before installing the optional `pypdf==6.14.2` extra,

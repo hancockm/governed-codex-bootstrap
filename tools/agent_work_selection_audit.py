@@ -478,8 +478,8 @@ def validate_pilot(
             cursor = prior_by_successor[cursor]
 
     fixtures = manifest.get("bootstrap_fixtures")
-    if not isinstance(fixtures, list) or not fixtures:
-        errors.append("bootstrap_fixtures must be a non-empty list")
+    if not isinstance(fixtures, list):
+        errors.append("bootstrap_fixtures must be a list")
         fixtures = []
     fixture_ids: set[str] = set()
     fixture_paths: set[str] = set()

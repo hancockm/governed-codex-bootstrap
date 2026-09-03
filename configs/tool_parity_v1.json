@@ -483,6 +483,32 @@
     },
     {
       "reference": null,
+      "bootstrap": "tools/governance_toolkit.py",
+      "classification": "bootstrap_native",
+      "rationale": "Validates the public governance-toolkit bundle without network access.",
+      "required_symbols": [
+        "GovernanceToolkitError",
+        "main",
+        "validate_bundle"
+      ]
+    },
+    {
+      "reference": null,
+      "bootstrap": "tools/role_validation.py",
+      "classification": "bootstrap_native",
+      "rationale": "Validates public role requests, receipts, and joined exact-candidate evidence.",
+      "required_symbols": [
+        "JoinedCandidateValidationReportV1",
+        "RoleValidationError",
+        "RoleValidationReceiptV1",
+        "RoleValidationRequestV1",
+        "join_candidate_reports",
+        "main",
+        "validate_role_payloads"
+      ]
+    },
+    {
+      "reference": null,
       "bootstrap": "tools/test_runner.py",
       "classification": "bootstrap_native",
       "rationale": "Implements lifecycle-aware focused, affected, broad, and full test profiles.",

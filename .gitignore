@@ -10,4 +10,5 @@ build/
 /.env.*
 !/.env.example
 /.worktrees/
+/Project_Obsidian_Vault/.obsidian/
 /social/

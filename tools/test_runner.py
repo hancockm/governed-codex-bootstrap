@@ -63,14 +63,31 @@ def run(arguments: list[str]) -> int:
     return subprocess.run(pytest_command(arguments), cwd=ROOT, check=False).returncode
 
 
-def main() -> int:
-    """Run one lifecycle-aware focused, failed, affected, broad, or full profile."""
+def main(argv: list[str] | None = None) -> int:
+    """Run one lifecycle-aware test profile or a read-only role validation."""
 
     parser = argparse.ArgumentParser(description="Run governed test profiles.")
-    parser.add_argument("profile", choices=("focused", "failed", "affected", "broad", "full"))
+    parser.add_argument("profile", choices=("focused", "failed", "affected", "broad", "full", "validate"))
     parser.add_argument("targets", nargs="*")
     parser.add_argument("--base")
-    args = parser.parse_args()
+    parser.add_argument("--role", choices=("terra", "luna", "sol"))
+    parser.add_argument("--request", type=Path)
+    parser.add_argument("--receipt", type=Path)
+    args = parser.parse_args(argv)
+    if args.profile == "validate":
+        if args.targets or not args.role or args.request is None or args.receipt is None:
+            parser.error("validate requires --role, --request, and --receipt")
+        from tools.role_validation import RoleValidationError, validate_role_payloads
+
+        try:
+            request = json.loads(args.request.read_text(encoding="utf-8"))
+            receipt = json.loads(args.receipt.read_text(encoding="utf-8"))
+            report = validate_role_payloads(args.role, request, receipt)
+        except (OSError, json.JSONDecodeError, RoleValidationError) as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
+        print(json.dumps(report, sort_keys=True, separators=(",", ":")))
+        return 0
     if args.profile == "focused":
         if not args.targets:
             parser.error("focused requires one or more test targets")

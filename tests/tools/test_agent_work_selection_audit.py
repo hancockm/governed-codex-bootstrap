@@ -295,18 +295,19 @@ def test_structurally_valid_adverse_check_exits_zero(tmp_path: Path, monkeypatch
     assert '"candidate_status": "not_selectable"' in capsys.readouterr().out
 
 
-def test_repository_pilot_bootstrap_is_valid_and_pins_d7() -> None:
+def test_repository_pilot_is_collecting_until_a_live_audit_exists() -> None:
     manifest_path = audit.ROOT / "configs/work_selection_audit_v1.json"
     report, exit_code = audit.validate_pilot(manifest_path)
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
     assert exit_code == 0
     assert report["valid"]
-    assert report["pilot_status"] == "eligible_for_disposition"
+    assert report["pilot_status"] == "collecting"
     assert report["required_role_count"] == 1
-    assert report["covered_role_count"] >= 1
-    assert "Core" in report["covered_roles"]
-    assert "D7" in manifest["bootstrap_fixtures"][0]["expected_atom_ids"]
+    assert report["covered_role_count"] == 0
+    assert report["covered_roles"] == []
+    assert report["missing_roles"] == ["Core"]
+    assert manifest["bootstrap_fixtures"] == []
 
 
 def test_pilot_fixture_omitting_d7_fails_and_complete_flag_is_enforced(tmp_path: Path) -> None:
