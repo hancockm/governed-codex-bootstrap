@@ -330,6 +330,27 @@ correction needs a contract change, another behavior choice, or other
 judgment, Sol returns it to Primary work. Luna verifies only the final
 candidate that Sol declares.
 
+### Optional Research Critic (Astra)
+
+Sol can invoke the optional Research Critic when Sol needs an advisory plan
+critique, progress audit against an approved plan, blocker analysis, or
+assumption review. Sol alone can invoke this support role.
+
+Before Sol invokes the Research Critic, the host must record the
+`research_critic` role, the `gpt-6-astra` model, and `high` reasoning effort.
+If this identity evidence is absent, the invocation is not valid.
+
+The Research Critic can inspect plans, repository evidence, approved-plan
+progress, assumptions, and blockers. It can return a plan critique, progress
+audit, blocker analysis, or assumption review. Its report must identify the
+evidence, uncertainty, and items that require Sol or user action.
+
+The Research Critic is read-only and advisory. It cannot edit files, run
+tests or providers, accept or reject a candidate, authorize scope, change a
+packet, replace Sol, Terra, or Luna, publish, push, merge, or integrate. It
+is not a packet lane. The Owner Orchestrator, Implementer, and Verification
+Runner remain the only packet lanes.
+
 This is related to the advisor/worker pattern demonstrated by
 [Sol Advisor](https://sol-advisor.space/getting-started.html), which uses a
 primary Sol task and companion implementation or Luna task lanes. This
