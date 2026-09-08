@@ -25,7 +25,7 @@ the [External Critique Handoff](Project_Obsidian_Vault/40_Coordination/Instructi
 | --- | --- |
 | [tools/research_intake.py](tools/research_intake.py), [tools/research_organizer.py](tools/research_organizer.py) | Preserve and map source evidence without promotion. |
 | [tools/agent_work_selection_audit.py](tools/agent_work_selection_audit.py), [agent_to_agent_plan_handoff.py](tools/agent_to_agent_plan_handoff.py) | Create frozen-baseline advisory selection and critique records; optionally capture an explicitly configured external-model response. |
-| [tools/owner_scoped_orchestration.py](tools/owner_scoped_orchestration.py) | Classify, bind, validate, and immutably record complete Sol/Terra/Luna packet and receipt lifecycles without model invocation. |
+| [tools/owner_scoped_orchestration.py](tools/owner_scoped_orchestration.py) | Classify, bind, validate, and immutably record Sol/Terra/Luna packet and receipt lifecycles without model invocation; validate optional read-only Astra advisory identity evidence. |
 | [tools/test_runner.py](tools/test_runner.py), [source_doc_audit.py](tools/source_doc_audit.py), [vault_maintainer.py](tools/vault_maintainer.py) | Execute lifecycle tests, audit public source, and maintain safe navigation. |
 | [tools/origin_reconciler.py](tools/origin_reconciler.py), [capability_status.py](tools/capability_status.py), [export_agent_thread_continuity.py](tools/export_agent_thread_continuity.py) | Report delivery facts, maturity evidence, and complete bounded continuity archives. |
 | [tools/tool_parity.py](tools/tool_parity.py), [configs/tool_parity_v1.json](configs/tool_parity_v1.json) | Require an explicit complete counterpart, generic adaptation, or product-specific exclusion for every reference tool. |

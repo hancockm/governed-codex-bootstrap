@@ -29,6 +29,7 @@ def _repo(tmp_path: Path) -> Path:
         "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
         "roles/shared/IMPLEMENTER_PROMPT.md",
         "roles/shared/VERIFICATION_RUNNER_PROMPT.md",
+        "roles/shared/RESEARCH_CRITIC_PROMPT.md",
         "roles/core/orchestration_profile.json",
         "future_owners/example-feature-owner/orchestration_profile.json",
         "future_owners/owner-template/orchestration_profile.json",
@@ -116,6 +117,21 @@ def _sol(packet: dict[str, object]) -> dict[str, object]:
     return {"schema_version": orchestration.SOL_DISPOSITION_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "model": {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"}, "disposition": "analysis complete", "residual_issues": [], "outcome": "passed"}
 
 
+def _research_critic_invocation() -> dict[str, object]:
+    """Return one valid optional, host-recorded Astra advisory invocation."""
+
+    model = {"model": "gpt-6-astra", "reasoning_effort": "high"}
+    return {
+        "schema_version": orchestration.RESEARCH_CRITIC_INVOCATION_SCHEMA,
+        "owner": "core",
+        "invoker": "owner_orchestrator",
+        "model": model,
+        "requested_outputs": ["plan_critique"],
+        "actions": ["inspect"],
+        "host_turn_context": {"source": "host_recorded", "role": "research_critic", "model": model},
+    }
+
+
 def _archive_acknowledgment(manifest: dict[str, object]) -> dict[str, object]:
     payload = {
         "schema_version": orchestration.ARCHIVE_ACKNOWLEDGMENT_SCHEMA,
@@ -196,7 +212,69 @@ def test_registry_and_exact_sol_prompt_composition(tmp_path: Path) -> None:
     assert composition["shared_implementer_base"] == "roles/shared/IMPLEMENTER_PROMPT.md"
     assert composition["shared_runner_base"] == "roles/shared/VERIFICATION_RUNNER_PROMPT.md"
     assert composition["shared_prompt_templates"] == registry["prompt_templates"]
+    assert composition["research_critic"] == {
+        "optional": True,
+        "shared_base": "roles/shared/RESEARCH_CRITIC_PROMPT.md",
+        "invoker": "owner_orchestrator",
+        "model": {"model": "gpt-6-astra", "reasoning_effort": "high"},
+        "host_turn_context": {"source": "host_recorded", "required_fields": ["role", "model"]},
+    }
     assert (composition["owner"], composition["git_owner"], composition["branch_prefix"]) == ("core", "core", "core/")
+
+
+def test_research_critic_is_optional_read_only_and_has_host_recorded_identity(tmp_path: Path) -> None:
+    root = _repo(tmp_path)
+    registry = orchestration.load_registry(root)
+    contract = registry["advisory_roles"]["research_critic"]
+    assert registry["support_roles"] == ["review", "handoff", "research_critic"]
+    assert contract["optional"] is True
+    assert contract["invoker"] == "owner_orchestrator"
+    assert contract["model"] == {"model": "gpt-6-astra", "reasoning_effort": "high"}
+    assert contract["forbidden_actions"] == ["edit_files", "run_tests", "run_providers", "accept_candidate", "reject_candidate", "authorize_scope", "change_packet", "replace_owner_orchestrator", "replace_implementer", "replace_verification_runner", "publish", "push", "merge", "integrate"]
+    invocation = _research_critic_invocation()
+    orchestration.validate_research_critic_invocation(invocation, root)
+    for field, value, error in (
+        ("invoker", "implementer", "only by owner orchestrator"),
+        ("model", {"model": "gpt-6-astra", "reasoning_effort": "low"}, "model binding"),
+        ("requested_outputs", ["candidate_acceptance"], "permitted output"),
+        ("actions", ["inspect", "run_tests"], "read-only inspection"),
+        ("host_turn_context", {"source": "agent_reported", "role": "research_critic", "model": invocation["model"]}, "host-recorded"),
+    ):
+        invalid = dict(invocation)
+        invalid[field] = value
+        with pytest.raises(orchestration.OrchestrationError, match=error):
+            orchestration.validate_research_critic_invocation(invalid, root)
+
+
+def test_research_critic_does_not_expand_fixed_packet_lanes(tmp_path: Path) -> None:
+    root = _repo(tmp_path)
+    packet = _packet(root, description="approved bounded work")
+    assert set(packet["lane_models"]) == {"owner_orchestrator", "implementer", "runner"}
+    assert set(packet["responsibilities"]) == {"owner_orchestrator", "implementer", "runner"}
+    assert set(packet["subordinate_task_ids"]) == {"implementer"}
+
+
+def test_research_critic_public_text_is_generic() -> None:
+    """Reject user-specific paths and generic private-project markers."""
+
+    paths = (
+        PROJECT_ROOT / "roles/shared/RESEARCH_CRITIC_PROMPT.md",
+        PROJECT_ROOT / "configs/owner_scoped_orchestration_v1.json",
+        PROJECT_ROOT / "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
+        PROJECT_ROOT / "roles/shared/README.md",
+        PROJECT_ROOT / "docs/OWNER_SCOPED_ORCHESTRATION.md",
+        PROJECT_ROOT / "README.md",
+    )
+    prohibited = (
+        "C:\\Users\\",
+        "/Users/",
+        "/home/",
+        "private_project",
+        "private-project",
+        "private_repository",
+        "private-repository",
+    )
+    assert all(marker not in path.read_text(encoding="utf-8") for path in paths for marker in prohibited)
 
 
 def test_registry_fails_closed_when_a_shared_lane_prompt_is_missing(tmp_path: Path) -> None:

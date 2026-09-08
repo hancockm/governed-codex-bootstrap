@@ -15,6 +15,16 @@ Bindings are exact and fail-closed. No lane silently substitutes a different
 model or reasoning tier. Sol remains user-facing and owns the transcript.
 Terra and Luna return bounded receipts without private reasoning or secrets.
 
+Research Critic is an optional support role. It is not a packet lane and does
+not change candidate acceptance. Sol alone may invoke it as `gpt-6-astra` /
+`high` for
+read-only plan critique, progress audit, blocker analysis, or assumption
+review. The host must record the `research_critic` role and exact model before
+use. It may inspect plans, repository evidence, approved-plan progress,
+assumptions, and blockers. It cannot edit files, run tests or providers,
+accept or reject candidates, authorize scope, change packets, replace Sol,
+Terra, or Luna, publish, push, merge, or integrate.
+
 The Implementer lane has Primary High and Bounded Correction Low task types.
 Sol uses Primary for normal implementation. Low is eligible only for a
 mechanical correction in approved behavior and paths when Sol supplies the
@@ -34,10 +44,15 @@ The registry binds one reusable owner-neutral prompt artifact to each lane:
 - [roles/shared/OWNER_ORCHESTRATOR_PROMPT.md](../roles/shared/OWNER_ORCHESTRATOR_PROMPT.md) for Sol;
 - [roles/shared/IMPLEMENTER_PROMPT.md](../roles/shared/IMPLEMENTER_PROMPT.md) for Terra;
 - [roles/shared/VERIFICATION_RUNNER_PROMPT.md](../roles/shared/VERIFICATION_RUNNER_PROMPT.md) for Luna.
+- [roles/shared/RESEARCH_CRITIC_PROMPT.md](../roles/shared/RESEARCH_CRITIC_PROMPT.md) for optional Astra advisory review.
 
 Each artifact is composed with the exact owner profile and task packet. It
 cannot grant owner-specific authority or weaken repository policy. Missing or
 unregistered templates make owner orchestration invalid.
+
+The registry keeps the three packet lane keys unchanged: Owner Orchestrator,
+Implementer, and Verification Runner. Research Critic composition metadata is
+separate and optional.
 
 ## Risk Tiers
 

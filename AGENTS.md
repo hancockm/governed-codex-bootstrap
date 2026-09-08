@@ -306,6 +306,15 @@ Verification Runner (Luna) independently verifies exact checkpoint commits and
 the final candidate without repository writes. Required model bindings and
 risk escalation are fail-closed; no silent substitution is allowed.
 
+Research Critic (Astra) is an optional support role, not a packet lane. Sol
+alone may invoke it as `gpt-6-astra`/`high` after the host records its role and
+model identity. It may inspect plans, repository evidence, approved-plan
+progress, assumptions, and blockers. It may return plan critique, progress
+audit, blocker analysis, or assumption review. It is read-only and advisory.
+It cannot edit files, run tests or providers, accept or reject a candidate,
+authorize scope, change a packet, replace Sol/Terra/Luna, publish, push,
+merge, or integrate.
+
 **Required category-slice directive:** If an approved plan contains multiple
 implementation categories, Sol must divide the Primary work into ordered
 category slices before dispatch. One category slice covers one coherent

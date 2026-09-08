@@ -19,6 +19,18 @@
     "implementer": "roles/shared/IMPLEMENTER_PROMPT.md",
     "runner": "roles/shared/VERIFICATION_RUNNER_PROMPT.md"
   },
+  "advisory_roles": {
+    "research_critic": {
+      "optional": true,
+      "invoker": "owner_orchestrator",
+      "model": {"model": "gpt-6-astra", "reasoning_effort": "high"},
+      "prompt_template": "roles/shared/RESEARCH_CRITIC_PROMPT.md",
+      "permitted_inspection": ["plans", "repository_evidence", "approved_plan_progress", "assumptions", "blockers"],
+      "permitted_outputs": ["plan_critique", "progress_audit", "blocker_analysis", "assumption_review"],
+      "forbidden_actions": ["edit_files", "run_tests", "run_providers", "accept_candidate", "reject_candidate", "authorize_scope", "change_packet", "replace_owner_orchestrator", "replace_implementer", "replace_verification_runner", "publish", "push", "merge", "integrate"],
+      "host_turn_context": {"source": "host_recorded", "required_fields": ["role", "model"]}
+    }
+  },
   "git": {
     "canonical_remote": "origin",
     "canonical_branch": "master",
@@ -80,5 +92,5 @@
     }
   },
   "aliases": {"application": "core", "operations": "core", "runtime": "core"},
-  "support_roles": ["review", "handoff"]
+  "support_roles": ["review", "handoff", "research_critic"]
 }

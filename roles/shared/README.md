@@ -13,6 +13,8 @@ reference without copying into each role.
   local-candidate, receipt, and non-publication rules.
 - [VERIFICATION_RUNNER_PROMPT.md](VERIFICATION_RUNNER_PROMPT.md) defines Luna's saved-project, exact-candidate,
   read-only verification and receipt rules.
+- [RESEARCH_CRITIC_PROMPT.md](RESEARCH_CRITIC_PROMPT.md) defines Astra's optional, Sol-invoked, read-only
+  advisory review rules.
 
 ## Change Discipline
 
@@ -28,3 +30,6 @@ or receipt schemas.
 The Implementer prompt defines Primary High work and Bounded Correction Low
 work. The registry still has exactly three lane keys: Owner Orchestrator,
 Implementer, and Verification Runner.
+
+The optional Research Critic is a support role. It is not a packet lane. Sol
+alone may invoke it with host-recorded role and model evidence.

@@ -40,6 +40,7 @@ IMPLEMENTER_RECEIPT_SCHEMA = "owner_scoped_implementer_receipt_v3"
 RUNNER_BINDING_SCHEMA = "owner_scoped_runner_binding_v5"
 RUNNER_RECEIPT_SCHEMA = "owner_scoped_runner_receipt_v2"
 SOL_DISPOSITION_SCHEMA = "owner_scoped_sol_disposition_v1"
+RESEARCH_CRITIC_INVOCATION_SCHEMA = "owner_scoped_research_critic_invocation_v1"
 RECORD_SCHEMA = "owner_scoped_orchestration_record_v3"
 ARCHIVE_MANIFEST_SCHEMA = "owner_scoped_subordinate_archive_manifest_v3"
 ARCHIVE_ACKNOWLEDGMENT_SCHEMA = "owner_scoped_subordinate_archive_acknowledgment_v2"
@@ -77,6 +78,7 @@ LUNA_FULL_COMMAND = "python tools/test_runner.py full"
 IMPLEMENTER_KEYS = frozenset({"schema_version", "owner", "task_id", "packet_hash", "implementer_type", "subordinate_task_id", "model", "base_candidate_commit", "candidate_commit", "changed_paths", "actions", "checks", "residual_issues", "outcome"})
 RUNNER_KEYS = frozenset({"schema_version", "owner", "task_id", "packet_hash", "runner_binding_hash", "model", "candidate_commit", "actions", "checks", "environment_preflight", "git_status", "reconciler_evidence", "diagnostics", "residual_issues", "outcome"})
 SOL_KEYS = frozenset({"schema_version", "owner", "task_id", "packet_hash", "model", "disposition", "residual_issues", "outcome"})
+RESEARCH_CRITIC_INVOCATION_KEYS = frozenset({"schema_version", "owner", "invoker", "model", "requested_outputs", "actions", "host_turn_context"})
 PACKET_KEYS = frozenset({"schema_version", "owner", "task_id", "user_approval_ref", "task_description", "baseline", "branch", "worktree", "allowed_paths", "prohibited_paths", "lane_models", "owner_profile_ref", "owner_profile_hash", "evidence_refs", "focused_checks", "broad_checks", "runner_checks", "responsibilities", "git_requirements", "continuity_requirements", "classification", "subordinate_task_ids", "canonical_hash"})
 PACKET_RESPONSIBILITIES = {"owner_orchestrator": "classify and publish", "implementer": "typed bounded candidate only", "runner": "inspect and test only"}
 IMPLEMENTER_TYPES = ("primary", "bounded_correction")
@@ -138,6 +140,7 @@ def load_registry(repo: str | Path | None = None) -> dict[str, Any]:
         raise OrchestrationError("registry aliases must be non-colliding registered-owner aliases")
     _require_lane_bindings(value)
     _require_prompt_templates(value, root)
+    _require_research_critic(value, root)
     _require_subordinate_lifecycle(value)
     _require_test_lifecycle(value)
     load_runner_channel_workaround(root)
@@ -314,6 +317,57 @@ def _require_prompt_templates(registry: Mapping[str, Any], root: Path) -> None:
             raise OrchestrationError(f"shared prompt template is missing for {lane}")
 
 
+def _require_research_critic(registry: Mapping[str, Any], root: Path) -> None:
+    """Require the optional Astra advisory role without expanding packet lanes."""
+
+    expected = {
+        "optional": True,
+        "invoker": "owner_orchestrator",
+        "model": {"model": "gpt-6-astra", "reasoning_effort": "high"},
+        "prompt_template": "roles/shared/RESEARCH_CRITIC_PROMPT.md",
+        "permitted_inspection": ["plans", "repository_evidence", "approved_plan_progress", "assumptions", "blockers"],
+        "permitted_outputs": ["plan_critique", "progress_audit", "blocker_analysis", "assumption_review"],
+        "forbidden_actions": ["edit_files", "run_tests", "run_providers", "accept_candidate", "reject_candidate", "authorize_scope", "change_packet", "replace_owner_orchestrator", "replace_implementer", "replace_verification_runner", "publish", "push", "merge", "integrate"],
+        "host_turn_context": {"source": "host_recorded", "required_fields": ["role", "model"]},
+    }
+    advisory_roles = registry.get("advisory_roles")
+    if not isinstance(advisory_roles, dict) or set(advisory_roles) != {"research_critic"}:
+        raise OrchestrationError("registry must define exactly one optional research critic")
+    if advisory_roles["research_critic"] != expected:
+        raise OrchestrationError("research critic contract is incomplete")
+    template = _repo_relative_path(root, expected["prompt_template"], "research critic prompt template")
+    if not template.is_file():
+        raise OrchestrationError("shared prompt template is missing for research critic")
+    if registry.get("support_roles") != ["review", "handoff", "research_critic"]:
+        raise OrchestrationError("registry support roles must preserve review, handoff, and research critic")
+
+
+def validate_research_critic_invocation(invocation: Mapping[str, Any], repo: str | Path | None = None) -> None:
+    """Require a read-only, host-recorded Astra advisory invocation by Sol."""
+
+    _require_exact_keys(invocation, RESEARCH_CRITIC_INVOCATION_KEYS, "research critic invocation")
+    registry = load_registry(repo)
+    contract = registry["advisory_roles"]["research_critic"]
+    if invocation.get("schema_version") != RESEARCH_CRITIC_INVOCATION_SCHEMA:
+        raise OrchestrationError("invalid research critic invocation schema")
+    owner_config(str(invocation.get("owner", "")), repo, active=True)
+    if invocation.get("invoker") != contract["invoker"]:
+        raise OrchestrationError("research critic may be invoked only by owner orchestrator")
+    if invocation.get("model") != contract["model"]:
+        raise OrchestrationError("research critic model binding mismatch")
+    if invocation.get("requested_outputs") not in ([item] for item in contract["permitted_outputs"]):
+        raise OrchestrationError("research critic invocation must request one permitted output")
+    if invocation.get("actions") != ["inspect"]:
+        raise OrchestrationError("research critic invocation must be read-only inspection")
+    expected_context = {
+        "source": contract["host_turn_context"]["source"],
+        "role": "research_critic",
+        "model": contract["model"],
+    }
+    if invocation.get("host_turn_context") != expected_context:
+        raise OrchestrationError("research critic requires host-recorded role and model evidence")
+
+
 def _require_subordinate_lifecycle(registry: Mapping[str, Any]) -> None:
     """Require the complete Sol-owned subordinate finalization lifecycle."""
 
@@ -463,12 +517,21 @@ def compose_prompt(owner: str, task_packet: Mapping[str, Any], repo: str | Path 
     root = repository_root(repo)
     profile = load_active_owner_profile(owner, root)
     config = owner_config(owner, root, active=True)
-    templates = load_registry(root)["prompt_templates"]
+    registry = load_registry(root)
+    templates = registry["prompt_templates"]
+    research_critic = registry["advisory_roles"]["research_critic"]
     return {
         "schema_version": "owner_scoped_prompt_composition_v1",
         "shared_sol_base": templates["owner_orchestrator"],
         "shared_implementer_base": templates["implementer"],
         "shared_runner_base": templates["runner"],
+        "research_critic": {
+            "optional": research_critic["optional"],
+            "shared_base": research_critic["prompt_template"],
+            "invoker": research_critic["invoker"],
+            "model": dict(research_critic["model"]),
+            "host_turn_context": dict(research_critic["host_turn_context"]),
+        },
         "shared_prompt_templates": dict(templates),
         "owner": config["name"], "git_owner": config["git_owner"], "branch_prefix": config["branch_prefix"],
         "owner_profile": str(config["profile_path"]),

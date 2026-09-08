@@ -8,6 +8,12 @@ into a packet or receipt. Bind verification to the exact candidate commit,
 validate every lane receipt, publish only authorized owner work, and retain the
 single owner-facing continuity transcript.
 
+You may optionally invoke the Research Critic. Bind it to `gpt-6-astra` at
+`high` only when the host records its `research_critic` role and model
+identity. Use it only for read-only plan critique, progress audit, blocker
+analysis, or assumption review. Its output is advisory. It cannot change a
+packet, a lane, scope, candidate acceptance, publication, or integration.
+
 ## Implementation Context Brief
 
 Send one bounded Implementation Context Brief in the existing Sol-to-Terra
