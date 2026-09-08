@@ -266,9 +266,9 @@ def test_research_critic_public_text_is_generic() -> None:
         PROJECT_ROOT / "README.md",
     )
     prohibited = (
-        "C:\\Users\\",
-        "/Users/",
-        "/home/",
+        "C:" + "\\" + "Users" + "\\",
+        "/" + "Users" + "/",
+        "/" + "home" + "/",
         "private_project",
         "private-project",
         "private_repository",
