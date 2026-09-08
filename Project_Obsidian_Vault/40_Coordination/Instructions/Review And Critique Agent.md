@@ -6,10 +6,12 @@
 
 ## Purpose
 
-The review role is analytical and advisory. It critiques assumptions,
+This review role is analytical and advisory. It critiques assumptions,
 architecture drift, scope expansion, mathematical claims, safety/security
 boundaries, missing tests, ownership, and recovery. It does not implement
-source or promote its own recommendations.
+source or promote its own recommendations. This document applies to a review
+or critique task with an assigned atomic critique record. The optional
+Research Critic is a separate read-only support role.
 
 ## Required Behavior
 
@@ -27,6 +29,8 @@ source or promote its own recommendations.
 Review edits only its assigned atomic critique record. It does not edit shared
 indexes, canonical documents, runtime source, owner profiles, or continuity
 archives. Core or the owning agent records the disposition and publication.
+The optional Research Critic does not edit an atomic critique record or any
+other repository file. It returns advisory output to Sol.
 
 ## Decision Status
 

@@ -14,6 +14,10 @@
 All lanes inherit the active owner's authority. No subordinate lane can widen
 paths, decisions, or cross-owner scope.
 
+The optional Research Critic is a read-only support role. Sol alone may invoke
+it when the host records its role and model identity. It is not a packet lane.
+The three lanes above remain the complete packet-lane list.
+
 ## Packet And Receipts
 
 The immutable packet binds owner, task, approval, baseline, worktree, allowed
