@@ -48,10 +48,10 @@ superseded subordinate tasks are archived only after durable receipt capture,
 delivery, terminal reconciliation, and worktree cleanup.
 
 Closeout records both packet-bound Implementer task dispositions. It records
-an accepted cumulative Bounded Correction Low receipt when that work occurred.
-Otherwise it records the Bounded Correction Low task as unused or
+an accepted cumulative Bounded Correction Light receipt when that work occurred.
+Otherwise it records the Bounded Correction Light task as unused or
 Primary-superseded. The Primary receipt starts from the packet baseline, and
-an accepted Bounded Correction Low receipt starts from the accepted Primary
+an accepted Bounded Correction Light receipt starts from the accepted Primary
 candidate.
 
 Start at [[30_Core/Continuity/Core Continuity MOC]] and open only the

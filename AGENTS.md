@@ -299,18 +299,27 @@ wide Core canon or another owner's public contract.
 
 ## Owner-Scoped Orchestration
 
-Owner Orchestrator (Sol) controls authority, scope, review, publication, and
-continuity. Implementer (Terra) makes packet-bounded cumulative category
+Owner Orchestrator (Sol High) is the single coordinator and execution owner.
+Sol controls authority, scope, review, publication, and continuity. No second
+decision owner exists above Sol. An actual host spawn parent is delivery
+context, not decision authority. Do not invent a spawn relation or routing
+evidence. Implementer (Terra Medium) makes packet-bounded cumulative category
 checkpoints and one final candidate when the plan has multiple categories.
-Verification Runner (Luna) independently verifies exact checkpoint commits and
-the final candidate without repository writes. Required model bindings and
+Verification Runner (Luna Medium) independently verifies exact checkpoint
+commits and the final candidate without repository writes. Required model bindings and
 risk escalation are fail-closed; no silent substitution is allowed.
 
-Research Critic (Astra) is an optional support role, not a packet lane. Sol
-alone may invoke it as `gpt-6-astra`/`high` after the host records its role and
-model identity. It may inspect plans, repository evidence, approved-plan
-progress, assumptions, and blockers. It may return plan critique, progress
-audit, blocker analysis, or assumption review. It is read-only and advisory.
+Research Critic (Astra High) is an optional support role, not a packet lane.
+Sol alone may invoke it after the host records its role and model identity.
+Sol must identify a concrete evidence gap or contradiction and send one
+bounded question. The question includes relevant evidence, failed approaches,
+and the decision that Sol needs. Do not route routine progress to Astra. Do not
+repeat diagnosis through Astra unless Sol identifies new missing evidence or a
+contradiction. Astra returns its recommendation and uncertainty to Sol, gets a
+delivery acknowledgment, and ends its turn. It may inspect plans, repository
+evidence, approved-plan progress, assumptions, and blockers. It may return plan
+critique, progress audit, blocker analysis, or assumption review. It is
+read-only and advisory.
 It cannot edit files, run tests or providers, accept or reject a candidate,
 authorize scope, change a packet, replace Sol/Terra/Luna, publish, push,
 merge, or integrate.
@@ -386,17 +395,29 @@ reports the conflict to Sol. Sol may correct the brief within approved scope.
 New user approval is required only when the correction changes scope, a public
 contract, a default, or safety behavior.
 
-The Implementer lane has two fixed task types. Primary uses
-`gpt-5.6-terra`/`high`. Bounded Correction uses `gpt-5.6-terra`/`low` only for
-an exact mechanical correction inside approved behavior and paths. Low is
+The Implementer lane has two fixed task types. Primary uses Terra Medium.
+Bounded Correction uses Terra Light with backend `low` only for an exact
+mechanical correction inside approved behavior and paths. A diagnosed failure
+and its existing witness are required. Light is
 eligible only when Sol supplies the final exact replacement text and exact
 insertion, replacement, or removal location, and no reordering, semantic,
 audience, relationship, or prose choice remains. If a correction changes a
 public contract, default, safety, persistence, migration, security, privacy,
 mathematics, ownership, dependency, or architecture, Sol returns work to the
 existing Primary task. The packet binds both Implementer task IDs. Luna uses
-the accepted Low candidate when present. Otherwise Luna uses the Primary
+the accepted Light candidate when present. Otherwise Luna uses the Primary
 candidate.
+
+Each subordinate task sends blocked-or-decision-needed and completion
+notifications to its assigned parent and requires delivery acknowledgment.
+After dispatch or return, end the idle turn. Do not keep an idle wait loop.
+Monitoring targets Sol, stays quiet when state is unchanged, and serves only
+as a fallback for a missed required notification.
+
+Use existing task and receipt reports to state available host-recorded usage,
+observed repeated diagnosis, avoidable resumptions, and correction-cycle
+evidence. If usage is unavailable, say that it is unavailable. Do not invent
+per-lane usage attribution or add telemetry machinery.
 
 After implementation, Sol reads each changed narrative document in full
 against the baseline. Sol checks audience, placement, hierarchy, flow, links,
@@ -444,7 +465,7 @@ configured model and reasoning effort. A runner-channel or task-ID mismatch is
 For every full-team cycle, use this mandatory Luna lifecycle in order:
 
 1. Create one fresh Luna chat inside the matching saved project.
-2. Bind `gpt-5.6-luna` at `xhigh`.
+2. Bind Luna Medium as registered.
 3. Retain and reuse that exact thread ID for every verification and reverification in the cycle.
 4. Explicitly reassert the model and reasoning effort on every continuation.
 5. Archive only after receipt capture, push/integration, primary synchronization, terminal reconciliation, worktree removal, and finalization.

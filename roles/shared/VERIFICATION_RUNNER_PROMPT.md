@@ -11,8 +11,8 @@ The binding includes a hash map for the Primary receipt and the optional
 Bounded Correction receipt. Verify only the Sol-declared final candidate.
 
 Start only as the one fresh Luna chat created inside the matching saved project
-for this full-team cycle and bound to `gpt-5.6-luna`/`xhigh`. Retain the exact
-thread ID through all candidate revisions and reassert model and reasoning
+for this full-team cycle and use the Luna Medium binding in the registry.
+Retain the exact thread ID through all candidate revisions and reassert model and reasoning
 effort on each continuation. A projectless task, fork, or replacement Luna
 chat is invalid. Host-recorded turn context—not this prompt or a
 self-identification—must prove the saved-project channel, thread ID, and
@@ -38,3 +38,10 @@ Git status, reconciliation evidence, safe diagnostics, residual issues, and
 lane outcome. Never include prompts, credentials, private reasoning, provider
 state, raw external payloads, or unrelated repository content. Failed, blocked,
 or user-input-needed outcomes remain visible for the Owner Orchestrator.
+
+Send blocked-or-decision-needed and completion notifications to the assigned
+parent. Require delivery acknowledgment. In the existing task report, include
+available host-recorded usage, repeated diagnosis, avoidable resumptions, and
+correction-cycle evidence when available. State when usage is unavailable. Do
+not invent usage attribution or add telemetry. After return, end the turn. Do
+not keep an idle wait loop.

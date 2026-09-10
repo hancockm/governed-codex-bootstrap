@@ -41,9 +41,9 @@ owner adopts the four documents and Core integrates the activation evidence.
 ## Owner-Scoped Orchestration
 
 Approved Core implementation uses the active Core orchestration profile. Sol
-owns scope, publication, and continuity; Terra writes only the packet-bounded
-candidate; Luna verifies the exact candidate read-only in one saved-project
-reusable chat. Core remains the sole primary-branch integrator. Profiles and
+is the single coordinator and execution owner. Sol owns scope, publication,
+and continuity. Terra writes only the packet-bounded candidate. Luna verifies
+the exact candidate read-only in one saved-project reusable chat. Core remains the sole primary-branch integrator. Profiles and
 branch names identify owners but do not grant file authority: packets and
 changed paths must resolve through the permanent path-ownership registry.
 

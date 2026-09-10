@@ -452,13 +452,36 @@ def check_repository(root: Path) -> list[str]:
             failures.append("codex-bootstrap: public Git research boundary is incomplete")
     failures.extend(validate_owner_profiles(root, owners))
     orchestration = _load(root, "configs/owner_scoped_orchestration_v1.json")
-    expected_bindings = {"owner_orchestrator": ("gpt-5.6-sol", "xhigh"), "runner": ("gpt-5.6-luna", "xhigh")}
-    for lane, (model, reasoning) in expected_bindings.items():
-        binding = orchestration.get("model_binding", {}).get(lane, {})
-        if binding.get("model") != model or binding.get("reasoning_effort") != reasoning:
+    bindings = orchestration.get("model_binding", {})
+    if not isinstance(bindings, dict) or set(bindings) != {"enforcement", "owner_orchestrator", "implementer", "runner"} or bindings.get("enforcement") != "fail_closed":
+        failures.append("orchestration: fail-closed model binding structure is incomplete")
+        bindings = {}
+    for lane in ("owner_orchestrator", "runner"):
+        binding = bindings.get(lane, {})
+        if not isinstance(binding, dict) or set(binding) != {"model", "reasoning_effort"} or any(not isinstance(item, str) or not item for item in binding.values()):
             failures.append(f"orchestration: exact {lane} model binding is missing")
-    if orchestration.get("model_binding", {}).get("implementer") != {"default_type": "primary", "types": {"primary": {"model": "gpt-5.6-terra", "reasoning_effort": "high"}, "bounded_correction": {"model": "gpt-5.6-terra", "reasoning_effort": "low"}}}:
+    implementer = bindings.get("implementer", {})
+    implementer_types = implementer.get("types", {}) if isinstance(implementer, dict) else {}
+    if not isinstance(implementer, dict) or not isinstance(implementer_types, dict) or set(implementer) != {"default_type", "types"} or implementer.get("default_type") != "primary" or set(implementer_types) != {"primary", "bounded_correction"} or any(not isinstance(binding, dict) or set(binding) != {"model", "reasoning_effort"} or any(not isinstance(item, str) or not item for item in binding.values()) for binding in implementer_types.values()):
         failures.append("orchestration: exact typed implementer model binding is missing")
+    expected_coordination = {
+        "decision_owner": "owner_orchestrator",
+        "spawn_parent": {"decision_authority": "none", "evidence": "host_recorded_only"},
+        "notifications": {"target": "assigned_parent", "required_events": ["blocked_or_decision_needed", "completion"], "delivery_acknowledgment_required": True},
+        "idle_turns": {"after_dispatch": "end_turn", "after_return": "end_turn", "wait_loops": "forbidden"},
+        "monitoring": {"target": "owner_orchestrator", "unchanged_state": "quiet", "purpose": "missed_notification_fallback"},
+    }
+    if orchestration.get("coordination") != expected_coordination:
+        failures.append("orchestration: single-owner coordination contract is incomplete")
+    expected_reporting = {
+        "surface": "existing_task_and_receipt_reports",
+        "items": ["available_usage", "repeated_diagnosis", "avoidable_resumptions", "correction_cycle_evidence"],
+        "usage_source": "host_recorded_when_available",
+        "unavailable_usage": "report_unavailable_without_attribution",
+        "new_telemetry": "forbidden",
+    }
+    if orchestration.get("reporting") != expected_reporting:
+        failures.append("orchestration: bounded reporting contract is incomplete")
     expected_prompts = {
         "owner_orchestrator": "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
         "implementer": "roles/shared/IMPLEMENTER_PROMPT.md",

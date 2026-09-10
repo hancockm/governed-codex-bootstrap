@@ -2,6 +2,8 @@
 
 Use [Project_Obsidian_Vault/30_Core/Core Bootstrap.md](../../Project_Obsidian_Vault/30_Core/Core%20Bootstrap.md) as the complete cold-
 start and rehydration prompt. This file is the stable role-level pointer.
+Start the Core owner with the registered Sol High binding. Do not start Astra
+as the owner. Astra remains optional, read-only support invoked only by Sol.
 
 Required order:
 

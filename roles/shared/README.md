@@ -27,9 +27,11 @@ message. Terra uses the Implementer prompt to reorient to the repository and
 each target document before narrative edits. The brief does not change packet
 or receipt schemas.
 
-The Implementer prompt defines Primary High work and Bounded Correction Low
-work. The registry still has exactly three lane keys: Owner Orchestrator,
+The Implementer prompt defines Primary Medium work and Bounded Correction
+Light work with backend `low`. The registry still has exactly three lane keys: Owner Orchestrator,
 Implementer, and Verification Runner.
 
 The optional Research Critic is a support role. It is not a packet lane. Sol
-alone may invoke it with host-recorded role and model evidence.
+alone may invoke it with host-recorded role and model evidence for one bounded
+evidence gap or contradiction. All subordinate prompts require parent
+notifications and end idle turns after dispatch or return.

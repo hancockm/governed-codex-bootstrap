@@ -4,15 +4,15 @@
   "topology": "hybrid",
   "model_binding": {
     "enforcement": "fail_closed",
-    "owner_orchestrator": {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"},
+    "owner_orchestrator": {"model": "gpt-5.6-sol", "reasoning_effort": "high"},
     "implementer": {
       "default_type": "primary",
       "types": {
-        "primary": {"model": "gpt-5.6-terra", "reasoning_effort": "high"},
+        "primary": {"model": "gpt-5.6-terra", "reasoning_effort": "medium"},
         "bounded_correction": {"model": "gpt-5.6-terra", "reasoning_effort": "low"}
       }
     },
-    "runner": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}
+    "runner": {"model": "gpt-5.6-luna", "reasoning_effort": "medium"}
   },
   "prompt_templates": {
     "owner_orchestrator": "roles/shared/OWNER_ORCHESTRATOR_PROMPT.md",
@@ -28,8 +28,40 @@
       "permitted_inspection": ["plans", "repository_evidence", "approved_plan_progress", "assumptions", "blockers"],
       "permitted_outputs": ["plan_critique", "progress_audit", "blocker_analysis", "assumption_review"],
       "forbidden_actions": ["edit_files", "run_tests", "run_providers", "accept_candidate", "reject_candidate", "authorize_scope", "change_packet", "replace_owner_orchestrator", "replace_implementer", "replace_verification_runner", "publish", "push", "merge", "integrate"],
+      "invocation_triggers": ["evidence_gap", "contradiction"],
+      "question_required_fields": ["relevant_evidence", "failed_approaches", "needed_decision"],
+      "return_required_fields": ["recommendation", "uncertainty"],
+      "return_target": "owner_orchestrator",
+      "after_return": "end_turn",
+      "prohibited_uses": ["routine_progress_routing", "duplicate_diagnosis_without_concrete_gap_or_contradiction"],
       "host_turn_context": {"source": "host_recorded", "required_fields": ["role", "model"]}
     }
+  },
+  "coordination": {
+    "decision_owner": "owner_orchestrator",
+    "spawn_parent": {"decision_authority": "none", "evidence": "host_recorded_only"},
+    "notifications": {
+      "target": "assigned_parent",
+      "required_events": ["blocked_or_decision_needed", "completion"],
+      "delivery_acknowledgment_required": true
+    },
+    "idle_turns": {
+      "after_dispatch": "end_turn",
+      "after_return": "end_turn",
+      "wait_loops": "forbidden"
+    },
+    "monitoring": {
+      "target": "owner_orchestrator",
+      "unchanged_state": "quiet",
+      "purpose": "missed_notification_fallback"
+    }
+  },
+  "reporting": {
+    "surface": "existing_task_and_receipt_reports",
+    "items": ["available_usage", "repeated_diagnosis", "avoidable_resumptions", "correction_cycle_evidence"],
+    "usage_source": "host_recorded_when_available",
+    "unavailable_usage": "report_unavailable_without_attribution",
+    "new_telemetry": "forbidden"
   },
   "git": {
     "canonical_remote": "origin",

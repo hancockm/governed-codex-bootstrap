@@ -78,11 +78,17 @@ LUNA_FULL_COMMAND = "python tools/test_runner.py full"
 IMPLEMENTER_KEYS = frozenset({"schema_version", "owner", "task_id", "packet_hash", "implementer_type", "subordinate_task_id", "model", "base_candidate_commit", "candidate_commit", "changed_paths", "actions", "checks", "residual_issues", "outcome"})
 RUNNER_KEYS = frozenset({"schema_version", "owner", "task_id", "packet_hash", "runner_binding_hash", "model", "candidate_commit", "actions", "checks", "environment_preflight", "git_status", "reconciler_evidence", "diagnostics", "residual_issues", "outcome"})
 SOL_KEYS = frozenset({"schema_version", "owner", "task_id", "packet_hash", "model", "disposition", "residual_issues", "outcome"})
-RESEARCH_CRITIC_INVOCATION_KEYS = frozenset({"schema_version", "owner", "invoker", "model", "requested_outputs", "actions", "host_turn_context"})
+RESEARCH_CRITIC_INVOCATION_KEYS = frozenset({"schema_version", "owner", "invoker", "model", "trigger", "question", "requested_outputs", "actions", "host_turn_context"})
+RESEARCH_CRITIC_QUESTION_KEYS = frozenset({"relevant_evidence", "failed_approaches", "needed_decision"})
 PACKET_KEYS = frozenset({"schema_version", "owner", "task_id", "user_approval_ref", "task_description", "baseline", "branch", "worktree", "allowed_paths", "prohibited_paths", "lane_models", "owner_profile_ref", "owner_profile_hash", "evidence_refs", "focused_checks", "broad_checks", "runner_checks", "responsibilities", "git_requirements", "continuity_requirements", "classification", "subordinate_task_ids", "canonical_hash"})
 PACKET_RESPONSIBILITIES = {"owner_orchestrator": "classify and publish", "implementer": "typed bounded candidate only", "runner": "inspect and test only"}
 IMPLEMENTER_TYPES = ("primary", "bounded_correction")
 IMPLEMENTER_DEFAULT_TYPE = "primary"
+LEGACY_V3_LANE_MODELS = {
+    "owner_orchestrator": {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"},
+    "implementer": {"model": "gpt-5.6-terra", "reasoning_effort": "high"},
+    "runner": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"},
+}
 
 
 class OrchestrationError(RuntimeError):
@@ -141,6 +147,8 @@ def load_registry(repo: str | Path | None = None) -> dict[str, Any]:
     _require_lane_bindings(value)
     _require_prompt_templates(value, root)
     _require_research_critic(value, root)
+    _require_coordination_contract(value)
+    _require_reporting_contract(value)
     _require_subordinate_lifecycle(value)
     _require_test_lifecycle(value)
     load_runner_channel_workaround(root)
@@ -172,7 +180,7 @@ def load_runner_channel_workaround(repo: str | Path | None = None) -> dict[str, 
         raise OrchestrationError("runner channel workaround must remain active until locally verified resolved")
     if value["continuation_requirements"] != ["same_runner_task_id", "repeat_model_and_reasoning_effort"] or value["route_mismatch_outcome"] != "route_integrity_failed":
         raise OrchestrationError("runner channel workaround continuation contract is invalid")
-    if value["ordered_lifecycle"] != ["create_fresh_saved_project_luna_chat", "bind_gpt_5_6_luna_xhigh", "reuse_exact_thread_id_for_verification_and_reverification", "reassert_model_and_reasoning_effort_on_every_continuation", "archive_only_after_receipt_capture_push_integration_primary_sync_terminal_reconciliation_worktree_removal_and_finalization", "keep_failed_blocked_and_user_input_needed_visible"]:
+    if value["ordered_lifecycle"] != ["create_fresh_saved_project_luna_chat", "bind_configured_luna_model_and_reasoning_effort", "reuse_exact_thread_id_for_verification_and_reverification", "reassert_model_and_reasoning_effort_on_every_continuation", "archive_only_after_receipt_capture_push_integration_primary_sync_terminal_reconciliation_worktree_removal_and_finalization", "keep_failed_blocked_and_user_input_needed_visible"]:
         raise OrchestrationError("runner channel workaround lifecycle order is invalid")
     if value["host_turn_context"] != {"source": "host_recorded", "required_fields": ["channel", "project_context", "thread_id", "model"]}:
         raise OrchestrationError("runner channel workaround host turn-context contract is invalid")
@@ -285,23 +293,27 @@ def validate_owner_path_authority(owner: str, paths: Iterable[str], repo: str | 
 
 
 def _require_lane_bindings(registry: Mapping[str, Any]) -> None:
-    expected = {
-        "owner_orchestrator": ("gpt-5.6-sol", "xhigh"),
-        "runner": ("gpt-5.6-luna", "xhigh"),
-    }
+    """Validate binding structure while the registry remains the authority."""
+
     bindings = registry.get("model_binding", {})
-    for lane, (model, effort) in expected.items():
-        configured = bindings.get(lane, {})
-        if configured.get("model") != model or configured.get("reasoning_effort") != effort:
+    if not isinstance(bindings, dict) or set(bindings) != {"enforcement", "owner_orchestrator", "implementer", "runner"}:
+        raise OrchestrationError("model binding must define the three execution lanes")
+    if bindings.get("enforcement") != "fail_closed":
+        raise OrchestrationError("model binding enforcement must fail closed")
+    for lane in ("owner_orchestrator", "runner"):
+        configured = bindings.get(lane)
+        if not isinstance(configured, dict) or set(configured) != {"model", "reasoning_effort"} or any(not isinstance(item, str) or not item for item in configured.values()):
             raise OrchestrationError(f"invalid fail-closed model binding for {lane}")
     implementer = bindings.get("implementer", {})
-    if set(implementer) != {"default_type", "types"} or implementer.get("default_type") != IMPLEMENTER_DEFAULT_TYPE:
+    if not isinstance(implementer, dict) or set(implementer) != {"default_type", "types"} or implementer.get("default_type") != IMPLEMENTER_DEFAULT_TYPE:
         raise OrchestrationError("implementer binding must declare the primary default type")
-    if implementer.get("types") != {
-        "primary": {"model": "gpt-5.6-terra", "reasoning_effort": "high"},
-        "bounded_correction": {"model": "gpt-5.6-terra", "reasoning_effort": "low"},
-    }:
+    types = implementer.get("types")
+    if not isinstance(types, dict) or set(types) != set(IMPLEMENTER_TYPES):
         raise OrchestrationError("implementer type bindings are incomplete")
+    for name in IMPLEMENTER_TYPES:
+        configured = types[name]
+        if not isinstance(configured, dict) or set(configured) != {"model", "reasoning_effort"} or any(not isinstance(item, str) or not item for item in configured.values()):
+            raise OrchestrationError("implementer type bindings are incomplete")
 
 
 def _require_prompt_templates(registry: Mapping[str, Any], root: Path) -> None:
@@ -320,26 +332,72 @@ def _require_prompt_templates(registry: Mapping[str, Any], root: Path) -> None:
 def _require_research_critic(registry: Mapping[str, Any], root: Path) -> None:
     """Require the optional Astra advisory role without expanding packet lanes."""
 
-    expected = {
-        "optional": True,
-        "invoker": "owner_orchestrator",
-        "model": {"model": "gpt-6-astra", "reasoning_effort": "high"},
-        "prompt_template": "roles/shared/RESEARCH_CRITIC_PROMPT.md",
-        "permitted_inspection": ["plans", "repository_evidence", "approved_plan_progress", "assumptions", "blockers"],
-        "permitted_outputs": ["plan_critique", "progress_audit", "blocker_analysis", "assumption_review"],
-        "forbidden_actions": ["edit_files", "run_tests", "run_providers", "accept_candidate", "reject_candidate", "authorize_scope", "change_packet", "replace_owner_orchestrator", "replace_implementer", "replace_verification_runner", "publish", "push", "merge", "integrate"],
-        "host_turn_context": {"source": "host_recorded", "required_fields": ["role", "model"]},
-    }
     advisory_roles = registry.get("advisory_roles")
     if not isinstance(advisory_roles, dict) or set(advisory_roles) != {"research_critic"}:
         raise OrchestrationError("registry must define exactly one optional research critic")
-    if advisory_roles["research_critic"] != expected:
+    contract = advisory_roles["research_critic"]
+    if not isinstance(contract, dict) or set(contract) != {
+        "optional", "invoker", "model", "prompt_template", "permitted_inspection",
+        "permitted_outputs", "forbidden_actions", "invocation_triggers",
+        "question_required_fields", "return_required_fields", "return_target",
+        "after_return", "prohibited_uses", "host_turn_context",
+    }:
         raise OrchestrationError("research critic contract is incomplete")
-    template = _repo_relative_path(root, expected["prompt_template"], "research critic prompt template")
+    if contract.get("optional") is not True or contract.get("invoker") != "owner_orchestrator":
+        raise OrchestrationError("research critic contract is incomplete")
+    model = contract.get("model")
+    if not isinstance(model, dict) or set(model) != {"model", "reasoning_effort"} or any(not isinstance(item, str) or not item for item in model.values()):
+        raise OrchestrationError("research critic model binding is invalid")
+    expected_lists = {
+        "permitted_inspection": ["plans", "repository_evidence", "approved_plan_progress", "assumptions", "blockers"],
+        "permitted_outputs": ["plan_critique", "progress_audit", "blocker_analysis", "assumption_review"],
+        "forbidden_actions": ["edit_files", "run_tests", "run_providers", "accept_candidate", "reject_candidate", "authorize_scope", "change_packet", "replace_owner_orchestrator", "replace_implementer", "replace_verification_runner", "publish", "push", "merge", "integrate"],
+        "invocation_triggers": ["evidence_gap", "contradiction"],
+        "question_required_fields": ["relevant_evidence", "failed_approaches", "needed_decision"],
+        "return_required_fields": ["recommendation", "uncertainty"],
+        "prohibited_uses": ["routine_progress_routing", "duplicate_diagnosis_without_concrete_gap_or_contradiction"],
+    }
+    if any(contract.get(field) != expected for field, expected in expected_lists.items()):
+        raise OrchestrationError("research critic contract is incomplete")
+    if contract.get("return_target") != "owner_orchestrator" or contract.get("after_return") != "end_turn" or contract.get("host_turn_context") != {"source": "host_recorded", "required_fields": ["role", "model"]}:
+        raise OrchestrationError("research critic return contract is incomplete")
+    template = _repo_relative_path(root, contract.get("prompt_template"), "research critic prompt template")
     if not template.is_file():
         raise OrchestrationError("shared prompt template is missing for research critic")
     if registry.get("support_roles") != ["review", "handoff", "research_critic"]:
         raise OrchestrationError("registry support roles must preserve review, handoff, and research critic")
+
+
+def _require_coordination_contract(registry: Mapping[str, Any]) -> None:
+    """Require one Sol decision owner and bounded host coordination."""
+
+    expected = {
+        "decision_owner": "owner_orchestrator",
+        "spawn_parent": {"decision_authority": "none", "evidence": "host_recorded_only"},
+        "notifications": {
+            "target": "assigned_parent",
+            "required_events": ["blocked_or_decision_needed", "completion"],
+            "delivery_acknowledgment_required": True,
+        },
+        "idle_turns": {"after_dispatch": "end_turn", "after_return": "end_turn", "wait_loops": "forbidden"},
+        "monitoring": {"target": "owner_orchestrator", "unchanged_state": "quiet", "purpose": "missed_notification_fallback"},
+    }
+    if registry.get("coordination") != expected:
+        raise OrchestrationError("registry coordination contract is incomplete")
+
+
+def _require_reporting_contract(registry: Mapping[str, Any]) -> None:
+    """Require bounded reporting without new telemetry or false attribution."""
+
+    expected = {
+        "surface": "existing_task_and_receipt_reports",
+        "items": ["available_usage", "repeated_diagnosis", "avoidable_resumptions", "correction_cycle_evidence"],
+        "usage_source": "host_recorded_when_available",
+        "unavailable_usage": "report_unavailable_without_attribution",
+        "new_telemetry": "forbidden",
+    }
+    if registry.get("reporting") != expected:
+        raise OrchestrationError("registry reporting contract is incomplete")
 
 
 def validate_research_critic_invocation(invocation: Mapping[str, Any], repo: str | Path | None = None) -> None:
@@ -355,6 +413,16 @@ def validate_research_critic_invocation(invocation: Mapping[str, Any], repo: str
         raise OrchestrationError("research critic may be invoked only by owner orchestrator")
     if invocation.get("model") != contract["model"]:
         raise OrchestrationError("research critic model binding mismatch")
+    if invocation.get("trigger") not in contract["invocation_triggers"]:
+        raise OrchestrationError("research critic requires a concrete evidence gap or contradiction")
+    question = invocation.get("question")
+    if not isinstance(question, dict) or frozenset(question) != RESEARCH_CRITIC_QUESTION_KEYS:
+        raise OrchestrationError("research critic question has missing or forbidden fields")
+    evidence = _require_safe_string_list(question.get("relevant_evidence"), "research critic relevant_evidence")
+    failed = _require_safe_string_list(question.get("failed_approaches"), "research critic failed_approaches", allow_empty=True)
+    if len(evidence) > 8 or len(failed) > 8:
+        raise OrchestrationError("research critic question must be bounded")
+    _require_safe_text(question.get("needed_decision"), "research critic needed_decision")
     if invocation.get("requested_outputs") not in ([item] for item in contract["permitted_outputs"]):
         raise OrchestrationError("research critic invocation must request one permitted output")
     if invocation.get("actions") != ["inspect"]:
@@ -531,7 +599,14 @@ def compose_prompt(owner: str, task_packet: Mapping[str, Any], repo: str | Path 
             "invoker": research_critic["invoker"],
             "model": dict(research_critic["model"]),
             "host_turn_context": dict(research_critic["host_turn_context"]),
+            "invocation_triggers": list(research_critic["invocation_triggers"]),
+            "question_required_fields": list(research_critic["question_required_fields"]),
+            "return_required_fields": list(research_critic["return_required_fields"]),
+            "return_target": research_critic["return_target"],
+            "after_return": research_critic["after_return"],
         },
+        "coordination": dict(registry["coordination"]),
+        "reporting": dict(registry["reporting"]),
         "shared_prompt_templates": dict(templates),
         "owner": config["name"], "git_owner": config["git_owner"], "branch_prefix": config["branch_prefix"],
         "owner_profile": str(config["profile_path"]),
@@ -1049,8 +1124,7 @@ def finalize_legacy_v3_closeout(packet: Mapping[str, Any], archive_manifest: Map
     root = repository_root(repo)
     _validate_legacy_v3_closeout_inputs(packet, archive_manifest, archive_acknowledgment, record, delivery_evidence, root)
     profile = load_active_owner_profile(str(packet["owner"]), root)
-    legacy_models = {"owner_orchestrator": _lane_binding(load_registry(root), "owner_orchestrator"), "implementer": _lane_binding(load_registry(root), "implementer", "primary"), "runner": _lane_binding(load_registry(root), "runner")}
-    if packet.get("lane_models") != legacy_models or packet.get("owner_profile_ref") != owner_config(str(packet["owner"]), root, active=True)["profile_path"] or packet.get("owner_profile_hash") != sha256_canonical(profile):
+    if packet.get("lane_models") != LEGACY_V3_LANE_MODELS or packet.get("owner_profile_ref") != owner_config(str(packet["owner"]), root, active=True)["profile_path"] or packet.get("owner_profile_hash") != sha256_canonical(profile):
         raise OrchestrationError("legacy closeout packet model or profile mismatch")
     allowed = _safe_paths(packet.get("allowed_paths", []), "legacy packet allowed path")
     prohibited = _safe_paths(packet.get("prohibited_paths", []), "legacy packet prohibited path")
@@ -1094,8 +1168,7 @@ def _validate_legacy_v3_closeout_inputs(packet: Mapping[str, Any], manifest: Map
     if not isinstance(task_ids, Mapping) or set(task_ids) != {"implementer", "runner"} or not _is_opaque_task_id(task_ids.get("implementer")) or not _is_opaque_task_id(task_ids.get("runner")) or task_ids["implementer"] == task_ids["runner"]:
         raise OrchestrationError("legacy closeout packet task IDs are invalid")
     profile = load_active_owner_profile(str(packet["owner"]), root)
-    legacy_models = {"owner_orchestrator": _lane_binding(load_registry(root), "owner_orchestrator"), "implementer": _lane_binding(load_registry(root), "implementer", "primary"), "runner": _lane_binding(load_registry(root), "runner")}
-    if packet.get("lane_models") != legacy_models or packet.get("owner_profile_ref") != owner_config(str(packet["owner"]), root, active=True)["profile_path"] or packet.get("owner_profile_hash") != sha256_canonical(profile):
+    if packet.get("lane_models") != LEGACY_V3_LANE_MODELS or packet.get("owner_profile_ref") != owner_config(str(packet["owner"]), root, active=True)["profile_path"] or packet.get("owner_profile_hash") != sha256_canonical(profile):
         raise OrchestrationError("legacy closeout packet model or profile mismatch")
     allowed = _safe_paths(packet.get("allowed_paths", []), "legacy packet allowed path")
     prohibited = _safe_paths(packet.get("prohibited_paths", []), "legacy packet prohibited path")
@@ -1129,19 +1202,21 @@ def _validate_legacy_v3_closeout_inputs(packet: Mapping[str, Any], manifest: Map
     for value, label in ((implementer, "implementer receipt"), (runner, "runner receipt")):
         if value.get("owner") != packet["owner"] or value.get("task_id") != packet["task_id"] or value.get("packet_hash") != packet["canonical_hash"]:
             raise OrchestrationError(f"legacy closeout {label} identity mismatch")
-    if implementer.get("model") != _lane_binding(load_registry(root), "implementer", "primary") or implementer.get("candidate_commit") is None or not HEX40.fullmatch(str(implementer.get("candidate_commit"))) or implementer.get("changed_paths") == []:
+    if implementer.get("model") != LEGACY_V3_LANE_MODELS["implementer"] or implementer.get("candidate_commit") is None or not HEX40.fullmatch(str(implementer.get("candidate_commit"))) or implementer.get("changed_paths") == []:
         raise OrchestrationError("legacy closeout High receipt is unsafe")
     changed = _safe_paths(implementer["changed_paths"], "legacy implementer changed path")
     if any(not _path_is_within(path, allowed) for path in changed) or any(_path_is_within(path, prohibited) for path in changed) or set(_string_list(implementer["actions"], "legacy implementer actions")) & IMPLEMENTER_FORBIDDEN_ACTIONS or implementer.get("outcome") != "passed":
         raise OrchestrationError("legacy closeout High receipt actions or paths are unsafe")
     _validate_safe_diagnostics(implementer["residual_issues"], "legacy implementer diagnostics")
     _validate_checks(implementer.get("checks"), [*packet["focused_checks"], TERRA_AFFECTED_COMMAND, *packet["broad_checks"]], "legacy implementer", ordered=True)
-    if binding.get("implementer_receipt_hash") != _payload_hash(implementer) or binding.get("candidate_commit") != implementer["candidate_commit"] or binding.get("runner_task_id") != task_ids["runner"] or binding.get("runner_model") != _lane_binding(load_registry(root), "runner"):
+    if binding.get("implementer_receipt_hash") != _payload_hash(implementer) or binding.get("candidate_commit") != implementer["candidate_commit"] or binding.get("runner_task_id") != task_ids["runner"] or binding.get("runner_model") != LEGACY_V3_LANE_MODELS["runner"]:
         raise OrchestrationError("legacy closeout runner binding mismatch")
-    validate_runner_channel(binding.get("turn_context"), binding["runner_task_id"], task_ids["runner"], binding["runner_model"], root)
+    expected_legacy_context = {"source": "host_recorded", "channel": "saved_project_reusable_chat", "project_context": "matching_saved_project", "thread_id": task_ids["runner"], "model": LEGACY_V3_LANE_MODELS["runner"]}
+    if binding.get("turn_context") != expected_legacy_context:
+        raise OrchestrationError("legacy closeout runner route evidence mismatch")
     if runner.get("runner_binding_hash") != binding.get("canonical_hash") or runner.get("candidate_commit") != implementer["candidate_commit"]:
         raise OrchestrationError("legacy closeout runner receipt mismatch")
-    if runner.get("model") != _lane_binding(load_registry(root), "runner") or runner.get("outcome") != "passed" or set(_string_list(runner["actions"], "legacy runner actions")) & RUNNER_WRITE_ACTIONS:
+    if runner.get("model") != LEGACY_V3_LANE_MODELS["runner"] or runner.get("outcome") != "passed" or set(_string_list(runner["actions"], "legacy runner actions")) & RUNNER_WRITE_ACTIONS:
         raise OrchestrationError("legacy closeout runner actions or model are unsafe")
     _validate_runner_environment(runner["environment_preflight"]); _validate_runner_git_status(runner["git_status"]); _validate_reconciler_evidence(runner["reconciler_evidence"], implementer["candidate_commit"]); _validate_safe_diagnostics(runner["diagnostics"], "legacy runner diagnostics"); _validate_safe_diagnostics(runner["residual_issues"], "legacy runner residual issues")
     _validate_checks(runner.get("checks"), packet["runner_checks"], "legacy runner")

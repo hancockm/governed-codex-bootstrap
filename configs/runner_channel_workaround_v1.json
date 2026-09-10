@@ -11,7 +11,7 @@
   "continuation_requirements": ["same_runner_task_id", "repeat_model_and_reasoning_effort"],
   "ordered_lifecycle": [
     "create_fresh_saved_project_luna_chat",
-    "bind_gpt_5_6_luna_xhigh",
+    "bind_configured_luna_model_and_reasoning_effort",
     "reuse_exact_thread_id_for_verification_and_reverification",
     "reassert_model_and_reasoning_effort_on_every_continuation",
     "archive_only_after_receipt_capture_push_integration_primary_sync_terminal_reconciliation_worktree_removal_and_finalization",

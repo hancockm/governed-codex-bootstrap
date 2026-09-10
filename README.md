@@ -33,7 +33,7 @@ the [External Critique Handoff](Project_Obsidian_Vault/40_Coordination/Instructi
 | [configs/](configs) and [docs/](docs) | Machine policy plus operational runbooks. |
 | Folder-local `README.md` files | Explain each maintained directory, significant artifact, generated-content boundary, and change rule at the point of use. |
 
-The cold start is research intake and organization; Core canonicalization; advisory selection audit and plan handoff; user approval; Sol packet classification; Terra candidate; one reused saved-project Luna task through corrections; authorized integration; Core synchronization; continuity export; then Sol finalization/archive acknowledgment.
+The cold start begins with the Core owner on Sol High, not Astra. The sequence is research intake and organization; Core canonicalization; advisory selection audit and plan handoff; user approval; Sol packet classification; Terra candidate; one reused saved-project Luna task through corrections; authorized integration; Core synchronization; continuity export; then Sol finalization/archive acknowledgment.
 
 ## Create a new role from Core
 
@@ -158,11 +158,27 @@ The state order is enforced by the repository conformance test: research must ex
 
 ## Operational workflow
 
-1. **Sol** deterministically classifies change risk and creates a work packet.
-2. **Terra** performs bounded tracked work, runs focused/failed/affected/broad checks, and makes a local candidate commit.
-3. **Luna** validates that exact candidate once per implementation cycle and reuses that same task for every correction/reverification. It must be created inside the saved project (a projectless task is invalid). Its receipt binds the candidate and project/task identity; it is never an archive acknowledgment. It never commits or integrates.
+1. **Sol High** is the single coordinator and execution owner. It deterministically classifies change risk and creates a work packet.
+2. **Terra Primary Medium** performs bounded tracked work, runs focused/failed/affected/broad checks, and makes a local candidate commit. **Terra Bounded Correction Light** uses backend `low` only for an exact diagnosed correction with an existing witness.
+3. **Luna Medium** validates that exact candidate once per implementation cycle and reuses that same task for every correction/reverification. It must be created inside the saved project (a projectless task is invalid). Its receipt binds the candidate and project/task identity; it is never an archive acknowledgment. It never commits or integrates.
 4. A failed full run returns to serial failed triage; it does not repeatedly launch the parallel suite.
 5. Sol creates the separate subordinate archive/finalization acknowledgment only after an accepted exact-candidate receipt, no correction pending, commit/push/integration, primary-branch synchronization, terminal reconciliation, and worktree cleanup. Failed, blocked, and user-input-needed tasks remain visible. Core performs the bounded integration check and exports the owning continuity transcript.
+
+Astra High is optional and read-only. Sol sends Astra one bounded question only
+for a concrete evidence gap or contradiction. The question includes relevant
+evidence, failed approaches, and the needed decision. Astra returns a
+recommendation and uncertainty to Sol, then ends its turn. A host spawn parent
+does not add decision authority.
+
+Subordinate tasks notify their assigned parent when blocked, when a decision is
+needed, and when complete. They require delivery acknowledgment and do not
+keep idle wait loops. Monitoring targets Sol, stays quiet when state is
+unchanged, and only recovers missed notifications. Existing reports include
+available host-recorded usage, repeated diagnosis, avoidable resumptions, and
+correction-cycle evidence when available. They do not invent usage attribution
+or add telemetry. Repository validators enforce registry and artifact inputs.
+The host remains responsible for task delivery, acknowledgment, end-turn
+behavior, monitoring, and available usage evidence.
 
 [tools/owner_scoped_orchestration.py](tools/owner_scoped_orchestration.py) validates packets, exact lane bindings,
 candidate receipts, runner bindings, correction cycles, and immutable receipt

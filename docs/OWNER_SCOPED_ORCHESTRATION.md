@@ -7,31 +7,56 @@ active owner. It is distinct from any runtime application orchestrator.
 
 | Lane | Binding | Responsibility | Repository writes |
 | --- | --- | --- | --- |
-| Owner Orchestrator | Sol / `xhigh` | Authority, scope, review, publication, continuity | Owner publication and closeout |
-| Implementer | Terra Primary / `high`; Bounded Correction / `low` | Packet-bounded implementation and focused checks | Candidate worktree and local commit |
-| Verification Runner | Luna / `xhigh` | Independent exact-candidate verification | None |
+| Owner Orchestrator | Sol High | Single coordination, execution ownership, review, publication, continuity | Owner publication and closeout |
+| Implementer | Terra Primary Medium; Bounded Correction Light with backend `low` | Packet-bounded implementation and focused checks | Candidate worktree and local commit |
+| Verification Runner | Luna Medium | Independent exact-candidate verification | None |
 
-Bindings are exact and fail-closed. No lane silently substitutes a different
-model or reasoning tier. Sol remains user-facing and owns the transcript.
+Bindings are exact and fail-closed. The registry is the executable model
+authority. No lane silently substitutes a different model or reasoning tier.
+Sol is the only decision owner. An actual host spawn parent records delivery
+context but adds no authority. Routing evidence must come from the host. Sol
+remains user-facing and owns the transcript.
 Terra and Luna return bounded receipts without private reasoning or secrets.
 
-Research Critic is an optional support role. It is not a packet lane and does
-not change candidate acceptance. Sol alone may invoke it as `gpt-6-astra` /
-`high` for
-read-only plan critique, progress audit, blocker analysis, or assumption
-review. The host must record the `research_critic` role and exact model before
-use. It may inspect plans, repository evidence, approved-plan progress,
+Research Critic is an optional Astra High support role. It is not a packet lane
+and does not change candidate acceptance. Sol alone may invoke it for read-only
+plan critique, progress audit, blocker analysis, or assumption review. The host
+must record the `research_critic` role and exact model before use. Sol first
+identifies a concrete evidence gap or contradiction. Sol sends one bounded
+question with relevant evidence, failed approaches, and the needed decision.
+Routine progress and duplicate diagnosis are not valid uses. Astra returns its
+recommendation and uncertainty to Sol, gets delivery acknowledgment, and ends
+its turn. It may inspect plans, repository evidence, approved-plan progress,
 assumptions, and blockers. It cannot edit files, run tests or providers,
 accept or reject candidates, authorize scope, change packets, replace Sol,
 Terra, or Luna, publish, push, merge, or integrate.
 
-The Implementer lane has Primary High and Bounded Correction Low task types.
-Sol uses Primary for normal implementation. Low is eligible only for a
-mechanical correction in approved behavior and paths when Sol supplies the
+The Implementer lane has Primary Medium and Bounded Correction Light task
+types. Light uses backend `low`. Sol uses Primary for normal implementation.
+Light is eligible only for a diagnosed mechanical correction in approved
+behavior and paths when an existing witness is present and Sol supplies the
 final exact replacement text and exact insertion, replacement, or removal
 location. No reordering, semantic, audience, relationship, or prose choice
-may remain. Otherwise Sol returns work to Primary. Luna uses an accepted Low
-candidate only when its Low receipt exists.
+may remain. Otherwise Sol returns work to Primary. Luna uses an accepted Light
+candidate only when its Light receipt exists.
+
+Subordinate tasks notify their assigned parent when they are blocked, need a
+decision, or complete. Delivery acknowledgment is required. After dispatch or
+return, an idle turn ends. Idle wait loops are not permitted. Monitoring
+targets Sol and stays quiet when state is unchanged. It is only a fallback for
+a missed required notification.
+
+Existing task and receipt reports include available host-recorded usage,
+observed repeated diagnosis, avoidable resumptions, and correction-cycle
+evidence when those facts are available. The report states when usage is
+unavailable. It does not invent lane attribution or add telemetry.
+
+The repository validator enforces registry shape, packet and receipt binding,
+the single Sol decision-owner value, Astra invocation triggers and question
+fields, and host-recorded identity input. The host performs task delivery,
+delivery acknowledgment, end-turn behavior, monitoring, and usage reporting.
+Prompt policy requires those host actions. The repository cannot fabricate
+host evidence or enforce an unavailable host capability.
 
 Sol sends one bounded Implementation Context Brief in the existing dispatch
 message to Terra. The brief states the repository purpose and change relation,
@@ -171,7 +196,7 @@ identity mismatch is `route_integrity_failed`, not a successful verification.
 For every full-team cycle, the required lifecycle is:
 
 1. Create one fresh Luna chat inside the matching saved project.
-2. Bind `gpt-5.6-luna` at `xhigh`.
+2. Bind Luna Medium as registered.
 3. Retain and reuse that exact thread ID for every verification and reverification in the cycle.
 4. Explicitly reassert the model and reasoning effort on every continuation.
 5. Archive only after receipt capture, push/integration, primary synchronization, terminal reconciliation, worktree removal, and finalization.
@@ -179,8 +204,8 @@ For every full-team cycle, the required lifecycle is:
 
 No projectless Luna task, fork, or new Luna chat for candidate revisions is
 valid. Binding validation requires host-recorded `turn_context` evidence for
-the saved project, exact thread ID, and `gpt-5.6-luna`/`xhigh`; a self-reported
-agent identity is not route evidence.
+the saved project, exact thread ID, and the registered Luna Medium binding. A
+self-reported agent identity is not route evidence.
 
 Luna is read-only: it may inspect source/diffs/Git state, run tests, and run
 read-only reconciliation checks. It may not edit, stage, commit, push, merge,
@@ -200,9 +225,9 @@ A full-team packet has separate Luna verification checks and is invalid unless
 they contain `python tools/test_runner.py full` exactly once. Sol binds Luna
 only after declaring the exact candidate final. Luna runs that full profile
 once against the bound commit. If it fails, Sol sends an exact mechanical
-correction to the fixed Low task only when the exact Low eligibility condition
-is met. If eligibility is uncertain or the work is not bounded, Sol returns it
-to the existing Primary High task and affected triage, correct the candidate,
+correction to the fixed Light task only when the exact Light eligibility
+condition is met. If eligibility is uncertain or the work is not bounded, Sol
+returns it to the existing Primary Medium task and affected triage, corrects the candidate,
 create a new final-candidate binding, and then reuse the same Luna chat for the
 replacement candidate's single final run. Do not launch repeated full parallel
 runs while debugging.

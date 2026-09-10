@@ -74,10 +74,10 @@ python tools/origin_reconciler.py closeout \
 ```
 
 For a typed Implementer cycle, the Primary receipt starts from the packet
-baseline. An accepted Bounded Correction Low receipt starts from the accepted
+baseline. An accepted Bounded Correction Light receipt starts from the accepted
 Primary candidate. Archive and finalization evidence records both Implementer
 task dispositions, including unused or Primary-superseded Bounded Correction
-Low work. This lineage is evidence; it does not authorize a branch disposition.
+Light work. This lineage is evidence; it does not authorize a branch disposition.
 
 ### Landed
 

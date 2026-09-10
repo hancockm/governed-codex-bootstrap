@@ -29,19 +29,19 @@
       "id": "owner_orchestrator_model_binding",
       "required_for": "owner_task",
       "failure_posture": "blocked",
-      "purpose": "Provide the exact Sol/xhigh authority lane registered by owner orchestration."
+      "purpose": "Provide the exact Sol authority lane registered by owner orchestration."
     },
     {
       "id": "implementer_model_binding",
       "required_for": "implementer_tier",
       "failure_posture": "blocked_when_invoked",
-      "purpose": "Provide the exact Terra/high implementation lane."
+      "purpose": "Provide the exact Terra implementation binding registered by owner orchestration."
     },
     {
       "id": "verification_runner_model_binding",
       "required_for": "full_team_tier",
       "failure_posture": "blocked_when_invoked",
-      "purpose": "Provide the exact Luna/xhigh independent verification lane."
+      "purpose": "Provide the exact Luna independent verification binding registered by owner orchestration."
     },
     {
       "id": "subordinate_task_coordination",

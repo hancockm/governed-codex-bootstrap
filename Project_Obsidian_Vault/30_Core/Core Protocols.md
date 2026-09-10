@@ -29,7 +29,7 @@ Accepted work uses the risk tier in the owner-scoped orchestration policy.
 Sol sends one Implementation Context Brief in the existing Terra dispatch.
 Terra reads required repository and full target-document context before
 narrative edits and reports each document role and integration point. Primary
-High work is normal.
+Medium work is normal.
 
 If an approved plan contains multiple implementation categories, Sol defines
 the ordered category sequence before it dispatches Primary work. A category
@@ -46,8 +46,8 @@ depend, Sol waits for Luna before it authorizes N+1.
 
 After two categories, Sol reviews their cross-category behavior before it
 dispatches category N+2. If a correction is exact and mechanical, Sol sends
-it to Bounded Correction Low and sends its written focused tests to Luna. If a
-correction needs broad reasoning but spans only N and N+1, Sol waits for Terra
+it to Bounded Correction Light and sends its written focused tests to Luna. If
+a correction needs broad reasoning but spans only N and N+1, Sol waits for Terra
 Primary to complete N+1 and then sends one cross-category slice to the same
 Primary task. Other corrections return to Primary. A change to approved scope,
 a public contract, a default, or safety behavior requires new user approval.
@@ -57,7 +57,7 @@ the final runner receipt. Luna uses the same task for all category checks and
 the final verification. Sol declares one final cumulative candidate. Luna runs
 `python tools/test_runner.py full` once against that candidate.
 
-Bounded Correction Low work is only for final exact replacement text at an
+Bounded Correction Light work is only for final exact replacement text at an
 exact location with no remaining reordering, semantic, audience, relationship,
 or prose choice. Core reviews Terra's final packet-bounded candidate and Luna's
 exact-commit receipt, then performs authorized publication and integration.

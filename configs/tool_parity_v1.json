@@ -219,7 +219,7 @@
       "reference": "tools/owner_scoped_orchestration.py",
       "bootstrap": "tools/owner_scoped_orchestration.py",
       "classification": "full_generic_equivalent",
-      "rationale": "Full packet, lane-binding, receipt, correction, and immutable-record lifecycle with generic owner activation.",
+      "rationale": "Full packet, lane-binding, receipt, correction, advisory, coordination-reporting, and immutable-record lifecycle with generic owner activation.",
       "required_symbols": [
         "InactiveOwnerError",
         "OrchestrationError",
@@ -243,8 +243,11 @@
         "_path_scopes_overlap",
         "_payload_hash",
         "_repo_relative_path",
+        "_require_coordination_contract",
         "_require_exact_keys",
         "_require_lane_bindings",
+        "_require_reporting_contract",
+        "_require_research_critic",
         "_require_safe_string_list",
         "_require_safe_text",
         "_safe_paths",
@@ -267,13 +270,16 @@
         "load_active_owner_profile",
         "load_owner_profile",
         "load_registry",
+        "load_runner_channel_workaround",
         "main",
         "make_packet",
         "owner_config",
         "record_bundle",
         "repository_root",
         "validate_packet",
-        "validate_receipts"
+        "validate_receipts",
+        "validate_research_critic_invocation",
+        "validate_runner_channel"
       ]
     },
     {

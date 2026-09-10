@@ -138,8 +138,8 @@ After explicit approval:
    or duplicate sections;
 7. bind Luna to the exact candidate in the saved project;
 8. run full verification once when required;
-9. return a failed candidate to Primary High work unless Sol supplies the
-   final exact Bounded Correction Low replacement text and location with no
+9. return a failed candidate to Primary Medium work unless Sol supplies the
+   final exact Bounded Correction Light replacement text and location with no
    remaining prose or semantic choice; reuse the same Luna task;
 10. update source docs, canonical docs, registry, A2A records, and navigation
    in the same cycle;

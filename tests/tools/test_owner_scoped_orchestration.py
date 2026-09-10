@@ -88,7 +88,7 @@ def _checks(command: str) -> list[dict[str, str]]:
 
 
 def _turn_context(packet: dict[str, object]) -> dict[str, object]:
-    return {"source": "host_recorded", "channel": "saved_project_reusable_chat", "project_context": "matching_saved_project", "thread_id": packet["subordinate_task_ids"]["runner"], "model": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}}
+    return {"source": "host_recorded", "channel": "saved_project_reusable_chat", "project_context": "matching_saved_project", "thread_id": packet["subordinate_task_ids"]["runner"], "model": {"model": "gpt-5.6-luna", "reasoning_effort": "medium"}}
 
 
 def _bind_runner(packet: dict[str, object], implementer: dict[str, object], candidate: str, root: Path) -> dict[str, object]:
@@ -97,7 +97,7 @@ def _bind_runner(packet: dict[str, object], implementer: dict[str, object], cand
 
 def _implementer(packet: dict[str, object], candidate: str = "b" * 40) -> dict[str, object]:
     commands = [*packet["focused_checks"], orchestration.TERRA_AFFECTED_COMMAND, *packet["broad_checks"]]
-    return {"schema_version": orchestration.IMPLEMENTER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_type": "primary", "subordinate_task_id": packet["subordinate_task_ids"]["implementer"]["primary"], "model": {"model": "gpt-5.6-terra", "reasoning_effort": "high"}, "base_candidate_commit": packet["baseline"], "candidate_commit": candidate, "changed_paths": ["tools/example.py"], "actions": ["write", "commit", "test"], "checks": [{"command": command, "outcome": "passed"} for command in commands], "residual_issues": [], "outcome": "passed"}
+    return {"schema_version": orchestration.IMPLEMENTER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_type": "primary", "subordinate_task_id": packet["subordinate_task_ids"]["implementer"]["primary"], "model": {"model": "gpt-5.6-terra", "reasoning_effort": "medium"}, "base_candidate_commit": packet["baseline"], "candidate_commit": candidate, "changed_paths": ["tools/example.py"], "actions": ["write", "commit", "test"], "checks": [{"command": command, "outcome": "passed"} for command in commands], "residual_issues": [], "outcome": "passed"}
 
 
 def _bounded_correction(packet: dict[str, object], primary: dict[str, object], candidate: str = "c" * 40) -> dict[str, object]:
@@ -110,11 +110,11 @@ def _bounded_correction(packet: dict[str, object], primary: dict[str, object], c
 
 
 def _runner(packet: dict[str, object], binding: dict[str, object], candidate: str = "b" * 40) -> dict[str, object]:
-    return {"schema_version": orchestration.RUNNER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "runner_binding_hash": binding["canonical_hash"], "model": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}, "candidate_commit": candidate, "actions": ["inspect", "test"], "checks": [{"command": command, "outcome": "passed"} for command in packet["runner_checks"]], "environment_preflight": {"candidate_commit_verified": True, "model_binding_verified": True, "initial_worktree_clean": True}, "git_status": {"initial": "clean", "final": "clean"}, "reconciler_evidence": {"target": "origin/master", "candidate_commit": candidate, "state": "pre_publication_unlanded"}, "diagnostics": [], "residual_issues": [], "outcome": "passed"}
+    return {"schema_version": orchestration.RUNNER_RECEIPT_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "runner_binding_hash": binding["canonical_hash"], "model": {"model": "gpt-5.6-luna", "reasoning_effort": "medium"}, "candidate_commit": candidate, "actions": ["inspect", "test"], "checks": [{"command": command, "outcome": "passed"} for command in packet["runner_checks"]], "environment_preflight": {"candidate_commit_verified": True, "model_binding_verified": True, "initial_worktree_clean": True}, "git_status": {"initial": "clean", "final": "clean"}, "reconciler_evidence": {"target": "origin/master", "candidate_commit": candidate, "state": "pre_publication_unlanded"}, "diagnostics": [], "residual_issues": [], "outcome": "passed"}
 
 
 def _sol(packet: dict[str, object]) -> dict[str, object]:
-    return {"schema_version": orchestration.SOL_DISPOSITION_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "model": {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"}, "disposition": "analysis complete", "residual_issues": [], "outcome": "passed"}
+    return {"schema_version": orchestration.SOL_DISPOSITION_SCHEMA, "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "model": {"model": "gpt-5.6-sol", "reasoning_effort": "high"}, "disposition": "analysis complete", "residual_issues": [], "outcome": "passed"}
 
 
 def _research_critic_invocation() -> dict[str, object]:
@@ -126,6 +126,12 @@ def _research_critic_invocation() -> dict[str, object]:
         "owner": "core",
         "invoker": "owner_orchestrator",
         "model": model,
+        "trigger": "evidence_gap",
+        "question": {
+            "relevant_evidence": ["Current plan and focused failure witness"],
+            "failed_approaches": [],
+            "needed_decision": "Recommend the bounded resolution and state uncertainty.",
+        },
         "requested_outputs": ["plan_critique"],
         "actions": ["inspect"],
         "host_turn_context": {"source": "host_recorded", "role": "research_critic", "model": model},
@@ -184,6 +190,7 @@ def _legacy_v3_artifacts(root: Path, task_id: str = "legacy-v3") -> tuple[dict[s
     binding_payload = {"schema_version": "owner_scoped_runner_binding_v4", "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "implementer_receipt_hash": orchestration._payload_hash(implementer), "candidate_commit": implementer["candidate_commit"], "candidate_posture": "sol_declared_final", "runner_model": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}, "runner_task_id": packet["subordinate_task_ids"]["runner"], "turn_context": {"source": "host_recorded", "channel": "saved_project_reusable_chat", "project_context": "matching_saved_project", "thread_id": packet["subordinate_task_ids"]["runner"], "model": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}}}
     binding = {**binding_payload, "canonical_hash": orchestration.sha256_canonical(binding_payload)}
     runner = _runner(packet, binding)
+    runner["model"] = {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}
     record_payload = {"schema_version": "owner_scoped_orchestration_record_v2", "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "tier": "full_team", "implementer_receipt_hash": orchestration._payload_hash(implementer), "runner_binding_hash": binding["canonical_hash"], "runner_receipt_hash": orchestration._payload_hash(runner), "sol_disposition_hash": "", "archive_manifest_hash": ""}
     lanes = [{"lane": "implementer", "subordinate_task_id": packet["subordinate_task_ids"]["implementer"], "receipt_hash": orchestration._payload_hash(implementer), "action": "archive", "status": "ready_after_owner_receipt_capture"}, {"lane": "runner", "subordinate_task_id": packet["subordinate_task_ids"]["runner"], "receipt_hash": orchestration._payload_hash(runner), "action": "archive", "status": "ready_after_owner_receipt_capture"}]
     manifest_payload = {"schema_version": "owner_scoped_subordinate_archive_manifest_v2", "owner": packet["owner"], "task_id": packet["task_id"], "packet_hash": packet["canonical_hash"], "authority": "owner_orchestrator", "transport": "host_task_management_surface", "runner_binding_hash": binding["canonical_hash"], "lanes": lanes}
@@ -203,7 +210,9 @@ def _legacy_v3_artifacts(root: Path, task_id: str = "legacy-v3") -> tuple[dict[s
 
 def test_registry_and_exact_sol_prompt_composition(tmp_path: Path) -> None:
     root = _repo(tmp_path); registry = orchestration.load_registry(root); packet = _packet(root)
-    assert registry["model_binding"]["owner_orchestrator"] == {"model": "gpt-5.6-sol", "reasoning_effort": "xhigh"}
+    assert registry["model_binding"]["owner_orchestrator"] == {"model": "gpt-5.6-sol", "reasoning_effort": "high"}
+    assert registry["model_binding"]["implementer"]["types"]["primary"] == {"model": "gpt-5.6-terra", "reasoning_effort": "medium"}
+    assert registry["model_binding"]["runner"] == {"model": "gpt-5.6-luna", "reasoning_effort": "medium"}
     assert set(registry["owners"]) == {"core", "example_feature", "owner_template"}
     assert registry["owners"]["example_feature"]["status"] == "owner_adoption_required"
     assert registry["owners"]["owner_template"]["status"] == "owner_adoption_required"
@@ -218,7 +227,14 @@ def test_registry_and_exact_sol_prompt_composition(tmp_path: Path) -> None:
         "invoker": "owner_orchestrator",
         "model": {"model": "gpt-6-astra", "reasoning_effort": "high"},
         "host_turn_context": {"source": "host_recorded", "required_fields": ["role", "model"]},
+        "invocation_triggers": ["evidence_gap", "contradiction"],
+        "question_required_fields": ["relevant_evidence", "failed_approaches", "needed_decision"],
+        "return_required_fields": ["recommendation", "uncertainty"],
+        "return_target": "owner_orchestrator",
+        "after_return": "end_turn",
     }
+    assert composition["coordination"] == registry["coordination"]
+    assert composition["reporting"] == registry["reporting"]
     assert (composition["owner"], composition["git_owner"], composition["branch_prefix"]) == ("core", "core", "core/")
 
 
@@ -230,12 +246,18 @@ def test_research_critic_is_optional_read_only_and_has_host_recorded_identity(tm
     assert contract["optional"] is True
     assert contract["invoker"] == "owner_orchestrator"
     assert contract["model"] == {"model": "gpt-6-astra", "reasoning_effort": "high"}
+    assert contract["invocation_triggers"] == ["evidence_gap", "contradiction"]
+    assert contract["question_required_fields"] == ["relevant_evidence", "failed_approaches", "needed_decision"]
+    assert contract["return_required_fields"] == ["recommendation", "uncertainty"]
+    assert contract["return_target"] == "owner_orchestrator"
+    assert contract["after_return"] == "end_turn"
     assert contract["forbidden_actions"] == ["edit_files", "run_tests", "run_providers", "accept_candidate", "reject_candidate", "authorize_scope", "change_packet", "replace_owner_orchestrator", "replace_implementer", "replace_verification_runner", "publish", "push", "merge", "integrate"]
     invocation = _research_critic_invocation()
     orchestration.validate_research_critic_invocation(invocation, root)
     for field, value, error in (
         ("invoker", "implementer", "only by owner orchestrator"),
         ("model", {"model": "gpt-6-astra", "reasoning_effort": "low"}, "model binding"),
+        ("trigger", "routine_progress", "concrete evidence gap or contradiction"),
         ("requested_outputs", ["candidate_acceptance"], "permitted output"),
         ("actions", ["inspect", "run_tests"], "read-only inspection"),
         ("host_turn_context", {"source": "agent_reported", "role": "research_critic", "model": invocation["model"]}, "host-recorded"),
@@ -244,6 +266,35 @@ def test_research_critic_is_optional_read_only_and_has_host_recorded_identity(tm
         invalid[field] = value
         with pytest.raises(orchestration.OrchestrationError, match=error):
             orchestration.validate_research_critic_invocation(invalid, root)
+
+    invalid = dict(invocation)
+    invalid["question"] = {"relevant_evidence": [], "failed_approaches": [], "needed_decision": "Decide."}
+    with pytest.raises(orchestration.OrchestrationError, match="relevant_evidence"):
+        orchestration.validate_research_critic_invocation(invalid, root)
+
+
+def test_registry_requires_single_owner_notifications_quiet_monitoring_and_bounded_reporting(tmp_path: Path) -> None:
+    root = _repo(tmp_path)
+    registry = orchestration.load_registry(root)
+    assert registry["coordination"] == {
+        "decision_owner": "owner_orchestrator",
+        "spawn_parent": {"decision_authority": "none", "evidence": "host_recorded_only"},
+        "notifications": {"target": "assigned_parent", "required_events": ["blocked_or_decision_needed", "completion"], "delivery_acknowledgment_required": True},
+        "idle_turns": {"after_dispatch": "end_turn", "after_return": "end_turn", "wait_loops": "forbidden"},
+        "monitoring": {"target": "owner_orchestrator", "unchanged_state": "quiet", "purpose": "missed_notification_fallback"},
+    }
+    assert registry["reporting"] == {
+        "surface": "existing_task_and_receipt_reports",
+        "items": ["available_usage", "repeated_diagnosis", "avoidable_resumptions", "correction_cycle_evidence"],
+        "usage_source": "host_recorded_when_available",
+        "unavailable_usage": "report_unavailable_without_attribution",
+        "new_telemetry": "forbidden",
+    }
+    registry["coordination"]["decision_owner"] = "research_critic"
+    path = root / "configs/owner_scoped_orchestration_v1.json"
+    path.write_text(json.dumps(registry), encoding="utf-8")
+    with pytest.raises(orchestration.OrchestrationError, match="coordination contract"):
+        orchestration.load_registry(root)
 
 
 def test_research_critic_does_not_expand_fixed_packet_lanes(tmp_path: Path) -> None:
@@ -494,7 +545,7 @@ def test_fail_closed_owner_profile_and_model_binding(tmp_path: Path) -> None:
     with pytest.raises(orchestration.InactiveOwnerError): orchestration.owner_config("example_feature", root, active=True)
     profile = root / "roles/core/orchestration_profile.json"; profile.unlink()
     with pytest.raises(orchestration.OrchestrationError, match="missing"): orchestration.load_active_owner_profile("core", root)
-    root = _repo(tmp_path / "other"); registry_path = root / "configs/owner_scoped_orchestration_v1.json"; registry = json.loads(registry_path.read_text(encoding="utf-8")); registry["model_binding"]["runner"]["model"] = "wrong"; registry_path.write_text(json.dumps(registry), encoding="utf-8")
+    root = _repo(tmp_path / "other"); registry_path = root / "configs/owner_scoped_orchestration_v1.json"; registry = json.loads(registry_path.read_text(encoding="utf-8")); registry["model_binding"]["runner"].pop("reasoning_effort"); registry_path.write_text(json.dumps(registry), encoding="utf-8")
     with pytest.raises(orchestration.OrchestrationError, match="binding"): _packet(root)
 
 
@@ -588,11 +639,11 @@ def test_runner_channel_workaround_requires_reusable_saved_project_route(tmp_pat
     requirement = orchestration.load_runner_channel_workaround(root)
     assert requirement["locally_verified_resolved"] is False
     assert requirement["creation_per_cycle"] == "one_fresh_luna_chat_inside_matching_saved_project"
-    assert requirement["ordered_lifecycle"] == ["create_fresh_saved_project_luna_chat", "bind_gpt_5_6_luna_xhigh", "reuse_exact_thread_id_for_verification_and_reverification", "reassert_model_and_reasoning_effort_on_every_continuation", "archive_only_after_receipt_capture_push_integration_primary_sync_terminal_reconciliation_worktree_removal_and_finalization", "keep_failed_blocked_and_user_input_needed_visible"]
+    assert requirement["ordered_lifecycle"] == ["create_fresh_saved_project_luna_chat", "bind_configured_luna_model_and_reasoning_effort", "reuse_exact_thread_id_for_verification_and_reverification", "reassert_model_and_reasoning_effort_on_every_continuation", "archive_only_after_receipt_capture_push_integration_primary_sync_terminal_reconciliation_worktree_removal_and_finalization", "keep_failed_blocked_and_user_input_needed_visible"]
     assert requirement["host_turn_context"] == {"source": "host_recorded", "required_fields": ["channel", "project_context", "thread_id", "model"]}
-    orchestration.validate_runner_channel(_turn_context(packet), packet["subordinate_task_ids"]["runner"], packet["subordinate_task_ids"]["runner"], {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}, root)
+    orchestration.validate_runner_channel(_turn_context(packet), packet["subordinate_task_ids"]["runner"], packet["subordinate_task_ids"]["runner"], {"model": "gpt-5.6-luna", "reasoning_effort": "medium"}, root)
     with pytest.raises(orchestration.OrchestrationError, match="route_integrity_failed"):
-        orchestration.validate_runner_channel({**_turn_context(packet), "source": "agent_reported"}, packet["subordinate_task_ids"]["runner"], packet["subordinate_task_ids"]["runner"], {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}, root)
+        orchestration.validate_runner_channel({**_turn_context(packet), "source": "agent_reported"}, packet["subordinate_task_ids"]["runner"], packet["subordinate_task_ids"]["runner"], {"model": "gpt-5.6-luna", "reasoning_effort": "medium"}, root)
 
 
 def test_implementer_receipt_exact_shape_actions_and_checks(tmp_path: Path) -> None:
@@ -759,7 +810,7 @@ def test_read_only_cli_and_tmp_only_writes(tmp_path: Path, capsys: pytest.Captur
     assert orchestration.main(["--repo", str(root), "check-owner", "--owner", "core"]) == 0
     assert orchestration.main(["--repo", str(root), "classify", "--owner", "core", "--description", "analysis"]) == 0
     assert sorted(path.relative_to(root).as_posix() for path in root.rglob("*")) == before
-    packet = _packet(root); packet_path = root / "packet.json"; receipt_path = root / "receipt.json"; context_path = root / "turn_context.json"; packet_path.write_text(json.dumps(packet), encoding="utf-8"); receipt_path.write_text(json.dumps(_implementer(packet)), encoding="utf-8"); context_path.write_text(json.dumps({"source": "host_recorded", "channel": "saved_project_reusable_chat", "project_context": "matching_saved_project", "thread_id": "host-runner", "model": {"model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}}), encoding="utf-8")
+    packet = _packet(root); packet_path = root / "packet.json"; receipt_path = root / "receipt.json"; context_path = root / "turn_context.json"; packet_path.write_text(json.dumps(packet), encoding="utf-8"); receipt_path.write_text(json.dumps(_implementer(packet)), encoding="utf-8"); context_path.write_text(json.dumps({"source": "host_recorded", "channel": "saved_project_reusable_chat", "project_context": "matching_saved_project", "thread_id": "host-runner", "model": {"model": "gpt-5.6-luna", "reasoning_effort": "medium"}}), encoding="utf-8")
     before_validate = sorted(path.relative_to(root).as_posix() for path in root.rglob("*"))
     assert orchestration.main(["--repo", str(root), "validate", "--packet", str(packet_path), "--implementer-receipt", str(receipt_path)]) == 0
     assert sorted(path.relative_to(root).as_posix() for path in root.rglob("*")) == before_validate

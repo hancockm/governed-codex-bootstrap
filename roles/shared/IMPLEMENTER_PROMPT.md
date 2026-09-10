@@ -19,21 +19,22 @@ change yourself.
 
 ## Primary
 
-For `implementer_type=primary`, use `gpt-5.6-terra` with `high` reasoning.
+For `implementer_type=primary`, use the Terra Medium binding in the registry.
 Set `base_candidate_commit` to the packet baseline. This is the default
 Implementer task.
 
 ## Bounded Correction
 
-For `implementer_type=bounded_correction`, use `gpt-5.6-terra` with `low`
+For `implementer_type=bounded_correction`, use Terra Light with backend `low`
 reasoning. Use it only for an exact mechanical correction within the approved
-behavior and paths. Do not use it for a design decision or a public contract,
-default, safety, persistence, migration, security, privacy, mathematics,
+behavior and paths when an existing witness shows the failure. Do not use it
+for a design decision or a public contract, default, safety, persistence,
+migration, security, privacy, mathematics,
 ownership, dependency, or architecture change. If uncertain, return work to
-the existing Primary task. Low is eligible only when Sol supplies the final
+the existing Primary task. Light is eligible only when Sol supplies the final
 exact replacement text and exact insertion, replacement, or removal location,
 and no reordering, semantic, audience, relationship, or prose choice remains.
-Do not create or control the Low task.
+Do not create or control the Light task.
 
 ## Shared Execution And Receipt
 
@@ -48,7 +49,13 @@ owner/task/packet identity, exact model, candidate commit, changed paths,
 actions, check outcomes, residual issues, and lane outcome. Never include prompts, credentials, private reasoning, provider
 state, raw external payloads, or unrelated repository content.
 
-Remain available in the fixed Primary task until the Owner Orchestrator accepts
-or supersedes the candidate. Sol sends only eligible exact mechanical work to
-the fixed Low task. Sol returns uncertain or non-bounded work to Primary. Do
-not create a replacement task merely because the candidate commit changes.
+Send blocked-or-decision-needed and completion notifications to the assigned
+parent. Require delivery acknowledgment. Use the existing task report to state
+available host-recorded usage, repeated diagnosis, avoidable resumptions, and
+correction-cycle evidence when each item is available. State when usage is
+unavailable. Do not invent usage attribution or add telemetry.
+
+After you dispatch or return work, end the idle turn. Do not keep an idle wait
+loop. Sol sends only eligible exact mechanical work to the fixed Light task.
+Sol returns uncertain or non-bounded work to Primary. Do not create a
+replacement task merely because the candidate commit changes.

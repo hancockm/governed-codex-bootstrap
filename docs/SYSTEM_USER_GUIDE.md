@@ -115,9 +115,9 @@ native Codex and repository capabilities:
 | Saved local project with the repository as primary folder | Cold start and every owner task |
 | Repository [AGENTS.md](../AGENTS.md) discovery | Cold start and every owner task |
 | Git and repository-local worktrees | Implementation and delivery |
-| Sol / `xhigh` owner binding | Owner orchestration |
-| Implementer binding: Terra Primary / `high`; Bounded Correction / `low` | Any tier that uses the Implementer |
-| Luna / `xhigh` binding | Full-team verification |
+| Sol High owner binding | Owner orchestration |
+| Implementer binding: Terra Primary Medium; Bounded Correction Light with backend `low` | Any tier that uses the Implementer |
+| Luna Medium binding | Full-team verification |
 | Saved-project subordinate-task coordination | Delegated implementation and reverification |
 | Subordinate-task archival | Successful orchestration closeout |
 
@@ -160,10 +160,12 @@ closeout lifecycle.
 
 ### First Core task
 
-Start one clearly named Core task and use this prompt:
+Start one clearly named Core task with the Sol High binding. Sol starts as the
+owner and coordinator. Astra does not start the bootstrap. Use this prompt:
 
 ```text
-You are the Core Owner for this governed project. Read AGENTS.md,
+You are the Core Owner and Owner Orchestrator (Sol High) for this governed
+project. Read AGENTS.md,
 roles/core/ROLE.md, roles/core/BOOTSTRAP.md, and the complete Core Bootstrap
 prompt in Project_Obsidian_Vault/30_Core/Core Bootstrap.md. Rehydrate from
 current repository evidence. Report the current baseline, evidence inspected,
@@ -315,26 +317,51 @@ validate their structure; owner decisions supply their meaning.
 With authority and knowledge separated, owner-scoped orchestration defines how
 an authorized change is planned, implemented, and independently verified.
 
-Every active owner receives a logical development team:
+Every active owner receives a logical development team. The orchestration
+registry is the executable model authority:
 
 | Lane | Binding | Job |
 | --- | --- | --- |
-| Owner Orchestrator | Sol / `xhigh` | Rehydrate, plan, protect authority, review, publish, integrate when Core, and close continuity |
-| Implementer | Terra Primary / `high`; Bounded Correction / `low` | Make one packet-bounded candidate commit and run focused checks |
-| Verification Runner | Luna / `xhigh` | Independently verify the exact candidate without repository writes |
+| Owner Orchestrator | Sol High | Rehydrate, plan, protect authority, review, publish, integrate when Core, and close continuity |
+| Implementer | Terra Primary Medium; Bounded Correction Light with backend `low` | Make one packet-bounded candidate commit and run focused checks |
+| Verification Runner | Luna Medium | Independently verify the exact candidate without repository writes |
 
-Terra normally uses Primary work with high reasoning. Sol can send a small
-exact correction to Bounded Correction work with low reasoning only when the
-approved behavior is unchanged and the correction needs no judgment. If the
+Terra normally uses Primary work with medium reasoning. Sol can send a small
+exact correction to Bounded Correction Light work with backend `low` reasoning
+only when an existing witness shows the diagnosed failure, the approved
+behavior is unchanged, and the correction needs no judgment. If the
 correction needs a contract change, another behavior choice, or other
 judgment, Sol returns it to Primary work. Luna verifies only the final
 candidate that Sol declares.
 
+Sol is the single coordinator and execution owner. No second decision owner
+sits above Sol. A host spawn parent records actual delivery context only. It
+does not add authority, and an agent must not invent that relation.
+
+Subordinate tasks notify their assigned parent when they are blocked, need a
+decision, or complete. The sender requires delivery acknowledgment and then
+ends the turn. Dispatch and return do not start idle wait loops. Monitoring
+targets Sol, stays quiet when state is unchanged, and only recovers a missed
+required notification.
+
+Existing task and receipt reports state available host-recorded usage,
+repeated diagnosis, avoidable resumptions, and correction-cycle evidence when
+those facts are available. If usage is unavailable, the report says so. The
+system does not infer per-lane usage or add telemetry.
+
+The repository validator enforces the registry structure, Sol decision-owner
+value, bounded Astra question, packet and receipt identity, and supplied
+host-recorded identity. The Codex host performs notification delivery,
+delivery acknowledgment, end-turn behavior, monitoring, and usage reporting.
+Prompt policy requires these actions. If the host does not expose a capability
+or evidence, the task reports that limitation and does not manufacture proof.
+
 ### Optional Research Critic (Astra)
 
-Sol can invoke the optional Research Critic when Sol needs an advisory plan
-critique, progress audit against an approved plan, blocker analysis, or
-assumption review. Sol alone can invoke this support role.
+Sol can invoke the optional Research Critic when Sol identifies a concrete
+evidence gap or contradiction and needs an advisory plan critique, progress
+audit against an approved plan, blocker analysis, or assumption review. Sol
+alone can invoke this support role.
 
 Before Sol invokes the Research Critic, the host must record the
 `research_critic` role, the `gpt-6-astra` model, and `high` reasoning effort.
@@ -342,8 +369,12 @@ If this identity evidence is absent, the invocation is not valid.
 
 The Research Critic can inspect plans, repository evidence, approved-plan
 progress, assumptions, and blockers. It can return a plan critique, progress
-audit, blocker analysis, or assumption review. Its report must identify the
-evidence, uncertainty, and items that require Sol or user action.
+audit, blocker analysis, or assumption review. Sol sends one bounded question
+with relevant evidence, failed approaches, and the needed decision. Routine
+progress and duplicate diagnosis are not valid routes. Its report identifies
+the evidence, recommendation, uncertainty, and items that require Sol or user
+action. It returns the report to Sol, gets delivery acknowledgment, and ends
+its turn.
 
 The Research Critic is read-only and advisory. It cannot edit files, run
 tests or providers, accept or reject a candidate, authorize scope, change a
