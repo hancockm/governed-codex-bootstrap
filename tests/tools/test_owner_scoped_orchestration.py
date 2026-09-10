@@ -126,7 +126,7 @@ def _research_critic_invocation() -> dict[str, object]:
         "owner": "core",
         "invoker": "owner_orchestrator",
         "model": model,
-        "trigger": "evidence_gap",
+        "trigger": "planned_research",
         "question": {
             "relevant_evidence": ["Current plan and focused failure witness"],
             "failed_approaches": [],
@@ -227,7 +227,7 @@ def test_registry_and_exact_sol_prompt_composition(tmp_path: Path) -> None:
         "invoker": "owner_orchestrator",
         "model": {"model": "gpt-6-astra", "reasoning_effort": "high"},
         "host_turn_context": {"source": "host_recorded", "required_fields": ["role", "model"]},
-        "invocation_triggers": ["evidence_gap", "contradiction"],
+        "invocation_triggers": ["planned_research", "plan_critique", "assumption_review", "architectural_analysis", "evidence_gap", "contradiction"],
         "question_required_fields": ["relevant_evidence", "failed_approaches", "needed_decision"],
         "return_required_fields": ["recommendation", "uncertainty"],
         "return_target": "owner_orchestrator",
@@ -246,7 +246,8 @@ def test_research_critic_is_optional_read_only_and_has_host_recorded_identity(tm
     assert contract["optional"] is True
     assert contract["invoker"] == "owner_orchestrator"
     assert contract["model"] == {"model": "gpt-6-astra", "reasoning_effort": "high"}
-    assert contract["invocation_triggers"] == ["evidence_gap", "contradiction"]
+    assert contract["permitted_outputs"] == ["research_recommendation", "plan_critique", "progress_audit", "blocker_analysis", "assumption_review", "architectural_analysis"]
+    assert contract["invocation_triggers"] == ["planned_research", "plan_critique", "assumption_review", "architectural_analysis", "evidence_gap", "contradiction"]
     assert contract["question_required_fields"] == ["relevant_evidence", "failed_approaches", "needed_decision"]
     assert contract["return_required_fields"] == ["recommendation", "uncertainty"]
     assert contract["return_target"] == "owner_orchestrator"
@@ -254,10 +255,18 @@ def test_research_critic_is_optional_read_only_and_has_host_recorded_identity(tm
     assert contract["forbidden_actions"] == ["edit_files", "run_tests", "run_providers", "accept_candidate", "reject_candidate", "authorize_scope", "change_packet", "replace_owner_orchestrator", "replace_implementer", "replace_verification_runner", "publish", "push", "merge", "integrate"]
     invocation = _research_critic_invocation()
     orchestration.validate_research_critic_invocation(invocation, root)
+    for trigger in contract["invocation_triggers"]:
+        valid = dict(invocation)
+        valid["trigger"] = trigger
+        orchestration.validate_research_critic_invocation(valid, root)
+    for output in contract["permitted_outputs"]:
+        valid = dict(invocation)
+        valid["requested_outputs"] = [output]
+        orchestration.validate_research_critic_invocation(valid, root)
     for field, value, error in (
         ("invoker", "implementer", "only by owner orchestrator"),
         ("model", {"model": "gpt-6-astra", "reasoning_effort": "low"}, "model binding"),
-        ("trigger", "routine_progress", "concrete evidence gap or contradiction"),
+        ("trigger", "routine_progress", "trigger is not permitted"),
         ("requested_outputs", ["candidate_acceptance"], "permitted output"),
         ("actions", ["inspect", "run_tests"], "read-only inspection"),
         ("host_turn_context", {"source": "agent_reported", "role": "research_critic", "model": invocation["model"]}, "host-recorded"),
@@ -272,15 +281,27 @@ def test_research_critic_is_optional_read_only_and_has_host_recorded_identity(tm
     with pytest.raises(orchestration.OrchestrationError, match="relevant_evidence"):
         orchestration.validate_research_critic_invocation(invalid, root)
 
+    valid = dict(invocation)
+    valid["question"] = {
+        "relevant_evidence": [f"Evidence item {index}" for index in range(9)],
+        "failed_approaches": [],
+        "needed_decision": "Recommend the bounded next action.",
+    }
+    orchestration.validate_research_critic_invocation(valid, root)
+
 
 def test_registry_requires_single_owner_notifications_quiet_monitoring_and_bounded_reporting(tmp_path: Path) -> None:
     root = _repo(tmp_path)
     registry = orchestration.load_registry(root)
     assert registry["coordination"] == {
         "decision_owner": "owner_orchestrator",
-        "spawn_parent": {"decision_authority": "none", "evidence": "host_recorded_only"},
+        "spawn_parent": {"decision_authority": "not_derived_from_spawn_relation", "evidence": "host_recorded_only"},
         "notifications": {"target": "assigned_parent", "required_events": ["blocked_or_decision_needed", "completion"], "delivery_acknowledgment_required": True},
-        "idle_turns": {"after_dispatch": "end_turn", "after_return": "end_turn", "wait_loops": "forbidden"},
+        "idle_turns": {
+            "after_dispatch": "end_turn_when_no_independent_actionable_work_remains",
+            "after_return": "end_turn_when_no_independent_actionable_work_remains",
+            "wait_loops": "forbidden",
+        },
         "monitoring": {"target": "owner_orchestrator", "unchanged_state": "quiet", "purpose": "missed_notification_fallback"},
     }
     assert registry["reporting"] == {

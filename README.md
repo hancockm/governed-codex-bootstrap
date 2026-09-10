@@ -164,16 +164,21 @@ The state order is enforced by the repository conformance test: research must ex
 4. A failed full run returns to serial failed triage; it does not repeatedly launch the parallel suite.
 5. Sol creates the separate subordinate archive/finalization acknowledgment only after an accepted exact-candidate receipt, no correction pending, commit/push/integration, primary-branch synchronization, terminal reconciliation, and worktree cleanup. Failed, blocked, and user-input-needed tasks remain visible. Core performs the bounded integration check and exports the owning continuity transcript.
 
-Astra High is optional and read-only. Sol sends Astra one bounded question only
-for a concrete evidence gap or contradiction. The question includes relevant
-evidence, failed approaches, and the needed decision. Astra returns a
-recommendation and uncertainty to Sol, then ends its turn. A host spawn parent
-does not add decision authority.
+Astra High is optional and read-only. Sol can use Astra for first planned
+research, plan critique, assumption review, architectural analysis, or a
+concrete evidence gap or contradiction. Sol sends one bounded question with
+relevant evidence, failed approaches, and the needed decision. Failed
+approaches can be empty for a first investigation. Astra returns a
+recommendation and uncertainty to Sol, then ends its turn. A spawn relation
+alone does not grant or remove decision authority. The assigned Owner
+Orchestrator role provides decision authority. The same task can be both the
+spawn parent and the assigned Owner Orchestrator.
 
 Subordinate tasks notify their assigned parent when blocked, when a decision is
-needed, and when complete. They require delivery acknowledgment and do not
-keep idle wait loops. Monitoring targets Sol, stays quiet when state is
-unchanged, and only recovers missed notifications. Existing reports include
+needed, and when complete. They require delivery acknowledgment. If no
+independent actionable work remains after dispatch or return, they end the
+turn. They do not keep idle wait loops. Monitoring targets Sol and stays quiet
+when state is unchanged. It only recovers missed notifications. Existing reports include
 available host-recorded usage, repeated diagnosis, avoidable resumptions, and
 correction-cycle evidence when available. They do not invent usage attribution
 or add telemetry. Repository validators enforce registry and artifact inputs.

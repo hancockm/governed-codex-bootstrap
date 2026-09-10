@@ -26,28 +26,28 @@
       "model": {"model": "gpt-6-astra", "reasoning_effort": "high"},
       "prompt_template": "roles/shared/RESEARCH_CRITIC_PROMPT.md",
       "permitted_inspection": ["plans", "repository_evidence", "approved_plan_progress", "assumptions", "blockers"],
-      "permitted_outputs": ["plan_critique", "progress_audit", "blocker_analysis", "assumption_review"],
+      "permitted_outputs": ["research_recommendation", "plan_critique", "progress_audit", "blocker_analysis", "assumption_review", "architectural_analysis"],
       "forbidden_actions": ["edit_files", "run_tests", "run_providers", "accept_candidate", "reject_candidate", "authorize_scope", "change_packet", "replace_owner_orchestrator", "replace_implementer", "replace_verification_runner", "publish", "push", "merge", "integrate"],
-      "invocation_triggers": ["evidence_gap", "contradiction"],
+      "invocation_triggers": ["planned_research", "plan_critique", "assumption_review", "architectural_analysis", "evidence_gap", "contradiction"],
       "question_required_fields": ["relevant_evidence", "failed_approaches", "needed_decision"],
       "return_required_fields": ["recommendation", "uncertainty"],
       "return_target": "owner_orchestrator",
       "after_return": "end_turn",
-      "prohibited_uses": ["routine_progress_routing", "duplicate_diagnosis_without_concrete_gap_or_contradiction"],
+      "prohibited_uses": ["routine_progress_routing", "repeated_diagnosis_without_concrete_gap_or_contradiction"],
       "host_turn_context": {"source": "host_recorded", "required_fields": ["role", "model"]}
     }
   },
   "coordination": {
     "decision_owner": "owner_orchestrator",
-    "spawn_parent": {"decision_authority": "none", "evidence": "host_recorded_only"},
+    "spawn_parent": {"decision_authority": "not_derived_from_spawn_relation", "evidence": "host_recorded_only"},
     "notifications": {
       "target": "assigned_parent",
       "required_events": ["blocked_or_decision_needed", "completion"],
       "delivery_acknowledgment_required": true
     },
     "idle_turns": {
-      "after_dispatch": "end_turn",
-      "after_return": "end_turn",
+      "after_dispatch": "end_turn_when_no_independent_actionable_work_remains",
+      "after_return": "end_turn_when_no_independent_actionable_work_remains",
       "wait_loops": "forbidden"
     },
     "monitoring": {

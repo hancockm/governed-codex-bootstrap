@@ -335,12 +335,16 @@ judgment, Sol returns it to Primary work. Luna verifies only the final
 candidate that Sol declares.
 
 Sol is the single coordinator and execution owner. No second decision owner
-sits above Sol. A host spawn parent records actual delivery context only. It
-does not add authority, and an agent must not invent that relation.
+sits above Sol. A host spawn parent records actual delivery context. The spawn
+relation alone does not grant or remove decision authority. The assigned Owner
+Orchestrator role provides decision authority. The same task can be both the
+spawn parent and the assigned Owner Orchestrator. An agent must not invent a
+spawn relation.
 
 Subordinate tasks notify their assigned parent when they are blocked, need a
-decision, or complete. The sender requires delivery acknowledgment and then
-ends the turn. Dispatch and return do not start idle wait loops. Monitoring
+decision, or complete. The sender requires delivery acknowledgment. If no
+independent actionable work remains after dispatch or return, the task ends
+the turn. Dispatch and return do not start idle wait loops. Monitoring
 targets Sol, stays quiet when state is unchanged, and only recovers a missed
 required notification.
 
@@ -358,20 +362,22 @@ or evidence, the task reports that limitation and does not manufacture proof.
 
 ### Optional Research Critic (Astra)
 
-Sol can invoke the optional Research Critic when Sol identifies a concrete
-evidence gap or contradiction and needs an advisory plan critique, progress
-audit against an approved plan, blocker analysis, or assumption review. Sol
-alone can invoke this support role.
+Sol can invoke the optional Research Critic for first planned research, plan
+critique, assumption review, architectural analysis, or a concrete evidence
+gap or contradiction. Sol alone can invoke this support role.
 
 Before Sol invokes the Research Critic, the host must record the
 `research_critic` role, the `gpt-6-astra` model, and `high` reasoning effort.
 If this identity evidence is absent, the invocation is not valid.
 
 The Research Critic can inspect plans, repository evidence, approved-plan
-progress, assumptions, and blockers. It can return a plan critique, progress
-audit, blocker analysis, or assumption review. Sol sends one bounded question
-with relevant evidence, failed approaches, and the needed decision. Routine
-progress and duplicate diagnosis are not valid routes. Its report identifies
+progress, assumptions, and blockers. It can return a research recommendation,
+plan critique, progress audit, blocker analysis, assumption review, or
+architectural analysis. Sol sends one bounded question with relevant evidence,
+failed approaches, and the needed decision. Failed
+approaches can be empty for a first investigation. Routine progress is not a
+valid route. Repeated diagnosis requires new missing evidence or a
+contradiction. Its report identifies
 the evidence, recommendation, uncertainty, and items that require Sol or user
 action. It returns the report to Sol, gets delivery acknowledgment, and ends
 its turn.

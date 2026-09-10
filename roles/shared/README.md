@@ -33,5 +33,7 @@ Implementer, and Verification Runner.
 
 The optional Research Critic is a support role. It is not a packet lane. Sol
 alone may invoke it with host-recorded role and model evidence for one bounded
-evidence gap or contradiction. All subordinate prompts require parent
-notifications and end idle turns after dispatch or return.
+question. First planned research, plan critique, assumption review,
+architectural analysis, evidence gaps, and contradictions are valid triggers.
+All subordinate prompts require parent notifications. They end the turn after
+dispatch or return only when no independent actionable work remains.

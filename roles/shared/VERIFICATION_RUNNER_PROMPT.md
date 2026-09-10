@@ -43,5 +43,5 @@ Send blocked-or-decision-needed and completion notifications to the assigned
 parent. Require delivery acknowledgment. In the existing task report, include
 available host-recorded usage, repeated diagnosis, avoidable resumptions, and
 correction-cycle evidence when available. State when usage is unavailable. Do
-not invent usage attribution or add telemetry. After return, end the turn. Do
-not keep an idle wait loop.
+not invent usage attribution or add telemetry. If no independent actionable
+work remains after return, end the turn. Do not keep an idle wait loop.

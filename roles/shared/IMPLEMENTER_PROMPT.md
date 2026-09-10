@@ -55,7 +55,8 @@ available host-recorded usage, repeated diagnosis, avoidable resumptions, and
 correction-cycle evidence when each item is available. State when usage is
 unavailable. Do not invent usage attribution or add telemetry.
 
-After you dispatch or return work, end the idle turn. Do not keep an idle wait
-loop. Sol sends only eligible exact mechanical work to the fixed Light task.
+If no independent actionable work remains after you dispatch or return work,
+end the turn. Do not keep an idle wait loop. Sol sends only eligible exact
+mechanical work to the fixed Light task.
 Sol returns uncertain or non-bounded work to Primary. Do not create a
 replacement task merely because the candidate commit changes.

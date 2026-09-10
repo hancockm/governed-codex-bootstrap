@@ -466,9 +466,13 @@ def check_repository(root: Path) -> list[str]:
         failures.append("orchestration: exact typed implementer model binding is missing")
     expected_coordination = {
         "decision_owner": "owner_orchestrator",
-        "spawn_parent": {"decision_authority": "none", "evidence": "host_recorded_only"},
+        "spawn_parent": {"decision_authority": "not_derived_from_spawn_relation", "evidence": "host_recorded_only"},
         "notifications": {"target": "assigned_parent", "required_events": ["blocked_or_decision_needed", "completion"], "delivery_acknowledgment_required": True},
-        "idle_turns": {"after_dispatch": "end_turn", "after_return": "end_turn", "wait_loops": "forbidden"},
+        "idle_turns": {
+            "after_dispatch": "end_turn_when_no_independent_actionable_work_remains",
+            "after_return": "end_turn_when_no_independent_actionable_work_remains",
+            "wait_loops": "forbidden",
+        },
         "monitoring": {"target": "owner_orchestrator", "unchanged_state": "quiet", "purpose": "missed_notification_fallback"},
     }
     if orchestration.get("coordination") != expected_coordination:

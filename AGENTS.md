@@ -302,8 +302,11 @@ wide Core canon or another owner's public contract.
 Owner Orchestrator (Sol High) is the single coordinator and execution owner.
 Sol controls authority, scope, review, publication, and continuity. No second
 decision owner exists above Sol. An actual host spawn parent is delivery
-context, not decision authority. Do not invent a spawn relation or routing
-evidence. Implementer (Terra Medium) makes packet-bounded cumulative category
+context. The spawn relation alone does not grant or remove decision authority.
+A task gets decision authority from its assigned Owner Orchestrator role. The
+same task can be both the spawn parent and the assigned Owner Orchestrator. Do
+not invent a spawn relation or routing evidence. Implementer (Terra Medium)
+makes packet-bounded cumulative category
 checkpoints and one final candidate when the plan has multiple categories.
 Verification Runner (Luna Medium) independently verifies exact checkpoint
 commits and the final candidate without repository writes. Required model bindings and
@@ -311,14 +314,17 @@ risk escalation are fail-closed; no silent substitution is allowed.
 
 Research Critic (Astra High) is an optional support role, not a packet lane.
 Sol alone may invoke it after the host records its role and model identity.
-Sol must identify a concrete evidence gap or contradiction and send one
-bounded question. The question includes relevant evidence, failed approaches,
-and the decision that Sol needs. Do not route routine progress to Astra. Do not
+Sol may use it for first planned research, plan critique, assumption review,
+architectural analysis, or a concrete evidence gap or contradiction. Sol sends
+one bounded question. The question includes relevant evidence, failed
+approaches, and the decision that Sol needs. Failed approaches can be empty
+for a first investigation. Do not route routine progress to Astra. Do not
 repeat diagnosis through Astra unless Sol identifies new missing evidence or a
 contradiction. Astra returns its recommendation and uncertainty to Sol, gets a
 delivery acknowledgment, and ends its turn. It may inspect plans, repository
-evidence, approved-plan progress, assumptions, and blockers. It may return plan
-critique, progress audit, blocker analysis, or assumption review. It is
+evidence, approved-plan progress, assumptions, and blockers. It may return a
+research recommendation, plan critique, progress audit, blocker analysis,
+assumption review, or architectural analysis. It is
 read-only and advisory.
 It cannot edit files, run tests or providers, accept or reject a candidate,
 authorize scope, change a packet, replace Sol/Terra/Luna, publish, push,
@@ -410,7 +416,8 @@ candidate.
 
 Each subordinate task sends blocked-or-decision-needed and completion
 notifications to its assigned parent and requires delivery acknowledgment.
-After dispatch or return, end the idle turn. Do not keep an idle wait loop.
+If no independent actionable work remains after dispatch or return, end the
+turn. Do not keep an idle wait loop.
 Monitoring targets Sol, stays quiet when state is unchanged, and serves only
 as a fallback for a missed required notification.
 

@@ -14,18 +14,25 @@ active owner. It is distinct from any runtime application orchestrator.
 Bindings are exact and fail-closed. The registry is the executable model
 authority. No lane silently substitutes a different model or reasoning tier.
 Sol is the only decision owner. An actual host spawn parent records delivery
-context but adds no authority. Routing evidence must come from the host. Sol
-remains user-facing and owns the transcript.
+context. The spawn relation alone does not grant or remove decision authority.
+The assigned Owner Orchestrator role provides decision authority. The same task
+can be both the spawn parent and the assigned Owner Orchestrator. Routing
+evidence must come from the host. Sol remains user-facing and owns the
+transcript.
 Terra and Luna return bounded receipts without private reasoning or secrets.
 
 Research Critic is an optional Astra High support role. It is not a packet lane
 and does not change candidate acceptance. Sol alone may invoke it for read-only
-plan critique, progress audit, blocker analysis, or assumption review. The host
-must record the `research_critic` role and exact model before use. Sol first
-identifies a concrete evidence gap or contradiction. Sol sends one bounded
-question with relevant evidence, failed approaches, and the needed decision.
-Routine progress and duplicate diagnosis are not valid uses. Astra returns its
-recommendation and uncertainty to Sol, gets delivery acknowledgment, and ends
+research recommendation, plan critique, progress audit, blocker analysis,
+assumption review, or architectural analysis. The host
+must record the `research_critic` role and exact model before use. Sol can use
+Astra for first planned research, plan critique, assumption review,
+architectural analysis, or a concrete evidence gap or contradiction. Sol sends
+one bounded question with relevant evidence, failed approaches, and the needed
+decision. Failed approaches can be empty for a first investigation. Routine
+progress is not a valid use. Repeated diagnosis requires new missing evidence
+or a contradiction. Astra returns its recommendation and uncertainty to Sol,
+gets delivery acknowledgment, and ends
 its turn. It may inspect plans, repository evidence, approved-plan progress,
 assumptions, and blockers. It cannot edit files, run tests or providers,
 accept or reject candidates, authorize scope, change packets, replace Sol,
@@ -41,8 +48,9 @@ may remain. Otherwise Sol returns work to Primary. Luna uses an accepted Light
 candidate only when its Light receipt exists.
 
 Subordinate tasks notify their assigned parent when they are blocked, need a
-decision, or complete. Delivery acknowledgment is required. After dispatch or
-return, an idle turn ends. Idle wait loops are not permitted. Monitoring
+decision, or complete. Delivery acknowledgment is required. If no independent
+actionable work remains after dispatch or return, the task ends the turn. Idle
+wait loops are not permitted. Monitoring
 targets Sol and stays quiet when state is unchanged. It is only a fallback for
 a missed required notification.
 

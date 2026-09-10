@@ -687,11 +687,18 @@ def test_current_guidance_uses_single_sol_owner_and_bounded_support_routes() -> 
         (ROOT / "docs/SYSTEM_USER_GUIDE.md").read_text(encoding="utf-8"),
         "Owner-Scoped Orchestration",
     )
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme = _normalized_markdown_section(
+        (ROOT / "README.md").read_text(encoding="utf-8"),
+        "Operational workflow",
+    )
     bootstrap = (ROOT / "Project_Obsidian_Vault/30_Core/Core Bootstrap.md").read_text(encoding="utf-8")
     for text in (policy, guide, readme):
         assert "single coordinator and execution owner" in text
-        assert "concrete evidence gap or contradiction" in text
+        assert "first planned research" in text
+        assert "Failed approaches can be empty" in text
+        assert "spawn relation alone does not grant or remove decision authority" in text
+        assert "same task can be both the spawn parent and the assigned Owner Orchestrator" in text
+        assert "no independent actionable work remains" in text
         assert "delivery acknowledgment" in text
         assert "idle wait loop" in text
         assert "available host-recorded usage" in text

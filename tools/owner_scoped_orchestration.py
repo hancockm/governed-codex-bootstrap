@@ -350,12 +350,12 @@ def _require_research_critic(registry: Mapping[str, Any], root: Path) -> None:
         raise OrchestrationError("research critic model binding is invalid")
     expected_lists = {
         "permitted_inspection": ["plans", "repository_evidence", "approved_plan_progress", "assumptions", "blockers"],
-        "permitted_outputs": ["plan_critique", "progress_audit", "blocker_analysis", "assumption_review"],
+        "permitted_outputs": ["research_recommendation", "plan_critique", "progress_audit", "blocker_analysis", "assumption_review", "architectural_analysis"],
         "forbidden_actions": ["edit_files", "run_tests", "run_providers", "accept_candidate", "reject_candidate", "authorize_scope", "change_packet", "replace_owner_orchestrator", "replace_implementer", "replace_verification_runner", "publish", "push", "merge", "integrate"],
-        "invocation_triggers": ["evidence_gap", "contradiction"],
+        "invocation_triggers": ["planned_research", "plan_critique", "assumption_review", "architectural_analysis", "evidence_gap", "contradiction"],
         "question_required_fields": ["relevant_evidence", "failed_approaches", "needed_decision"],
         "return_required_fields": ["recommendation", "uncertainty"],
-        "prohibited_uses": ["routine_progress_routing", "duplicate_diagnosis_without_concrete_gap_or_contradiction"],
+        "prohibited_uses": ["routine_progress_routing", "repeated_diagnosis_without_concrete_gap_or_contradiction"],
     }
     if any(contract.get(field) != expected for field, expected in expected_lists.items()):
         raise OrchestrationError("research critic contract is incomplete")
@@ -373,13 +373,17 @@ def _require_coordination_contract(registry: Mapping[str, Any]) -> None:
 
     expected = {
         "decision_owner": "owner_orchestrator",
-        "spawn_parent": {"decision_authority": "none", "evidence": "host_recorded_only"},
+        "spawn_parent": {"decision_authority": "not_derived_from_spawn_relation", "evidence": "host_recorded_only"},
         "notifications": {
             "target": "assigned_parent",
             "required_events": ["blocked_or_decision_needed", "completion"],
             "delivery_acknowledgment_required": True,
         },
-        "idle_turns": {"after_dispatch": "end_turn", "after_return": "end_turn", "wait_loops": "forbidden"},
+        "idle_turns": {
+            "after_dispatch": "end_turn_when_no_independent_actionable_work_remains",
+            "after_return": "end_turn_when_no_independent_actionable_work_remains",
+            "wait_loops": "forbidden",
+        },
         "monitoring": {"target": "owner_orchestrator", "unchanged_state": "quiet", "purpose": "missed_notification_fallback"},
     }
     if registry.get("coordination") != expected:
@@ -414,14 +418,12 @@ def validate_research_critic_invocation(invocation: Mapping[str, Any], repo: str
     if invocation.get("model") != contract["model"]:
         raise OrchestrationError("research critic model binding mismatch")
     if invocation.get("trigger") not in contract["invocation_triggers"]:
-        raise OrchestrationError("research critic requires a concrete evidence gap or contradiction")
+        raise OrchestrationError("research critic trigger is not permitted")
     question = invocation.get("question")
     if not isinstance(question, dict) or frozenset(question) != RESEARCH_CRITIC_QUESTION_KEYS:
         raise OrchestrationError("research critic question has missing or forbidden fields")
-    evidence = _require_safe_string_list(question.get("relevant_evidence"), "research critic relevant_evidence")
-    failed = _require_safe_string_list(question.get("failed_approaches"), "research critic failed_approaches", allow_empty=True)
-    if len(evidence) > 8 or len(failed) > 8:
-        raise OrchestrationError("research critic question must be bounded")
+    _require_safe_string_list(question.get("relevant_evidence"), "research critic relevant_evidence")
+    _require_safe_string_list(question.get("failed_approaches"), "research critic failed_approaches", allow_empty=True)
     _require_safe_text(question.get("needed_decision"), "research critic needed_decision")
     if invocation.get("requested_outputs") not in ([item] for item in contract["permitted_outputs"]):
         raise OrchestrationError("research critic invocation must request one permitted output")
